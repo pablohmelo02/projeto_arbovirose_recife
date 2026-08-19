@@ -1,0 +1,4 @@
+resource_id,situacao,codigo_bairro,nome
+d5f956ce-7e1f-4c74-839b-06cb490c3721,sem_geometria,902,SANCHO
+d5f956ce-7e1f-4c74-839b-06cb490c3721,sem_geometria,999,BAIRRO IGNORADO
+d5f956ce-7e1f-4c74-839b-06cb490c3721,sem_dimensao,906,SANCHO

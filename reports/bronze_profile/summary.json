@@ -1,0 +1,1302 @@
+{
+  "total_recursos_selecionados": 40,
+  "total_recursos_perfilados": 40,
+  "falhas_leitura": [],
+  "anos_disponiveis_por_entidade": {
+    "dengue": [
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "zika": [
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "chikungunya": [
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ]
+  },
+  "colunas_presentes_em_todos_os_anos": {
+    "dengue": [
+      "DT_OBITO"
+    ],
+    "zika": [
+      "DT_ENCERRA",
+      "DT_OBITO"
+    ],
+    "chikungunya": [
+      "ACIDO_PEPT",
+      "ALRM_ABDOM",
+      "ALRM_HEMAT",
+      "ALRM_HEPAT",
+      "ALRM_HIPOT",
+      "ALRM_LETAR",
+      "ALRM_LIQ",
+      "ALRM_PLAQ",
+      "ALRM_SANG",
+      "ALRM_VOM",
+      "ARTRALGIA",
+      "ARTRITE",
+      "AUTO_IMUNE",
+      "CEFALEIA",
+      "CLINC_CHIK",
+      "DIABETES",
+      "DOR_COSTAS",
+      "DOR_RETRO",
+      "DT_ALRM",
+      "DT_GRAV",
+      "DT_OBITO",
+      "DT_PRNT",
+      "EPISTAXE",
+      "EVIDENCIA",
+      "EXANTEMA",
+      "FEBRE",
+      "GENGIVO",
+      "GRAV_AST",
+      "GRAV_CONSC",
+      "GRAV_CONV",
+      "GRAV_ENCH",
+      "GRAV_EXTRE",
+      "GRAV_HEMAT",
+      "GRAV_HIPOT",
+      "GRAV_INSUF",
+      "GRAV_MELEN",
+      "GRAV_METRO",
+      "GRAV_MIOC",
+      "GRAV_ORGAO",
+      "GRAV_PULSO",
+      "GRAV_SANG",
+      "GRAV_TAQUI",
+      "HEMATOLOG",
+      "HEMATURA",
+      "HEPATOPAT",
+      "LACO",
+      "LACO_N",
+      "LEUCOPENIA",
+      "METRO",
+      "MIALGIA",
+      "NAUSEA",
+      "PETEQUIAS",
+      "PETEQUIA_N",
+      "PLAQ_MENOR",
+      "PLASMATICO",
+      "RENAL",
+      "RESUL_PRNT",
+      "RES_CHIKS1",
+      "RES_CHIKS2",
+      "SANGRAM",
+      "VOMITO"
+    ]
+  },
+  "colunas_ausentes_em_algum_ano": {
+    "dengue": [
+      "ACIDO_PEPT",
+      "ALRM_ABDOM",
+      "ALRM_HEMAT",
+      "ALRM_HEPAT",
+      "ALRM_HIPOT",
+      "ALRM_LETAR",
+      "ALRM_LIQ",
+      "ALRM_PLAQ",
+      "ALRM_SANG",
+      "ALRM_VOM",
+      "ARTRALGIA",
+      "ARTRITE",
+      "AUTO_IMUNE",
+      "CEFALEIA",
+      "CLASSI_FIN",
+      "CLINC_CHIK",
+      "CODISINF",
+      "COMPLICA",
+      "COMUNINF",
+      "CONF_FHD",
+      "CONJUNTVIT",
+      "CONJUTIVITE",
+      "CON_FHD",
+      "COPAISINF",
+      "COUFINF",
+      "CO_BAINF",
+      "CO_BAIRRO_INFECCAO",
+      "CO_BAIRRO_RESIDENCIA",
+      "CO_CBO_OCUPACAO",
+      "CO_CID",
+      "CO_DISTRITO_INFECCAO",
+      "CO_DISTRITO_RESIDENCIA",
+      "CO_GEO_CAMPO_1",
+      "CO_GEO_CAMPO_2",
+      "CO_LOGRADOURO_RESIDENCIA",
+      "CO_MUNICIPIO_HOSPITAL",
+      "CO_MUNICIPIO_INFECCAO",
+      "CO_MUNICIPIO_NOTIFICACAO",
+      "CO_MUNICIPIO_RESIDENCIA",
+      "CO_PAIS_INFECCAO",
+      "CO_PAIS_RESIDENCIA",
+      "CO_REGIONAL_RESIDENCIA",
+      "CO_UF_HOSPITAL",
+      "CO_UF_INFECCAO",
+      "CO_UF_NOTIFICACAO",
+      "CO_UF_RESIDENCIA",
+      "CO_UNIDADE_HOSPITAL",
+      "CO_UNIDADE_NOTIFICACAO",
+      "CRITERIO",
+      "CS_ESCOL_N",
+      "CS_GESTANT",
+      "CS_RACA",
+      "CS_SEXO",
+      "CS_ZONA",
+      "DDD_HOSP",
+      "DDD_HOSPITAL",
+      "DIABETES",
+      "DOENCA_TRA",
+      "DOR_COSTAS",
+      "DOR_RETRO",
+      "DS_IDENTIFICADOR_REGISTRO",
+      "DS_OBS",
+      "DS_REFERENCIA_RESIDENCIA",
+      "DS_SEMANA_NOTIFICACAO",
+      "DS_SEMANA_SINTOMA",
+      "DT_ALRM",
+      "DT_CHIK_S1",
+      "DT_CHIK_S2",
+      "DT_CHIL_S1",
+      "DT_CHIL_S2",
+      "DT_COLETA_EXAME",
+      "DT_COLETA_ISOLAMENTO",
+      "DT_COLETA_NS1",
+      "DT_COLETA_RTPCR",
+      "DT_DIAGNOSTICO_SINTOMA",
+      "DT_DIGITACAO",
+      "DT_ENCERRA",
+      "DT_ENCERRAMENTO",
+      "DT_GRAV",
+      "DT_INTERNA",
+      "DT_INTERNACAO",
+      "DT_INVEST",
+      "DT_INVESTIGACAO",
+      "DT_NASC",
+      "DT_NASCIMENTO",
+      "DT_NOTIFIC",
+      "DT_NOTIFICACAO",
+      "DT_NS1",
+      "DT_PCR",
+      "DT_PRNT",
+      "DT_SIN_PRI",
+      "DT_SORO",
+      "DT_TRANSF_DM",
+      "DT_TRANSF_RM",
+      "DT_TRANSF_RS",
+      "DT_TRANSF_SE",
+      "DT_TRANSF_SM",
+      "DT_TRANSF_US",
+      "DT_VIRAL",
+      "EPISTAXE",
+      "EVIDENCIA",
+      "EVOLUCAO",
+      "EXANTEMA",
+      "FEBRE",
+      "GENGIVO",
+      "GRAV_AST",
+      "GRAV_CONSC",
+      "GRAV_CONV",
+      "GRAV_ENCH",
+      "GRAV_EXTRE",
+      "GRAV_HEMAT",
+      "GRAV_HIPOT",
+      "GRAV_INSUF",
+      "GRAV_MELEN",
+      "GRAV_METRO",
+      "GRAV_MIOC",
+      "GRAV_ORGAO",
+      "GRAV_PULSO",
+      "GRAV_SANG",
+      "GRAV_TAQUI",
+      "HEMATOLOG",
+      "HEMATURA",
+      "HEPATOPAT",
+      "HIPERTENSA",
+      "HIPERTENSAO",
+      "HISTOPA_N",
+      "HOSPITAL",
+      "HOSPITALIZ",
+      "ID_AGRAVO",
+      "ID_BAIRRO",
+      "ID_DISTRIT",
+      "ID_LOGRADO",
+      "ID_MN_RESI",
+      "ID_MUNICIP",
+      "ID_OCUPA_N",
+      "ID_PAIS",
+      "ID_REGIONA",
+      "ID_REGIONAL",
+      "ID_RG_RESI",
+      "ID_UNIDADE",
+      "IMUNOH_N",
+      "LACO",
+      "LACO_N",
+      "LEUCOPENIA",
+      "MANI_HEMOR",
+      "METRO",
+      "MIALGIA",
+      "MUNICIPIO",
+      "NAUSEA",
+      "NM_BAIRRO",
+      "NM_LOGRADO",
+      "NOBAIINF",
+      "NOME_LOGRADOURO_RESIDENCIA",
+      "NOTIFICACAO_ANO",
+      "NO_BAIRRO_INFECCAO",
+      "NO_BAIRRO_RESIDENCIA",
+      "NU_ANO",
+      "NU_CEP",
+      "NU_CEP_RESIDENCIA",
+      "NU_DDD_HOSPITAL",
+      "NU_IDADE",
+      "NU_IDADE_N",
+      "NU_LOTE_HORIZONTAL",
+      "NU_LOTE_I",
+      "NU_LOTE_VERTICAL",
+      "NU_NOTIFIC",
+      "NU_NOTIFICACAO",
+      "NU_TELEFONE_HOSPITAL",
+      "PETEQUIAS",
+      "PETEQUIA_N",
+      "PLAQ_MENOR",
+      "PLASMATICO",
+      "RENAL",
+      "RESUL_NS1",
+      "RESUL_PCR_",
+      "RESUL_PRNT",
+      "RESUL_SORO",
+      "RESUL_VI_N",
+      "RES_CHIKS1",
+      "RES_CHIKS2",
+      "SANGRAM",
+      "SEM_NOT",
+      "SEM_PRI",
+      "SG_UF",
+      "SG_UF_NOT",
+      "SOROTIPO",
+      "ST_DOENCA_TRABALHO",
+      "ST_FLUXO_RETORNO_RECEBIDO",
+      "ST_IMPORTADO",
+      "ST_OCORREU_HOSPITALIZACAO",
+      "TEL_HOSP",
+      "TEL_HOSPITAL",
+      "TPAUTOCTO",
+      "TP_AUTOCTONE_RESIDENCIA",
+      "TP_CLASSIFICACAO_FINAL",
+      "TP_CRITERIO_CONFIRMACAO",
+      "TP_DUPLICIDADE",
+      "TP_ESCOLARIDADE",
+      "TP_EVOLUCAO_CASO",
+      "TP_FLUXO_RETORNO",
+      "TP_GESTANTE",
+      "TP_NOT",
+      "TP_NOTIFICACAO",
+      "TP_RACA_COR",
+      "TP_RESULT_EXAME",
+      "TP_RESULT_HISTOPATOLOGIA",
+      "TP_RESULT_IMUNOHISTOQUIMICA",
+      "TP_RESULT_ISOLAMENTO",
+      "TP_RESULT_NS1",
+      "TP_RESULT_RTPCR",
+      "TP_SEXO",
+      "TP_SOROTIPO",
+      "TP_ZONA_RESIDENCIA",
+      "UF",
+      "VOMITO"
+    ],
+    "zika": [
+      "ACIDO_PEPT",
+      "ALRM_ABDOM",
+      "ALRM_HEMAT",
+      "ALRM_HEPAT",
+      "ALRM_HIPOT",
+      "ALRM_LETAR",
+      "ALRM_LIQ",
+      "ALRM_PLAQ",
+      "ALRM_SANG",
+      "ALRM_VOM",
+      "ANO_NOTIFICACAO",
+      "ARTRALGIA",
+      "ARTRITE",
+      "AUTO_IMUNE",
+      "CEFALEIA",
+      "CLASSI_FIN",
+      "CLINC_CHIK",
+      "CODISINF",
+      "COMUNINF",
+      "CONJUNTVIT",
+      "CON_FHD",
+      "COPAISINF",
+      "COUFINF",
+      "CO_BAINF",
+      "CO_BAINFC",
+      "CO_BAIRRO_INFECCAO",
+      "CO_BAIRRO_RESIDENCIA",
+      "CO_CID",
+      "CO_DISTRITO_INFECCAO",
+      "CO_DISTRITO_RESIDENCIA",
+      "CO_LOGRADOURO_RESIDENCIA",
+      "CO_MUNICIPIO_INFECCAO",
+      "CO_MUNICIPIO_NOTIFICACAO",
+      "CO_MUNICIPIO_RESIDENCIA",
+      "CO_PAIS_INFECCAO",
+      "CO_PAIS_RESIDENCIA",
+      "CO_UF_INFECCAO",
+      "CO_UF_NOTIFICACAO",
+      "CO_UF_RESIDENCIA",
+      "CO_UNIDADE_NOTIFICACAO",
+      "CRITERIO",
+      "CS_ESCOL_N",
+      "CS_GESTANT",
+      "CS_RACA",
+      "CS_SEXO",
+      "CS_SUSPEIT",
+      "CS_ZONA",
+      "DIABETES",
+      "DOENCA_TRA",
+      "DOR_COSTAS",
+      "DOR_RETRO",
+      "DS_SEMANA_NOTIFICACAO",
+      "DS_SEMANA_SINTOMA",
+      "DT_ALRM",
+      "DT_CHIK_S1",
+      "DT_CHIK_S2",
+      "DT_DIAGNOSTICO_SINTOMA",
+      "DT_GRAV",
+      "DT_INTERNA",
+      "DT_INVEST",
+      "DT_INVESTIGACAO",
+      "DT_NASC",
+      "DT_NASCIMENTO",
+      "DT_NOTIFIC",
+      "DT_NOTIFICACAO",
+      "DT_NS1",
+      "DT_PCR",
+      "DT_PRNT",
+      "DT_SIN_PRI",
+      "DT_SORO",
+      "DT_VIRAL",
+      "EPISTAXE",
+      "EVIDENCIA",
+      "EVOLUCAO",
+      "EXANTEMA",
+      "FEBRE",
+      "GENGIVO",
+      "GRAV_AST",
+      "GRAV_CONSC",
+      "GRAV_CONV",
+      "GRAV_ENCH",
+      "GRAV_EXTRE",
+      "GRAV_HEMAT",
+      "GRAV_HIPOT",
+      "GRAV_INSUF",
+      "GRAV_MELEN",
+      "GRAV_METRO",
+      "GRAV_MIOC",
+      "GRAV_ORGAO",
+      "GRAV_PULSO",
+      "GRAV_SANG",
+      "GRAV_TAQUI",
+      "HEMATOLOG",
+      "HEMATURA",
+      "HEPATOPAT",
+      "HIPERTENSA",
+      "HISTOPA_N",
+      "HOSPITALIZ",
+      "ID_AGRAVO",
+      "ID_BAIRRO",
+      "ID_DISTRIT",
+      "ID_LOGRADO",
+      "ID_MN_RESI",
+      "ID_MUNICIP",
+      "ID_OCUPA_N",
+      "ID_PAIS",
+      "ID_REGIONA",
+      "ID_REGIONAL",
+      "ID_RG_RESI",
+      "ID_RG_RESIDENCIA",
+      "ID_UNIDADE",
+      "IMUNOH_N",
+      "IN_VINCULA",
+      "LACO",
+      "LACO_N",
+      "LEUCOPENIA",
+      "MANI_HEMOR",
+      "METRO",
+      "MIALGIA",
+      "MUNICIPIO",
+      "NAUSEA",
+      "NDUPLIC_N",
+      "NM_BAIRRO",
+      "NM_LOGRADO",
+      "NM_LOGRADOURO_RESIDENCIA",
+      "NOBAIINF",
+      "NO_BAIRRO_INFECCAO",
+      "NO_BAIRRO_RESIDENCIA",
+      "NU_ANO",
+      "NU_CEP",
+      "NU_CEP_RESIDENCIA",
+      "NU_IDADE",
+      "NU_IDADE_N",
+      "NU_NOTIFIC",
+      "NU_NOTIFICACAO",
+      "PETEQUIAS",
+      "PETEQUIA_N",
+      "PLAQ_MENOR",
+      "PLASMATICO",
+      "RENAL",
+      "RESUL_NS1",
+      "RESUL_PCR_",
+      "RESUL_PRNT",
+      "RESUL_SORO",
+      "RESUL_VI_N",
+      "RES_CHIKS1",
+      "RES_CHIKS2",
+      "SANGRAM",
+      "SEM_NOT",
+      "SEM_PRI",
+      "SG_UF",
+      "SG_UF_NOT",
+      "SOROTIPO",
+      "ST_DOENCA_TRABALHO",
+      "TPAUTOCTO",
+      "TP_AUTOCTONE_RESIDENCIA",
+      "TP_CLASSIFICACAO_FINAL",
+      "TP_CRITERIO_CONFIRMACAO",
+      "TP_ESCOLARIDADE",
+      "TP_EVOLUCAO_CASO",
+      "TP_GESTANTE",
+      "TP_NOT",
+      "TP_NOTIFICACAO",
+      "TP_RACA_COR",
+      "TP_SEXO",
+      "TP_ZONA_RESIDENCIA",
+      "UF",
+      "VOMITO"
+    ],
+    "chikungunya": [
+      "A92",
+      "CLASSI_FIN",
+      "CODISINF",
+      "COMPLICA",
+      "COMUNINF",
+      "CONF_FHD",
+      "CONJUNTVIT",
+      "CONJUTIVITE",
+      "CON_FHD",
+      "COPAISINF",
+      "COUFINF",
+      "CO_BAINF",
+      "CO_BAIRRO_INFECCAO",
+      "CO_BAIRRO_RESIDENCIA",
+      "CO_CBO_OCUPACAO",
+      "CO_CID",
+      "CO_DISTRITO_INFECCAO",
+      "CO_DISTRITO_RESIDENCIA",
+      "CO_LOGRADOURO_RESIDENCIA",
+      "CO_MUNICIPIO_HOSPITAL",
+      "CO_MUNICIPIO_INFECCAO",
+      "CO_MUNICIPIO_NOTIFICACAO",
+      "CO_MUNICIPIO_RESIDENCIA",
+      "CO_PAIS_INFECCAO",
+      "CO_PAIS_RESIDENCIA",
+      "CO_REGIONAL_RESIDENCIA",
+      "CO_UF_HOSPITAL",
+      "CO_UF_INFECCAO",
+      "CO_UF_NOTIFICACAO",
+      "CO_UF_RESIDENCIA",
+      "CO_UNIDADE_NOTIFICACAO",
+      "CRITERIO",
+      "CS_ESCOL_N",
+      "CS_GESTANT",
+      "CS_RACA",
+      "CS_SEXO",
+      "CS_ZONA",
+      "DDD_HOSP",
+      "DOENCA_TRA",
+      "DS_OBS",
+      "DS_SEMANA_NOTIFICACAO",
+      "DS_SEMANA_SINTOMA",
+      "DT_CHIK_S1",
+      "DT_CHIK_S2",
+      "DT_CHIL_S1",
+      "DT_CHIL_S2",
+      "DT_COLETA_EXAME",
+      "DT_COLETA_ISOLAMENTO",
+      "DT_COLETA_NS1",
+      "DT_COLETA_RTPCR",
+      "DT_DIAGNOSTICO_SINTOMA",
+      "DT_ENCERRA",
+      "DT_ENCERRAMENTO",
+      "DT_INTERNA",
+      "DT_INTERNACAO",
+      "DT_INVEST",
+      "DT_INVESTIGACAO",
+      "DT_NASC",
+      "DT_NASCIMENTO",
+      "DT_NOTIFIC",
+      "DT_NOTIFICACAO",
+      "DT_NS1",
+      "DT_PCR",
+      "DT_SIN_PRI",
+      "DT_SORO",
+      "DT_VIRAL",
+      "EVOLUCAO",
+      "HIPERTENSA",
+      "HIPERTENSAO",
+      "HISTOPA_N",
+      "HOSPITAL",
+      "HOSPITALIZ",
+      "ID_AGRAVO",
+      "ID_BAIRRO",
+      "ID_DISTRIT",
+      "ID_LOGRADO",
+      "ID_MN_RESI",
+      "ID_MUNICIP",
+      "ID_OCUPA_N",
+      "ID_PAIS",
+      "ID_REGIONA",
+      "ID_REGIONAL",
+      "ID_RG_RESI",
+      "ID_UNIDADE",
+      "IMUNOH_N",
+      "MAMI_HEMOR",
+      "MANI_HEMOR",
+      "MUNICIPIO",
+      "NM_BAIRRO",
+      "NM_LOGRADO",
+      "NOBAIINF",
+      "NOME_LOGRADOURO_RESIDENCIA",
+      "NOTIFICACAO_ANO",
+      "NO_BAIRRO_INFECCAO",
+      "NO_BAIRRO_RESIDENCIA",
+      "NU_ANO",
+      "NU_CEP",
+      "NU_CEP_RESIDENCIA",
+      "NU_IDADE",
+      "NU_IDADE_N",
+      "NU_LOTE_I",
+      "NU_NOTIFIC",
+      "NU_NOTIFICACAO",
+      "RESUL_NS1",
+      "RESUL_PCR_",
+      "RESUL_SORO",
+      "RESUL_VI_N",
+      "SEM_NOT",
+      "SEM_PRI",
+      "SG_UF",
+      "SG_UF_NOT",
+      "SOROTIPO",
+      "ST_DOENCA_TRABALHO",
+      "ST_OCORREU_HOSPITALIZACAO",
+      "TEL_HOSP",
+      "TPAUTOCTO",
+      "TP_AUTOCTONE_RESIDENCIA",
+      "TP_CLASSIFICACAO_FINAL",
+      "TP_CRITERIO_CONFIRMACAO",
+      "TP_ESCOLARIDADE",
+      "TP_EVOLUCAO_CASO",
+      "TP_GESTANTE",
+      "TP_NOT",
+      "TP_NOTIFICACAO",
+      "TP_RACA_COR",
+      "TP_RESULT_EXAME",
+      "TP_RESULT_HISTOPATOLOGIA",
+      "TP_RESULT_IMUNOHISTOQUIMICA",
+      "TP_RESULT_ISOLAMENTO",
+      "TP_RESULT_NS1",
+      "TP_RESULT_RTPCR",
+      "TP_SEXO",
+      "TP_SOROTIPO",
+      "TP_ZONA_RESIDENCIA",
+      "UF",
+      "UNNAMED: 126",
+      "UNNAMED: 127",
+      "UNNAMED: 128",
+      "UNNAMED: 129",
+      "UNNAMED: 130",
+      "UNNAMED: 131",
+      "UNNAMED: 132",
+      "UNNAMED: 133",
+      "UNNAMED: 134",
+      "UNNAMED: 135",
+      "UNNAMED: 136",
+      "UNNAMED: 137",
+      "UNNAMED: 138",
+      "UNNAMED: 139",
+      "UNNAMED: 140",
+      "UNNAMED: 141",
+      "UNNAMED: 142"
+    ]
+  },
+  "colunas_comuns_as_tres_doencas": [
+    "DT_OBITO"
+  ],
+  "colunas_exclusivas_por_doenca": {
+    "dengue": [
+      "CO_GEO_CAMPO_1",
+      "CO_GEO_CAMPO_2",
+      "CO_UNIDADE_HOSPITAL",
+      "DDD_HOSPITAL",
+      "DS_IDENTIFICADOR_REGISTRO",
+      "DS_REFERENCIA_RESIDENCIA",
+      "DT_DIGITACAO",
+      "DT_TRANSF_DM",
+      "DT_TRANSF_RM",
+      "DT_TRANSF_RS",
+      "DT_TRANSF_SE",
+      "DT_TRANSF_SM",
+      "DT_TRANSF_US",
+      "NU_DDD_HOSPITAL",
+      "NU_LOTE_HORIZONTAL",
+      "NU_LOTE_VERTICAL",
+      "NU_TELEFONE_HOSPITAL",
+      "ST_FLUXO_RETORNO_RECEBIDO",
+      "ST_IMPORTADO",
+      "TEL_HOSPITAL",
+      "TP_DUPLICIDADE",
+      "TP_FLUXO_RETORNO"
+    ],
+    "zika": [
+      "ANO_NOTIFICACAO",
+      "CO_BAINFC",
+      "CS_SUSPEIT",
+      "ID_RG_RESIDENCIA",
+      "IN_VINCULA",
+      "NDUPLIC_N",
+      "NM_LOGRADOURO_RESIDENCIA"
+    ],
+    "chikungunya": [
+      "A92",
+      "MAMI_HEMOR",
+      "UNNAMED: 126",
+      "UNNAMED: 127",
+      "UNNAMED: 128",
+      "UNNAMED: 129",
+      "UNNAMED: 130",
+      "UNNAMED: 131",
+      "UNNAMED: 132",
+      "UNNAMED: 133",
+      "UNNAMED: 134",
+      "UNNAMED: 135",
+      "UNNAMED: 136",
+      "UNNAMED: 137",
+      "UNNAMED: 138",
+      "UNNAMED: 139",
+      "UNNAMED: 140",
+      "UNNAMED: 141",
+      "UNNAMED: 142"
+    ]
+  },
+  "colunas_com_tipo_aparente_inconsistente": {
+    "NU_NOTIFIC": [
+      "inteiro",
+      "texto"
+    ],
+    "TP_NOT": [
+      "inteiro",
+      "texto"
+    ],
+    "DT_NOTIFIC": [
+      "data",
+      "texto"
+    ],
+    "SEM_NOT": [
+      "inteiro",
+      "texto"
+    ],
+    "NU_ANO": [
+      "inteiro",
+      "texto"
+    ],
+    "SG_UF_NOT": [
+      "inteiro",
+      "texto"
+    ],
+    "ID_MUNICIP": [
+      "inteiro",
+      "texto"
+    ],
+    "ID_REGIONA": [
+      "decimal",
+      "inteiro"
+    ],
+    "ID_UNIDADE": [
+      "inteiro",
+      "texto"
+    ],
+    "DT_SIN_PRI": [
+      "data",
+      "texto"
+    ],
+    "SEM_PRI": [
+      "inteiro",
+      "texto"
+    ],
+    "DT_NASC": [
+      "data",
+      "texto"
+    ],
+    "NU_IDADE_N": [
+      "inteiro",
+      "texto"
+    ],
+    "CS_GESTANT": [
+      "inteiro",
+      "texto"
+    ],
+    "CS_RACA": [
+      "inteiro",
+      "texto"
+    ],
+    "CS_ESCOL_N": [
+      "decimal",
+      "inteiro"
+    ],
+    "SG_UF": [
+      "inteiro",
+      "texto"
+    ],
+    "ID_MN_RESI": [
+      "inteiro",
+      "texto"
+    ],
+    "ID_RG_RESI": [
+      "inteiro",
+      "texto"
+    ],
+    "ID_DISTRIT": [
+      "decimal",
+      "inteiro"
+    ],
+    "ID_BAIRRO": [
+      "decimal",
+      "inteiro"
+    ],
+    "NU_CEP": [
+      "decimal",
+      "inteiro"
+    ],
+    "ID_PAIS": [
+      "inteiro",
+      "texto"
+    ],
+    "DT_INVEST": [
+      "data",
+      "inteiro",
+      "texto"
+    ],
+    "ID_OCUPA_N": [
+      "inteiro",
+      "texto"
+    ],
+    "FEBRE": [
+      "decimal",
+      "inteiro"
+    ],
+    "MIALGIA": [
+      "decimal",
+      "inteiro"
+    ],
+    "CEFALEIA": [
+      "decimal",
+      "inteiro"
+    ],
+    "EXANTEMA": [
+      "decimal",
+      "inteiro"
+    ],
+    "VOMITO": [
+      "decimal",
+      "inteiro"
+    ],
+    "NAUSEA": [
+      "decimal",
+      "inteiro"
+    ],
+    "DOR_COSTAS": [
+      "decimal",
+      "inteiro"
+    ],
+    "CONJUNTVIT": [
+      "decimal",
+      "inteiro"
+    ],
+    "ARTRITE": [
+      "decimal",
+      "inteiro"
+    ],
+    "ARTRALGIA": [
+      "decimal",
+      "inteiro"
+    ],
+    "PETEQUIA_N": [
+      "decimal",
+      "inteiro"
+    ],
+    "LEUCOPENIA": [
+      "decimal",
+      "inteiro"
+    ],
+    "LACO": [
+      "decimal",
+      "inteiro"
+    ],
+    "DOR_RETRO": [
+      "decimal",
+      "inteiro"
+    ],
+    "DIABETES": [
+      "decimal",
+      "inteiro"
+    ],
+    "HEMATOLOG": [
+      "decimal",
+      "inteiro"
+    ],
+    "HEPATOPAT": [
+      "decimal",
+      "inteiro"
+    ],
+    "RENAL": [
+      "decimal",
+      "inteiro"
+    ],
+    "HIPERTENSA": [
+      "decimal",
+      "inteiro"
+    ],
+    "ACIDO_PEPT": [
+      "decimal",
+      "inteiro"
+    ],
+    "AUTO_IMUNE": [
+      "decimal",
+      "inteiro"
+    ],
+    "DT_CHIK_S1": [
+      "inteiro",
+      "texto"
+    ],
+    "DT_CHIK_S2": [
+      "inteiro",
+      "texto"
+    ],
+    "DT_PRNT": [
+      "inteiro",
+      "texto"
+    ],
+    "RES_CHIKS1": [
+      "decimal",
+      "inteiro"
+    ],
+    "RES_CHIKS2": [
+      "decimal",
+      "inteiro"
+    ],
+    "RESUL_PRNT": [
+      "decimal",
+      "inteiro"
+    ],
+    "DT_SORO": [
+      "inteiro",
+      "texto"
+    ],
+    "RESUL_SORO": [
+      "decimal",
+      "inteiro"
+    ],
+    "DT_NS1": [
+      "inteiro",
+      "texto"
+    ],
+    "RESUL_NS1": [
+      "decimal",
+      "inteiro"
+    ],
+    "DT_VIRAL": [
+      "data",
+      "inteiro",
+      "texto"
+    ],
+    "RESUL_VI_N": [
+      "decimal",
+      "inteiro"
+    ],
+    "DT_PCR": [
+      "inteiro",
+      "texto"
+    ],
+    "RESUL_PCR_": [
+      "decimal",
+      "inteiro"
+    ],
+    "HISTOPA_N": [
+      "decimal",
+      "inteiro"
+    ],
+    "IMUNOH_N": [
+      "decimal",
+      "inteiro"
+    ],
+    "HOSPITALIZ": [
+      "decimal",
+      "inteiro"
+    ],
+    "DT_INTERNA": [
+      "inteiro",
+      "texto"
+    ],
+    "UF": [
+      "decimal",
+      "inteiro"
+    ],
+    "MUNICIPIO": [
+      "decimal",
+      "inteiro"
+    ],
+    "HOSPITAL": [
+      "decimal",
+      "inteiro"
+    ],
+    "DDD_HOSP": [
+      "decimal",
+      "inteiro"
+    ],
+    "TEL_HOSP": [
+      "decimal",
+      "inteiro"
+    ],
+    "TPAUTOCTO": [
+      "decimal",
+      "inteiro"
+    ],
+    "COUFINF": [
+      "decimal",
+      "inteiro"
+    ],
+    "COPAISINF": [
+      "decimal",
+      "inteiro"
+    ],
+    "COMUNINF": [
+      "decimal",
+      "inteiro"
+    ],
+    "CODISINF": [
+      "decimal",
+      "inteiro"
+    ],
+    "CO_BAINF": [
+      "decimal",
+      "inteiro"
+    ],
+    "CLASSI_FIN": [
+      "decimal",
+      "inteiro"
+    ],
+    "CRITERIO": [
+      "decimal",
+      "inteiro"
+    ],
+    "CLINC_CHIK": [
+      "decimal",
+      "inteiro"
+    ],
+    "EVOLUCAO": [
+      "decimal",
+      "inteiro"
+    ],
+    "DT_OBITO": [
+      "data",
+      "inteiro",
+      "texto"
+    ],
+    "DT_ENCERRA": [
+      "data",
+      "inteiro",
+      "texto"
+    ],
+    "ALRM_HIPOT": [
+      "decimal",
+      "inteiro"
+    ],
+    "ALRM_PLAQ": [
+      "decimal",
+      "inteiro"
+    ],
+    "ALRM_VOM": [
+      "decimal",
+      "inteiro"
+    ],
+    "ALRM_SANG": [
+      "decimal",
+      "inteiro"
+    ],
+    "ALRM_HEMAT": [
+      "decimal",
+      "inteiro"
+    ],
+    "ALRM_ABDOM": [
+      "decimal",
+      "inteiro"
+    ],
+    "ALRM_LETAR": [
+      "decimal",
+      "inteiro"
+    ],
+    "ALRM_HEPAT": [
+      "decimal",
+      "inteiro"
+    ],
+    "ALRM_LIQ": [
+      "decimal",
+      "inteiro"
+    ],
+    "DT_ALRM": [
+      "data",
+      "inteiro",
+      "texto"
+    ],
+    "GRAV_PULSO": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_CONV": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_ENCH": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_INSUF": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_TAQUI": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_EXTRE": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_HIPOT": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_HEMAT": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_MELEN": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_METRO": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_SANG": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_AST": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_MIOC": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_CONSC": [
+      "decimal",
+      "inteiro"
+    ],
+    "GRAV_ORGAO": [
+      "decimal",
+      "inteiro"
+    ],
+    "DT_GRAV": [
+      "inteiro",
+      "texto"
+    ],
+    "MANI_HEMOR": [
+      "decimal",
+      "inteiro"
+    ],
+    "PLAQ_MENOR": [
+      "decimal",
+      "inteiro"
+    ],
+    "COMPLICA": [
+      "decimal",
+      "inteiro"
+    ],
+    "NU_NOTIFICACAO": [
+      "inteiro",
+      "texto"
+    ],
+    "ID_REGIONAL": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_GESTANTE": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_RACA_COR": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_ESCOLARIDADE": [
+      "decimal",
+      "inteiro"
+    ],
+    "CO_UF_RESIDENCIA": [
+      "decimal",
+      "inteiro"
+    ],
+    "CO_DISTRITO_RESIDENCIA": [
+      "decimal",
+      "inteiro"
+    ],
+    "CO_BAIRRO_RESIDENCIA": [
+      "decimal",
+      "inteiro"
+    ],
+    "NU_CEP_RESIDENCIA": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_ZONA_RESIDENCIA": [
+      "decimal",
+      "inteiro"
+    ],
+    "CO_CBO_OCUPACAO": [
+      "decimal",
+      "inteiro",
+      "texto"
+    ],
+    "CONJUTIVITE": [
+      "decimal",
+      "inteiro"
+    ],
+    "HIPERTENSAO": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_RESULT_EXAME": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_RESULT_NS1": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_RESULT_ISOLAMENTO": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_RESULT_RTPCR": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_SOROTIPO": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_RESULT_HISTOPATOLOGIA": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_RESULT_IMUNOHISTOQUIMICA": [
+      "decimal",
+      "inteiro"
+    ],
+    "ST_OCORREU_HOSPITALIZACAO": [
+      "decimal",
+      "inteiro"
+    ],
+    "CO_UF_HOSPITAL": [
+      "decimal",
+      "inteiro"
+    ],
+    "CO_MUNICIPIO_HOSPITAL": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_AUTOCTONE_RESIDENCIA": [
+      "decimal",
+      "inteiro"
+    ],
+    "CO_UF_INFECCAO": [
+      "decimal",
+      "inteiro"
+    ],
+    "CO_PAIS_INFECCAO": [
+      "decimal",
+      "inteiro"
+    ],
+    "CO_MUNICIPIO_INFECCAO": [
+      "decimal",
+      "inteiro"
+    ],
+    "CO_DISTRITO_INFECCAO": [
+      "decimal",
+      "inteiro"
+    ],
+    "CO_BAIRRO_INFECCAO": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_CLASSIFICACAO_FINAL": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_CRITERIO_CONFIRMACAO": [
+      "decimal",
+      "inteiro"
+    ],
+    "ST_DOENCA_TRABALHO": [
+      "decimal",
+      "inteiro"
+    ],
+    "TP_EVOLUCAO_CASO": [
+      "decimal",
+      "inteiro"
+    ]
+  }
+}

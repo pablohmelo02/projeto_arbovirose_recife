@@ -1,0 +1,23 @@
+{
+  "total_estacoes_inmet": 12,
+  "total_snapshots_apac": 1,
+  "achados_qualidade": [
+    "INMET PETROLINA: 61.18% de valores ausentes em 'PRECIPITAÇÃO TOTAL, HORÁRIO (mm)'",
+    "INMET PETROLINA: 60.35% de valores ausentes em 'TEMPERATURA DO AR - BULBO SECO, HORARIA (°C)'",
+    "INMET PETROLINA: 60.39% de valores ausentes em 'UMIDADE RELATIVA DO AR, HORARIA (%)'",
+    "INMET GARANHUNS: 100.0% de valores ausentes em 'PRECIPITAÇÃO TOTAL, HORÁRIO (mm)'",
+    "INMET GARANHUNS: 42.92% de valores ausentes em 'UMIDADE RELATIVA DO AR, HORARIA (%)'",
+    "INMET SURUBIM: 62.94% de valores ausentes em 'PRECIPITAÇÃO TOTAL, HORÁRIO (mm)'",
+    "INMET SURUBIM: 62.93% de valores ausentes em 'TEMPERATURA DO AR - BULBO SECO, HORARIA (°C)'",
+    "INMET SURUBIM: 91.78% de valores ausentes em 'UMIDADE RELATIVA DO AR, HORARIA (%)'",
+    "INMET CARUARU: 59.27% de valores ausentes em 'PRECIPITAÇÃO TOTAL, HORÁRIO (mm)'",
+    "INMET IBIMIRIM: 57.17% de valores ausentes em 'PRECIPITAÇÃO TOTAL, HORÁRIO (mm)'",
+    "INMET IBIMIRIM: 57.17% de valores ausentes em 'TEMPERATURA DO AR - BULBO SECO, HORARIA (°C)'",
+    "INMET IBIMIRIM: 100.0% de valores ausentes em 'UMIDADE RELATIVA DO AR, HORARIA (%)'",
+    "INMET SERRA TALHADA: 30.08% de valores ausentes em 'PRECIPITAÇÃO TOTAL, HORÁRIO (mm)'",
+    "INMET SERRA TALHADA: 30.08% de valores ausentes em 'TEMPERATURA DO AR - BULBO SECO, HORARIA (°C)'",
+    "INMET SERRA TALHADA: 30.08% de valores ausentes em 'UMIDADE RELATIVA DO AR, HORARIA (%)'",
+    "INMET PALMARES: 39.89% de valores ausentes em 'PRECIPITAÇÃO TOTAL, HORÁRIO (mm)'",
+    "INMET OURICURI: 20.03% de valores ausentes em 'UMIDADE RELATIVA DO AR, HORARIA (%)'"
+  ]
+}

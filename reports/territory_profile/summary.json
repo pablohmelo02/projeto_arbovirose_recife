@@ -1,0 +1,77 @@
+{
+  "recursos": [
+    {
+      "resource_id": "d5f956ce-7e1f-4c74-839b-06cb490c3721",
+      "nome_recurso": "Limites dos Bairros - 2023",
+      "object_key": "bronze/recife/territorio/bairro/ingestion=20260819T212052Z/d5f956ce-7e1f-4c74-839b-06cb490c3721.geojson",
+      "perfil": {
+        "quantidade_features": 94,
+        "colunas": [
+          "OBJECTID",
+          "CBAIRRCODI",
+          "VBAIRROID",
+          "EBAIRRNOME",
+          "CRPAAACODI",
+          "CMICROCODI",
+          "TBAIRRULAT",
+          "CEMPRECODI",
+          "AUSUACMATR",
+          "EBAIRRNOMEOF",
+          "EBAIRRLINK",
+          "TBAIRRSULAT",
+          "DB2GSE.ST_Area(SHAPE)",
+          "DB2GSE.SdeLength(SHAPE)"
+        ],
+        "colunas_sempre_nulas": [
+          "VBAIRROID",
+          "CEMPRECODI",
+          "AUSUACMATR",
+          "EBAIRRLINK",
+          "TBAIRRSULAT"
+        ],
+        "crs": "EPSG:4326",
+        "tipos_geometria": [
+          "Polygon"
+        ],
+        "geometrias_nulas": 0,
+        "geometrias_invalidas": 0,
+        "bounding_box": {
+          "minx": -35.01683583029551,
+          "miny": -8.155325159132454,
+          "maxx": -34.857559375484406,
+          "maxy": -7.928995066149677
+        }
+      },
+      "crosscheck_dimensao_bairro": {
+        "disponivel": true,
+        "bairros_dimensao": 95,
+        "bairros_geo": 94,
+        "matches": 93,
+        "sem_geometria": [
+          {
+            "codigo_bairro": 902,
+            "nome": "SANCHO"
+          },
+          {
+            "codigo_bairro": 999,
+            "nome": "BAIRRO IGNORADO"
+          }
+        ],
+        "sem_dimensao": [
+          {
+            "codigo_bairro": 906,
+            "nome": "SANCHO"
+          }
+        ],
+        "percentual_match": 97.89,
+        "possiveis_correspondencias_por_nome_com_codigo_diferente": [
+          {
+            "nome": "SANCHO",
+            "codigo_geo": 906,
+            "codigo_dimensao": 902
+          }
+        ]
+      }
+    }
+  ]
+}
