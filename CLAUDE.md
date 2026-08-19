@@ -129,9 +129,70 @@ IDW, kriging) **não devem ser implementadas agora** — APAC ainda não tem
 profundidade histórica suficiente para justificá-las. Usar apenas
 **Estratégia A: estação elegível mais próxima**.
 
-*(Preencher/atualizar esta seção ao final da implementação desta sessão com:
-módulo(s) criados, schema do mapeamento, threshold de atividade adotado,
-método espacial/CRS, resultado real dos 94 bairros, testes, e próximo passo.)*
+**Módulos criados** (Silver, todos reutilizando `climate_spatial.py`/
+`schema_territorio.py` já existentes, sem duplicar CRS/join espacial):
+
+- `src/silver/schema_climate_bairro.py` — contrato: `FONTE_ELEGIVEL="APAC"`,
+  `METODO_ASSOCIACAO="nearest_station"`, `VERSAO_ESTRATEGIA="A.1"`,
+  `LIMIAR_DIAS_ESTACAO_ATIVA=90` (dias desde a última leitura em
+  `silver_clima_diario` para considerar a estação ativa), e
+  `COLUNAS_SILVER_BAIRRO_ESTACAO` (inclui `estacao_dentro_do_bairro`,
+  campo separado de "estação escolhida para representar o bairro", para não
+  confundir localização física com representatividade).
+- `src/silver/climate_bairro.py` — `filtrar_estacoes_elegiveis` (fonte +
+  coordenada válida + atividade recente, nenhuma exclusão silenciosa:
+  `metricas["motivos_exclusao"]` conta cada motivo),
+  `construir_pontos_representativos_bairro` (usa `centroide_lat/lon` de
+  `territorio.py` quando cai dentro do polígono; `representative_point()`
+  em CRS métrico como fallback para bairros côncavos onde o centroide cai
+  fora), `calcular_estacao_representativa_por_bairro` (distância em
+  `EPSG:31985`, nunca em graus), `montar_mapeamento_bairro_estacao`
+  (orquestra tudo + métricas de cobertura), `associar_clima_diario_a_bairro`
+  (merge de conveniência com `silver_clima_diario`, não persiste tabela
+  nova, nunca imputa `precipitacao_mm` ausente).
+- `src/silver/pipeline_climate_bairro.py` /
+  `src/transform_climate_bairro.py` — lê `silver_bairro_geo` +
+  `silver_estacao_climatica` + todas as partições de `silver_clima_diario`
+  do MinIO, grava
+  `silver/recife/clima/bairro_estacao/bairro_estacao.parquet` +
+  manifest com métricas reais (nunca inventadas).
+- `src/analyze_climate_neighborhood_mapping.py` — formata o mapeamento já
+  persistido em `reports/climate_neighborhood_mapping/` (CSV + summary.json),
+  sem recalcular nada.
+- `tests/test_climate_bairro.py` — 19 testes (elegibilidade, ponto
+  representativo com fallback, distância/proximidade, obsolescência,
+  determinismo, separação localização-física vs representatividade,
+  `None`/`0` preservados no merge). Suíte completa: 156/156 passando.
+
+**Resultado real desta sessão (execução ponta a ponta, 2026-08-19)**: rodei
+o pipeline completo contra dados reais (CKAN, INMET, APAC) usando
+`moto.server` como stub do MinIO (ver §9) — `ingest_territorio` (94
+bairros) → `transform_territorio` → `ingest_climate` (INMET: 12 estações
+de PE, nenhuma em Recife, ano 2024; APAC: 299 estações via snapshot
+`ServicoMonitoramentoPCDs.php`) → `transform_climate` (311 estações Silver,
+4691 dias válidos) → `transform_climate_bairro`.
+
+**Cobertura obtida: 0/94 bairros.** `filtrar_estacoes_elegiveis` excluiu as
+299 estações APAC candidatas, todas pelo mesmo motivo: `"ultima leitura ha
+mais de 90 dias (estacao considerada inativa)"`. A leitura mais recente em
+todo o snapshot real da APAC, checada nesta sessão, é **2024-04-09** — a
+rede inteira está sem telemetria recente frente à data do sistema
+(2026-08-19), mais de 850 dias de defasagem. Isso não é um bug do filtro:
+é exatamente o comportamento que `LIMIAR_DIAS_ESTACAO_ATIVA` foi desenhado
+para pegar (ver docstring de `schema_climate_bairro.py` sobre estações
+"mortas"). `montar_mapeamento_bairro_estacao` levanta `ValueError` nesse
+cenário (comportamento correto e testado — ver
+`test_montar_mapeamento_sem_estacao_elegivel_levanta_erro`) em vez de
+persistir um mapeamento vazio silenciosamente; por isso não há
+`reports/climate_neighborhood_mapping/` nem Parquet/manifest gravados nesta
+execução.
+
+**Próximo passo (não iniciado, decisão do usuário)**: investigar se a
+defasagem é (a) a rede APAC real estar de fato sem manutenção/telemetria
+ativa agora, ou (b) o relógio do ambiente onde o pipeline roda estar à
+frente do tempo real — nenhuma das duas hipóteses foi confirmada. Enquanto
+isso não for esclarecido, `LIMIAR_DIAS_ESTACAO_ATIVA=90` não deve ser
+alterado nem contornado só para forçar cobertura.
 
 ## 11. Coisas que NÃO fazer sem autorização explícita
 
