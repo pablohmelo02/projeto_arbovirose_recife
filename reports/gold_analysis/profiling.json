@@ -36,13 +36,23 @@
     "ZIKA": 7160
   },
   "clima": {
-    "linhas_com_clima_real": 0,
-    "percentual_linhas_com_clima_real": 0.0,
+    "linhas_com_clima_real": 11709,
+    "percentual_linhas_com_clima_real": 6.1151,
     "fontes_clima": [
       "CEMADEN"
     ],
     "estacoes_distintas": 16,
-    "precipitacao_negativa": 0
+    "precipitacao_negativa": 0,
+    "precipitacao_semanal_mm": {
+      "media": 19.9024,
+      "mediana": 2.5623279810768538,
+      "maximo": 282.0121115291536,
+      "minimo": 0.0
+    },
+    "periodo_com_clima_real": {
+      "inicio": "2024-08-18 00:00:00",
+      "fim": "2026-01-03 00:00:00"
+    }
   },
   "missing_por_campo": {
     "codigo_bairro": {
@@ -114,16 +124,16 @@
       "percentual_null": 0.0
     },
     "precipitacao_total_semana_mm": {
-      "quantidade_null": 191478,
-      "percentual_null": 100.0
+      "quantidade_null": 179769,
+      "percentual_null": 93.8849
     },
     "precipitacao_media_diaria_mm": {
-      "quantidade_null": 191478,
-      "percentual_null": 100.0
+      "quantidade_null": 179769,
+      "percentual_null": 93.8849
     },
     "precipitacao_maxima_diaria_mm": {
-      "quantidade_null": 191478,
-      "percentual_null": 100.0
+      "quantidade_null": 179769,
+      "percentual_null": 93.8849
     },
     "dias_com_chuva": {
       "quantidade_null": 0,
@@ -138,20 +148,20 @@
       "percentual_null": 0.0
     },
     "chuva_7d_mm": {
-      "quantidade_null": 191478,
-      "percentual_null": 100.0
+      "quantidade_null": 179769,
+      "percentual_null": 93.8849
     },
     "chuva_14d_mm": {
-      "quantidade_null": 191478,
-      "percentual_null": 100.0
+      "quantidade_null": 179523,
+      "percentual_null": 93.7565
     },
     "chuva_21d_mm": {
-      "quantidade_null": 191478,
-      "percentual_null": 100.0
+      "quantidade_null": 179292,
+      "percentual_null": 93.6358
     },
     "chuva_28d_mm": {
-      "quantidade_null": 191478,
-      "percentual_null": 100.0
+      "quantidade_null": 179067,
+      "percentual_null": 93.5183
     },
     "dias_com_dado_valido_7d": {
       "quantidade_null": 0,

@@ -15,7 +15,7 @@ Três fontes com formas de acesso e granularidade de lineage bem diferentes
   atual, baixados inteiros a cada execução) mais uma série horária real de
   precipitação por estação — buscada só para as estações da Grande Recife
   (`MUNICIPIOS_GRANDE_RECIFE`, ver docstring de
-  `_candidatos_pluviometricos_grande_recife`), não as 437 de Pernambuco
+  `candidatos_pluviometricos_grande_recife`), não as 437 de Pernambuco
   inteira, para não gerar uma carga de rede desproporcional a cada execução.
   Cada execução cobre uma janela recente (`horas`, tipicamente 48h) que se
   sobrepõe com a anterior — a Silver acumula e deduplica pela chave
@@ -213,10 +213,14 @@ def executar_ingestao_apac(
     return manifest
 
 
-def _candidatos_pluviometricos_grande_recife(conteudo_status: bytes) -> list[dict[str, Any]]:
+def candidatos_pluviometricos_grande_recife(conteudo_status: bytes) -> list[dict[str, Any]]:
     """Filtra o status bruto do CEMADEN (todos os tipos de estação, PE
     inteiro) para as candidatas a busca de série horária: só pluviométricas
     (`tipoestacao == 1`) e só município na Grande Recife (`MUNICIPIOS_GRANDE_RECIFE`).
+
+    Público (não prefixado) porque também é reutilizado pelo backfill
+    histórico (`src/ingestion/cemaden_backfill.py`) — mesmo recorte de
+    estações, para não inventar um segundo critério de seleção espacial.
     """
     registros = json.loads(conteudo_status.decode("utf-8", errors="replace"))
     candidatos = []
@@ -236,12 +240,16 @@ def executar_ingestao_cemaden(
 ) -> dict[str, Any]:
     """Baixa cadastro + status pluviométrico de Pernambuco inteira, e a série
     horária real de precipitação só das estações candidatas da Grande Recife
-    (ver `_candidatos_pluviometricos_grande_recife`) — grava tudo na Bronze.
+    (ver `candidatos_pluviometricos_grande_recife`) — grava tudo na Bronze.
 
     Uma falha em cadastro ou status não impede a tentativa do outro; se o
     status falhar, nenhuma série horária é buscada nesta execução (não há
     como saber `idEstacao` sem ele) — registrado como aviso, não erro fatal
     do lote.
+
+    Cobre só a janela operacional recente (`horas`, tipicamente 48h). Para
+    profundidade histórica (múltiplos anos), ver
+    `src/ingestion/cemaden_backfill.py::executar_backfill_cemaden`.
     """
     run_id = _gerar_run_id()
     inicio = datetime.now(timezone.utc)
@@ -303,7 +311,7 @@ def executar_ingestao_cemaden(
             "Status CEMADEN indisponível nesta execução — nenhuma série horária foi buscada"
         )
     else:
-        candidatos = _candidatos_pluviometricos_grande_recife(conteudo_status)
+        candidatos = candidatos_pluviometricos_grande_recife(conteudo_status)
         logger.info(
             "%d estação(ões) pluviométrica(s) candidatas na Grande Recife", len(candidatos)
         )

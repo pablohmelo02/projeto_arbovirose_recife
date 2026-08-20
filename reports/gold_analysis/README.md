@@ -5,6 +5,17 @@
 > stub do MinIO (ver CLAUDE.md §9). Todos os números abaixo vêm do manifest
 > desta execução (`gold/recife/arboviroses_clima/_controle/`) e de
 > `profiling.json` nesta pasta — nenhum é estimativa.
+>
+> **Atualizado na mesma data (2026-08-20), após o backfill histórico do
+> CEMADEN** (ver
+> `reports/climate_source_analysis/cemaden_historical_backfill_analysis.md`):
+> a Gold foi reconstruída com 730 dias de histórico real para as 16
+> estações CEMADEN usadas pela Estratégia A. A limitação de "0% com clima
+> real", descrita nas seções abaixo como o estado desta mesma execução
+> **antes** do backfill, passou para **6,11%** (ver seção "Cobertura
+> temporal" revisada ao final deste documento) — mantida a narrativa
+> original para preservar o histórico da decisão, com a atualização
+> destacada onde os números mudaram.
 
 ## Objetivo
 
@@ -61,7 +72,8 @@ Verificado nesta execução: **0 duplicatas de chave** em 191.478 linhas.
 | Linhas com 0 casos | 148.980 |
 | Casos por agravo | DENGUE 109.792 · CHIKUNGUNYA 39.552 · ZIKA 7.160 |
 | Casos negativos | 0 |
-| **Linhas com clima real** | **0 (0,0000%)** ⚠️ |
+| **Linhas com clima real (nesta execução, antes do backfill)** | **0 (0,0000%)** ⚠️ |
+| **Linhas com clima real (após o backfill de 730 dias, ver atualização ao final)** | **11.709 (6,1151%)** |
 
 ## Cardinalidade dos joins (antes → depois, nada silencioso)
 
@@ -256,7 +268,7 @@ Gold sem `bairro_estacao` (features climáticas todas nulas, casos
 corretos); e as fronteiras do calendário epidemiológico (semanas de 7 dias,
 contíguas, 52/53 semanas, virada de ano).
 
-## Recomendação para a próxima etapa
+## Recomendação para a próxima etapa (texto original, ver atualização abaixo)
 
 A Gold está estruturalmente correta, com grão consistente, chave única, sem
 leakage e reproduzível — **pronta para EDA**. Mas a dimensão climática está
@@ -273,3 +285,34 @@ Duas frentes possíveis (decisão do usuário, nenhuma iniciada):
    documentado, buscar outra fonte com histórico local, ou aguardar o
    CEMADEN acumular série (o que levaria anos para cobrir o passado — na
    prática não resolve o histórico).
+
+## Atualização (2026-08-20, mesma sessão): backfill histórico do CEMADEN
+
+A frente 2 acima foi executada nesta mesma sessão. Relatório completo em
+`reports/climate_source_analysis/cemaden_historical_backfill_analysis.md`.
+Resumo:
+
+- CEMADEN permite recuperar histórico real via `horario/{id}/{horas}`
+  (sem CAPTCHA/login), validado tecnicamente até **5 anos** (2021-2026) por
+  estação. Nesta execução, aplicaram-se **730 dias** (2 anos, 2024-2026)
+  para as 16 estações que a Estratégia A já usa — o teto de 5 anos não foi
+  aplicado à Gold por limitação de memória do ambiente local (sem
+  MinIO/Docker real, stub em memória), não por limite do CEMADEN.
+- **Cobertura climática real por ano epidemiológico** (94 bairros):
+
+  | Ano | Bairros com clima | Cobertura | Linhas Gold com clima |
+  |---|---:|---:|---:|
+  | 2013–2023 | 0/94 | 0,00% | 0,00% |
+  | 2024 | 90/94 | 95,74% | 26,70% |
+  | 2025 | 65/94 | 69,15% | 52,15% |
+
+- **Gold total**: 0% → **6,1151%** das 191.478 linhas com clima real
+  (11.709 linhas), 90/94 bairros com clima real em algum período, os 3
+  agravos representados, 8.210 casos reais em semanas com clima real,
+  0 leakage (reconfirmado), 0 duplicatas (inalterado).
+- **Classificação**: B — histórico parcial útil (janela real 2024-2025, não
+  os 13 anos completos).
+- **Decisão**: uma EDA integrada clima×arboviroses é possível **para
+  2024-2025**, com dado real, hoje. Para 2013-2023, nenhuma fonte
+  investigada tem histórico automatizável — ver seção "Próxima fonte" do
+  relatório de backfill.

@@ -254,3 +254,81 @@ def test_executar_transformacao_silver_climate_cemaden_estacao_sem_leitura_real_
 
     chaves_diario = minio_client.listar_chaves("silver/recife/clima/diario/")
     assert chaves_diario == []
+
+
+def test_executar_transformacao_silver_climate_combina_backfill_historico_com_operacional(
+    minio_client: MinioClient,
+):
+    """O backfill histórico (`src/ingestion/cemaden_backfill.py`) grava em um
+    prefixo distinto (`horario_backfill/`) mas com o mesmo `tipo="horario"`
+    no manifest -- a Silver deve acumular e deduplicar os dois exatamente
+    como já faz entre execuções operacionais sobrepostas, sem precisar de
+    nenhum código novo (ver docstring de `_processar_cemaden`)."""
+    cadastro = _cadastro_cemaden(
+        [
+            {
+                "codestacao": "261160620A", "nome": "Porto", "latitude": -8.054,
+                "longitude": -34.873, "cidade": "RECIFE", "uf": "PE",
+            }
+        ]
+    )
+    status = json.dumps(
+        [{"idestacao": 6846, "cidade": "RECIFE", "nomeestacao": "Porto", "tipoestacao": 1}]
+    ).encode("utf-8")
+    minio_client.upload_bytes("bronze/recife/clima/cemaden/cadastro/ingestion=run_op/cadastro.json", cadastro)
+    minio_client.upload_bytes("bronze/recife/clima/cemaden/status/ingestion=run_op/status.json", status)
+
+    # operacional: janela recente (48h), cobre 2026
+    horario_operacional = _serie_horaria_cemaden(
+        datas=["19/08/2026", "20/08/2026"], horarios=["23h", "0h"], acumulados=[[2.0, None], [None, 1.0]]
+    )
+    minio_client.upload_bytes(
+        "bronze/recife/clima/cemaden/horario/ingestion=run_op/6846.json", horario_operacional
+    )
+    minio_client.upload_manifest(
+        "bronze/recife/clima/cemaden/_controle/manifest_run_op.json",
+        {
+            "run_id": "run_op",
+            "dataset": "pcd-pluviometrica",
+            "recursos": [
+                {"tipo": "cadastro", "status": "SUCCESS", "object_key": "bronze/recife/clima/cemaden/cadastro/ingestion=run_op/cadastro.json"},
+                {"tipo": "status", "status": "SUCCESS", "object_key": "bronze/recife/clima/cemaden/status/ingestion=run_op/status.json"},
+                {"tipo": "horario", "id_estacao": "6846", "status": "SUCCESS", "object_key": "bronze/recife/clima/cemaden/horario/ingestion=run_op/6846.json"},
+            ],
+        },
+    )
+
+    # backfill historico: um dia de 2021, bem fora da janela operacional
+    horario_backfill = _serie_horaria_cemaden(
+        datas=["21/08/2021"], horarios=["12h"], acumulados=[[7.5]]
+    )
+    minio_client.upload_bytes(
+        "bronze/recife/clima/cemaden/horario_backfill/ingestion=run_backfill/6846.json", horario_backfill
+    )
+    minio_client.upload_manifest(
+        "bronze/recife/clima/cemaden/_controle/manifest_run_backfill.json",
+        {
+            "run_id": "run_backfill",
+            "dataset": "pcd-pluviometrica-backfill-historico",
+            "dias_profundidade": 1825,
+            "recursos": [
+                {"tipo": "horario", "id_estacao": "6846", "status": "SUCCESS", "object_key": "bronze/recife/clima/cemaden/horario_backfill/ingestion=run_backfill/6846.json"},
+            ],
+        },
+    )
+
+    manifest = executar_transformacao_silver_climate(minio_client)
+
+    assert manifest["total_estacoes"] == 1
+
+    df_2021 = pd.read_parquet(
+        io.BytesIO(minio_client.download_bytes("silver/recife/clima/diario/ano=2021/clima_diario_2021.parquet"))
+    )
+    df_2026 = pd.read_parquet(
+        io.BytesIO(minio_client.download_bytes("silver/recife/clima/diario/ano=2026/clima_diario_2026.parquet"))
+    )
+
+    assert len(df_2021) == 1
+    assert df_2021.iloc[0]["precipitacao_mm"] == 7.5
+    assert len(df_2026) == 2
+    assert set(df_2026["precipitacao_mm"]) == {2.0, 1.0}
