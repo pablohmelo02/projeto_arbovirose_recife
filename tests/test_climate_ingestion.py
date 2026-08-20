@@ -1,4 +1,5 @@
 import io
+import json
 import uuid
 import zipfile
 from typing import Iterator
@@ -7,7 +8,11 @@ import pytest
 from moto.server import ThreadedMotoServer
 
 from src.clients.minio_client import MinioClient
-from src.ingestion.climate_ingestion import executar_ingestao_apac, executar_ingestao_inmet
+from src.ingestion.climate_ingestion import (
+    executar_ingestao_apac,
+    executar_ingestao_cemaden,
+    executar_ingestao_inmet,
+)
 
 
 class _FakeInmetClient:
@@ -106,3 +111,102 @@ def test_executar_ingestao_apac_grava_instantaneo(minio_client: MinioClient):
     assert entrada["status"] == "SUCCESS"
     assert f"ingestion={manifest['run_id']}/" in entrada["object_key"]
     assert minio_client.download_bytes(entrada["object_key"]) == b'{"pontos": {}}'
+
+
+class _FakeCemadenClient:
+    def __init__(
+        self,
+        conteudo_cadastro: bytes = b'{"features": []}',
+        conteudo_status: bytes = b"[]",
+        series_por_estacao: dict[str, bytes] | None = None,
+        falhar_cadastro: bool = False,
+        falhar_status: bool = False,
+        estacoes_que_falham: set[str] | None = None,
+    ):
+        self._cadastro = conteudo_cadastro
+        self._status = conteudo_status
+        self._series = series_por_estacao or {}
+        self._falhar_cadastro = falhar_cadastro
+        self._falhar_status = falhar_status
+        self._falham = estacoes_que_falham or set()
+
+    def baixar_cadastro_estacoes(self, uf: str = "PE") -> bytes:
+        if self._falhar_cadastro:
+            from src.clients.cemaden_client import CemadenClientError
+
+            raise CemadenClientError("falha simulada de cadastro")
+        return self._cadastro
+
+    def baixar_status_estacoes(self, uf: str = "PE") -> bytes:
+        if self._falhar_status:
+            from src.clients.cemaden_client import CemadenClientError
+
+            raise CemadenClientError("falha simulada de status")
+        return self._status
+
+    def baixar_serie_horaria(self, id_estacao: str, horas: int) -> bytes:
+        if id_estacao in self._falham:
+            from src.clients.cemaden_client import CemadenClientError
+
+            raise CemadenClientError(f"falha simulada na estacao {id_estacao}")
+        return self._series.get(id_estacao, b'{"datas": [], "horarios": [], "acumulados": []}')
+
+
+def _status_cemaden(registros: list[dict]) -> bytes:
+    return json.dumps(registros).encode("utf-8")
+
+
+def test_executar_ingestao_cemaden_busca_serie_so_das_candidatas_pluviometricas_grande_recife(
+    minio_client: MinioClient,
+):
+    status = _status_cemaden(
+        [
+            {"idestacao": 1, "cidade": "RECIFE", "tipoestacao": 1},  # candidata valida
+            {"idestacao": 2, "cidade": "OLINDA", "tipoestacao": 1},  # candidata valida (grande recife)
+            {"idestacao": 3, "cidade": "RECIFE", "tipoestacao": 5},  # tipo errado, nao e pluviometrica
+            {"idestacao": 4, "cidade": "GARANHUNS", "tipoestacao": 1},  # fora da grande recife
+        ]
+    )
+    cemaden_client = _FakeCemadenClient(conteudo_status=status)
+
+    manifest = executar_ingestao_cemaden(cemaden_client, minio_client, horas=24)
+
+    assert manifest["fonte"] == "CEMADEN"
+    tipos = [r["tipo"] for r in manifest["recursos"]]
+    assert tipos.count("cadastro") == 1
+    assert tipos.count("status") == 1
+    ids_horario = sorted(r["id_estacao"] for r in manifest["recursos"] if r["tipo"] == "horario")
+    assert ids_horario == ["1", "2"]
+    assert manifest["sucessos"] == 4  # cadastro + status + 2 series horarias
+    assert manifest["erros"] == 0
+
+
+def test_executar_ingestao_cemaden_status_falha_nao_busca_serie_horaria(minio_client: MinioClient):
+    cemaden_client = _FakeCemadenClient(falhar_status=True)
+
+    manifest = executar_ingestao_cemaden(cemaden_client, minio_client, horas=24)
+
+    assert manifest["sucessos"] == 1  # so o cadastro
+    assert manifest["erros"] == 1  # status falhou
+    tipos_horario = [r for r in manifest["recursos"] if r["tipo"] == "horario"]
+    assert tipos_horario == []
+
+
+def test_executar_ingestao_cemaden_continua_apos_falha_de_uma_estacao(minio_client: MinioClient):
+    status = _status_cemaden(
+        [
+            {"idestacao": 10, "cidade": "RECIFE", "tipoestacao": 1},
+            {"idestacao": 11, "cidade": "RECIFE", "tipoestacao": 1},
+        ]
+    )
+    cemaden_client = _FakeCemadenClient(conteudo_status=status, estacoes_que_falham={"10"})
+
+    manifest = executar_ingestao_cemaden(cemaden_client, minio_client, horas=24)
+
+    falha = next(r for r in manifest["recursos"] if r.get("id_estacao") == "10")
+    sucesso = next(r for r in manifest["recursos"] if r.get("id_estacao") == "11")
+    assert falha["status"] == "ERROR"
+    assert "falha simulada" in falha["erro"]
+    assert sucesso["status"] == "SUCCESS"
+    assert manifest["erros"] == 1
+    assert manifest["sucessos"] == 3  # cadastro + status + estacao 11

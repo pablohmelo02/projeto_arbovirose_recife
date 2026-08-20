@@ -25,6 +25,12 @@ implementada).
   comparação real (HTTP) de CEMADEN e ANA/Hidroweb como fontes climáticas
   alternativas à APAC (ver §10.2 para o resumo e a próxima fonte
   recomendada).
+- `reports/climate_source_analysis/cemaden_precipitation_endpoint_investigation.md`
+  — endpoint real de precipitação por estação do CEMADEN, encontrado e
+  validado (ver §10.3).
+- `reports/climate_source_analysis/cemaden_integration_results.md` —
+  implementação oficial do CEMADEN (cliente, Bronze, Silver, elegibilidade,
+  Estratégia A) com resultado real: 94/94 bairros associados (ver §10.4).
 - `reports/climate_spatial/summary.json` — cobertura espacial estação x
   bairro (baseline: 311 estações, 22 dentro do Recife, 20/94 bairros com
   estação própria).
@@ -106,27 +112,25 @@ pip install -r requirements.txt
 pytest                        # roda toda a suíte
 
 python -m src.ingest_territorio && python -m src.transform_territorio
-python -m src.ingest_climate && python -m src.transform_climate
+python -m src.ingest_climate && python -m src.transform_climate   # agora INMET + APAC + CEMADEN
 python -m src.analyze_climate_coverage        # cobertura espacial (diagnóstico)
-python -m src.transform_climate_bairro        # NOVO: mapeamento bairro→estação (Silver)
+python -m src.transform_climate_bairro        # mapeamento bairro→estação (Silver, Estratégia A)
+python -m src.analyze_climate_neighborhood_mapping   # relatório do mapeamento
 ```
 
 ## 8. Estado do desenvolvimento (ver README §2 para detalhe por fase)
 
 - Fase 1 (Arboviroses) e Fase 2 (Território): completas.
 - Fase 3 (Clima): Bronze/Profiling/Silver/DQ/análise espacial completos.
-- Mapeamento Silver `bairro → estação APAC elegível mais próxima`
-  (Estratégia A): **código completo e testado (156/156)**, mas **bloqueado
-  em produção**: a rede APAC está sem leituras recentes (ver §10) e o
-  filtro de elegibilidade corretamente recusa gerar associações. Investigação
-  técnica concluída — ver
-  `reports/climate_source_analysis/apac_freshness_investigation.md`.
-- Investigação de fontes alternativas (CEMADEN, ANA/Hidroweb) concluída
-  — ver §10.2 e `reports/climate_source_analysis/alternative_sources_analysis.md`.
-  **CEMADEN recomendado como próxima fonte a implementar** (condicional a
-  confirmar o endpoint de valores de precipitação por estação — ainda não
-  encontrado). **Nada foi implementado ainda — decisão de avançar é do
-  usuário.**
+- Mapeamento Silver `bairro → estação elegível mais próxima` (Estratégia A):
+  **implementado, testado e validado com dados reais.** Histórico da
+  investigação: a rede APAC ficou provada congelada desde 2024-04-09 (§10,
+  §10.1) → CEMADEN identificado e recomendado como fonte alternativa
+  (§10.2) → endpoint de valores de precipitação do CEMADEN encontrado e
+  validado (§10.3) → **CEMADEN implementado oficialmente na arquitetura em
+  2026-08-20 (§10.4) — resultado real: 94/94 bairros associados**, todos
+  via CEMADEN (APAC permanece integrada mas inativa; nenhuma foi removida).
+  Suíte: **185/185 passando**.
 - Fase 4 (Gold) em diante: não iniciada. **Não avançar sem autorização.**
 
 ## 9. Ambiente sem Docker
@@ -270,14 +274,152 @@ persistido em Silver, nenhum cliente definitivo criado). Resumo:
 - **Classificação**: INMET = PRIMÁRIA (mantida). APAC = **rebaixada de
   complementar para RESERVA** (feed atual congelado, mas pipeline pronto
   para reusar se a rede voltar). CEMADEN = **COMPLEMENTAR (condicional)** —
-  candidata mais forte, mas falta confirmar o endpoint de valores. ANA =
-  RESERVA (autenticação obrigatória, baixíssima densidade em Recife).
-- **Recomendação explícita**: **CEMADEN é a próxima fonte a implementar**,
-  condicionado a uma investigação técnica adicional pequena e focada (achar
-  o endpoint real de valores de precipitação por estação — candidatos não
-  testados: `view_pcds_agrometeorologica_cemaden`,
-  `view_pcds_hidrologicas_cemaden`, ou serviço de observações separado).
-  **Nada disso foi implementado — aguardando autorização do usuário.**
+  candidata mais forte, mas faltava confirmar o endpoint de valores (ver
+  §10.3 — **confirmado**). ANA = RESERVA (autenticação obrigatória,
+  baixíssima densidade em Recife).
+- **Recomendação explícita**: **CEMADEN é a próxima fonte a implementar.**
+
+### 10.3 Endpoint de valores de precipitação do CEMADEN (sessão de 2026-08-20, continuação)
+
+Investigação completa em
+`reports/climate_source_analysis/cemaden_precipitation_endpoint_investigation.md`.
+Resumo:
+
+- **Encontrado e confirmado**: `GET
+  https://mapservices.cemaden.gov.br/MapaInterativoWS/resources/horario/{idEstacao}/{horas}`
+  — série horária real de precipitação (mm) por estação, sem
+  autenticação, sem CAPTCHA, sem cookie/sessão. Descoberto inspecionando o
+  JS do painel público (`grafico_pcds.php`, carregado a partir de
+  `resources_url = https://resources.cemaden.gov.br`, um domínio não
+  testado nas investigações anteriores).
+- **Correspondência de identificadores confirmada**: o `idEstacao`
+  numérico usado por essa API (ex.: `6846` = Porto) é a mesma estação que
+  o `codigo_estacao` alfanumérico do WFS (`261160620A`) — o payload da API
+  devolve o campo `codEstacao` batendo exatamente com o cadastro já usado.
+- **Testado em 4 estações reais do Recife** (Porto, Dois Irmãos,
+  Imbiribeira, Dois Unidos): 3/4 com série real e recente; Dois Unidos sem
+  nenhum valor não-nulo na janela recente, apesar de `tempo_inatividade=2`
+  dias no cadastro WFS — **achado de qualidade**: esse campo de metadado
+  não deve ser usado sozinho como critério de elegibilidade numa futura
+  integração, precisa validar contra a série de valores real.
+- **Histórico automatizável, sem CAPTCHA**: o mesmo endpoint aceita janelas
+  grandes — testado com sucesso até `horas=8760` (365 dias, ~16 MB, 200
+  OK) para a estação Porto, com dado real desde ~1 ano atrás. O CAPTCHA do
+  `download_form.php` (documentado em §10.2) protege só um mecanismo de
+  exportação formatada — **não é a única via de histórico**.
+- **Unidade e semântica**: mm por hora-calendário (não é acumulado
+  corrido). Janelas complementares (`acc1hr`...`acc96hr`) disponíveis no
+  endpoint de status atual (`getJson2.php`) — nomeadas explicitamente, não
+  devem ser confundidas entre si.
+- **Frequência de base**: ~10 minutos por transmissão (inferido, não
+  confirmado por série minuto a minuto de uma única estação); a API expõe
+  agregação horária.
+- **Fuso horário**: não confirmado por campo explícito no payload;
+  aritmética compatível com UTC (ver relatório para detalhe) — hipótese,
+  não fato.
+- **Classificação: A — endpoint funcional encontrado.**
+- **Recomendação**: CEMADEN pode ser usado como fonte automatizada de
+  precipitação, tanto atual quanto histórica, via este endpoint REST.
+  Endpoint `diario/{id}/{dias}` da mesma família **não funcionou** em
+  nenhum teste (retornou vazio) — não confiar nele; agregar diário a
+  partir do horário, como já feito para o INMET, se uma integração for
+  autorizada. **Nada foi implementado ainda** — nenhum cliente, schema ou
+  pipeline oficial criado nesta sessão.
+
+### 10.4 Integração oficial do CEMADEN (sessão de 2026-08-20)
+
+Implementação completa em `reports/climate_source_analysis/cemaden_integration_results.md`.
+Resumo:
+
+**Módulos criados/alterados** (nenhuma arquitetura paralela — tudo
+reaproveita Bronze/Silver/Estratégia A já existentes):
+
+- `src/clients/cemaden_client.py` (novo): `CemadenClient` —
+  `baixar_cadastro_estacoes` (WFS `view_pcds_pluviometrica_cemaden`,
+  `CQL_FILTER=uf='PE'`), `baixar_status_estacoes` (`getJson2.php`),
+  `baixar_serie_horaria` (`MapaInterativoWS/resources/horario/{id}/{horas}`).
+  Sem autenticação/CAPTCHA/cookie em nenhum dos três.
+- `src/config.py` / `.env.example`: `CEMADEN_WFS_URL`, `CEMADEN_STATUS_URL`,
+  `CEMADEN_HORARIO_URL` (defaults = endpoints reais), `CEMADEN_HORAS_INGESTAO`
+  (default 48h).
+- `src/ingestion/climate_ingestion.py`: `executar_ingestao_cemaden` — baixa
+  cadastro+status de PE inteira, mas a série horária só das candidatas
+  pluviométricas (`tipoestacao==1`) da **Grande Recife**
+  (`MUNICIPIOS_GRANDE_RECIFE`: Recife, Olinda, Jaboatão dos Guararapes,
+  Camaragibe, São Lourenço da Mata, Paulista, Abreu e Lima) — recorte
+  pragmático para não gerar ~437 chamadas HTTP por execução; documentado
+  como decisão de escopo, não garantia matemática de completude.
+- `src/silver/schema_climate.py`: `FONTES_CLIMA` inclui `"CEMADEN"`; novo
+  campo **`horas_validas_dia`** (nullable) em `COLUNAS_SILVER_CLIMA_DIARIO`
+  — quantas leituras horárias válidas formaram o valor diário (populado
+  também para INMET/APAC, não só CEMADEN).
+- `src/silver/climate.py`: `transformar_estacoes_cemaden` (junta cadastro
+  WFS + status `getJson2.php` pelo nome normalizado da estação — validado
+  18/18 sem ambiguidade antes de implementar),
+  `extrair_observacoes_horarias_cemaden` (parsing robusto da matriz
+  `datas`×`horarios`→`acumulados`), `agregar_diario_cemaden`,
+  `transformar_diario_cemaden`.
+- `src/profiling/climate_profiler.py`:
+  `selecionar_cadastro_status_cemaden_mais_recentes` (cadastro/status:
+  padrão "última execução com sucesso", como o INMET) e
+  `listar_todas_series_horarias_cemaden` (série horária: padrão "acumula
+  todas as execuções", como a APAC).
+- `src/silver/pipeline_climate.py`: `_processar_cemaden` — acumula todas as
+  séries horárias já coletadas e **deduplica por (`codigo_estacao`, `data`,
+  `hora`)** antes de agregar para diário (janelas de execuções sucessivas
+  se sobrepõem; a mais recente vence em conflito). Idempotente: a Silver é
+  regravada por inteiro a cada execução, nunca por append.
+- `src/silver/schema_climate_bairro.py` / `src/silver/climate_bairro.py`:
+  `FONTE_ELEGIVEL` (uma fonte) generalizado para
+  **`FONTES_ELEGIVEIS = ("APAC", "CEMADEN")`**. **Sem prioridade explícita
+  entre fontes** — proposital: elegibilidade já exige leitura real recente
+  em `silver_clima_diario` (nunca metadado de cadastro), então "a mais
+  próxima entre as elegíveis" já implementa a regra certa; se a APAC
+  voltar a ter leitura real, compete de novo sem mudar código. **Dois bugs
+  de chave corrigidos** como parte da generalização (só se manifestavam
+  com 2+ fontes): merge de última leitura e índice de localização física
+  usavam só `codigo_estacao` (não é único entre fontes) — ambos agora usam
+  a chave composta `(fonte, codigo_estacao)`.
+
+**Regra de atividade**: inalterada, `LIMIAR_DIAS_ESTACAO_ATIVA=90`,
+aplicada da mesma forma a todas as fontes — nunca a partir de metadado de
+cadastro (`tempo_inatividade` da APAC/CEMADEN nunca é usado como critério
+de elegibilidade, só a leitura real em `silver_clima_diario`).
+
+**Resultado real da execução (2026-08-20, não estimativa)**:
+
+- Ingestão: 35 estações pluviométricas candidatas na Grande Recife, 35/35
+  séries horárias obtidas com sucesso, 0 erros.
+- Silver estações: 407 CEMADEN válidas (de 437 no cadastro de PE; 28
+  rejeitadas por `codigo_estacao` duplicado — achado de qualidade real,
+  não hipótese). Total combinado: **718 estações** (12 INMET + 299 APAC +
+  407 CEMADEN).
+- Silver clima diário: 24 das 35 candidatas produziram ao menos 1 dia real
+  válido; **67 linhas diárias CEMADEN**, cobrindo 2026-08-18 a 2026-08-20
+  (dado genuinamente atual — mesma data do sistema).
+- Elegibilidade: 706 candidatas (APAC+CEMADEN), **24 elegíveis — todas
+  CEMADEN** (as 299 da APAC continuam 100% excluídas por inatividade,
+  confirmando de novo o achado de §10.1).
+- **Estratégia A: 94/94 bairros associados (100%)**, 16 estações distintas
+  usadas, distância mediana 1,431 km, máxima 4,632 km (bairro Tótó), 14/94
+  bairros com estação própria. **Todas as 94 associações usam CEMADEN** —
+  resultado emergente do filtro de atividade real, não de uma regra de
+  prioridade escrita (comprovado com um teste de regressão dedicado).
+- Caso real ilustrativo: o bairro "Dois Unidos" não usa a estação CEMADEN
+  de mesmo nome (fisicamente ali) porque ela não tinha série real
+  utilizável nesta execução — foi associado à estação "Nova Descoberta"
+  (0,836 km) em vez disso. Prova em produção do motivo de nunca confiar em
+  metadado de atividade sozinho.
+
+**Testes**: 29 novos (cliente, parsing Silver, ingestão, pipeline
+ponta-a-ponta com deduplicação de execuções sobrepostas, Estratégia A
+multi-fonte). **Suíte total: 185/185 passando**, nenhuma regressão.
+
+**Próximo passo (não iniciado, decisão do usuário)**: nada — o critério de
+sucesso desta etapa (CEMADEN → Bronze → Silver → estação elegível por
+observação real → Estratégia A → bairro, com dados reais) foi atingido.
+Não avançar para Gold, não implementar modelos preditivos, não relaxar o
+threshold, sem autorização explícita.
 
 ## 11. Coisas que NÃO fazer sem autorização explícita
 
@@ -291,4 +433,11 @@ persistido em Silver, nenhum cliente definitivo criado). Resumo:
   reportar explicitamente.
 - Não misturar `converter_decimal_brasileiro` e `converter_float` entre
   fontes.
-- Não recriar `silver_estacao_climatica`/`silver_clima_diario` — reutilizar.
+- Não recriar `silver_estacao_climatica`/`silver_clima_diario` — reutilizar
+  (agora com INMET + APAC + CEMADEN, mesmo schema).
+- Não adicionar prioridade hardcoded entre fontes na Estratégia A (ex.:
+  "CEMADEN sempre vence APAC") — a elegibilidade por atividade real já
+  implementa a regra certa (ver §10.4); uma prioridade fixa destruiria a
+  propriedade de a APAC voltar a competir sozinha se reativar.
+- Não usar `codigo_estacao` sozinho como chave em merges/índices no domínio
+  de clima — não é único entre fontes; sempre `(fonte, codigo_estacao)`.

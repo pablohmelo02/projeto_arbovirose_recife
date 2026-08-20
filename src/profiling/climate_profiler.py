@@ -17,7 +17,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import pandas as pd
 
@@ -67,6 +67,46 @@ def listar_todos_snapshots_apac(minio_client: MinioClient) -> list[dict[str, Any
             snapshots.append({**entrada, "_manifest_run_id": run_id})
 
     return snapshots
+
+
+def selecionar_cadastro_status_cemaden_mais_recentes(
+    minio_client: MinioClient,
+) -> Optional[dict[str, Any]]:
+    """Escolhe o manifest CEMADEN mais recente que teve cadastro E status com
+    sucesso (metadado de estação é quase-estático — não precisa acumular
+    execuções como a série horária). Retorna `None` se nenhum manifest tiver
+    os dois com sucesso."""
+    chaves = _listar_manifests(minio_client, "cemaden")
+    for chave_manifest in reversed(chaves):  # mais recente primeiro (run_id ordena lexicograficamente)
+        manifest = carregar_manifest(minio_client, chave_manifest)
+        recursos = manifest.get("recursos", [])
+        cadastro = next(
+            (r for r in recursos if r.get("tipo") == "cadastro" and r.get("status") == "SUCCESS"), None
+        )
+        status = next(
+            (r for r in recursos if r.get("tipo") == "status" and r.get("status") == "SUCCESS"), None
+        )
+        if cadastro and status:
+            return {"run_id": manifest.get("run_id"), "cadastro": cadastro, "status": status}
+    return None
+
+
+def listar_todas_series_horarias_cemaden(minio_client: MinioClient) -> list[dict[str, Any]]:
+    """Retorna TODAS as entradas SUCCESS do tipo `horario` de todos os
+    manifests CEMADEN (não deduplicado — cada execução cobre uma janela
+    recente que se sobrepõe com a anterior; deduplicação por
+    (estação, data, hora) é responsabilidade da Silver, ver
+    `pipeline_climate.py::_processar_cemaden`)."""
+    entradas: list[dict[str, Any]] = []
+
+    for chave_manifest in _listar_manifests(minio_client, "cemaden"):
+        manifest = carregar_manifest(minio_client, chave_manifest)
+        run_id = manifest.get("run_id")
+        for entrada in manifest.get("recursos", []):
+            if entrada.get("tipo") == "horario" and entrada.get("status") == "SUCCESS":
+                entradas.append({**entrada, "_manifest_run_id": run_id})
+
+    return entradas
 
 
 def perfilar_estacao_inmet(nome_arquivo: str, conteudo: bytes) -> dict[str, Any]:

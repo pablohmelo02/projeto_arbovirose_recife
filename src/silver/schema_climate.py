@@ -26,10 +26,26 @@ Achados que sustentam este desenho:
 - Valores numéricos do INMET usam vírgula decimal (formato brasileiro,
   ex.: "25,5") — convertidos explicitamente, nunca via inferência automática
   do pandas (que trataria como string ou geraria erro).
+- CEMADEN (adicionado em 2026-08-20, ver
+  `reports/climate_source_analysis/cemaden_integration_results.md`): série
+  horária real de precipitação por estação (endpoint
+  `MapaInterativoWS/resources/horario/{id}/{horas}`), agregada para diário
+  do mesmo jeito que o INMET (soma das horas válidas do dia,
+  `min_count=1` — nenhuma leitura válida vira `None`, nunca `0`).
+  `temperatura_*`/`umidade_*` ficam sempre nulos, igual à APAC (rede só de
+  pluviômetros). Fuso horário do timestamp de origem não confirmado por
+  campo explícito no payload — timestamps são armazenados exatamente como a
+  fonte fornece, nenhuma conversão UTC arbitrária é aplicada.
+- `horas_validas_dia` (novo campo, nullable): quantas leituras horárias
+  válidas contribuíram para o valor diário de `precipitacao_mm` — permite
+  distinguir "24h de zero real" de "dia com cobertura parcial" sem redesenhar
+  o schema. Para INMET/APAC, campos preenchidos de forma coerente com a
+  granularidade de cada fonte (ver `climate.py`); nunca usado para rejeitar
+  automaticamente uma linha — só para registrar qualidade.
 """
 from __future__ import annotations
 
-FONTES_CLIMA = ("INMET", "APAC")
+FONTES_CLIMA = ("INMET", "APAC", "CEMADEN")
 
 COLUNAS_SILVER_ESTACAO_CLIMATICA = (
     "codigo_estacao",
@@ -51,6 +67,7 @@ COLUNAS_SILVER_CLIMA_DIARIO = (
     "codigo_estacao",
     "fonte",
     "precipitacao_mm",
+    "horas_validas_dia",
     "temperatura_min_c",
     "temperatura_max_c",
     "temperatura_media_c",

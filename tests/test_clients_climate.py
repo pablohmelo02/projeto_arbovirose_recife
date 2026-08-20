@@ -5,6 +5,7 @@ import pytest
 import responses
 
 from src.clients.apac_client import ApacClient, ApacClientError
+from src.clients.cemaden_client import CemadenClient, CemadenClientError
 from src.clients.inmet_client import InmetClient, InmetClientError
 
 
@@ -67,3 +68,92 @@ def test_apac_client_baixar_instantaneo_propaga_erro_http():
     cliente = ApacClient()
     with pytest.raises(ApacClientError):
         cliente.baixar_instantaneo_pcds()
+
+
+@responses.activate
+def test_cemaden_client_baixar_cadastro_sucesso():
+    responses.add(
+        responses.GET,
+        "https://gsc.cemaden.gov.br/geoserver/cemaden_dev/wfs",
+        json={"features": []},
+        status=200,
+    )
+    cliente = CemadenClient()
+    conteudo = cliente.baixar_cadastro_estacoes(uf="PE")
+    assert b"features" in conteudo
+
+
+@responses.activate
+def test_cemaden_client_baixar_cadastro_propaga_erro_http():
+    responses.add(
+        responses.GET,
+        "https://gsc.cemaden.gov.br/geoserver/cemaden_dev/wfs",
+        status=500,
+    )
+    cliente = CemadenClient()
+    with pytest.raises(CemadenClientError):
+        cliente.baixar_cadastro_estacoes()
+
+
+@responses.activate
+def test_cemaden_client_baixar_status_sucesso():
+    responses.add(
+        responses.GET,
+        "https://resources.cemaden.gov.br/graficos/interativo/getJson2.php",
+        json=[{"idestacao": 1}],
+        status=200,
+    )
+    cliente = CemadenClient()
+    conteudo = cliente.baixar_status_estacoes()
+    assert b"idestacao" in conteudo
+
+
+@responses.activate
+def test_cemaden_client_baixar_status_propaga_erro_http():
+    responses.add(
+        responses.GET,
+        "https://resources.cemaden.gov.br/graficos/interativo/getJson2.php",
+        status=503,
+    )
+    cliente = CemadenClient()
+    with pytest.raises(CemadenClientError):
+        cliente.baixar_status_estacoes()
+
+
+@responses.activate
+def test_cemaden_client_baixar_serie_horaria_sucesso():
+    responses.add(
+        responses.GET,
+        "https://mapservices.cemaden.gov.br/MapaInterativoWS/resources/horario/6846/24",
+        json={"datas": [], "horarios": [], "acumulados": []},
+        status=200,
+    )
+    cliente = CemadenClient()
+    conteudo = cliente.baixar_serie_horaria("6846", 24)
+    assert b"acumulados" in conteudo
+
+
+@responses.activate
+def test_cemaden_client_baixar_serie_horaria_propaga_erro_http():
+    responses.add(
+        responses.GET,
+        "https://mapservices.cemaden.gov.br/MapaInterativoWS/resources/horario/6846/24",
+        status=502,
+    )
+    cliente = CemadenClient()
+    with pytest.raises(CemadenClientError):
+        cliente.baixar_serie_horaria("6846", 24)
+
+
+@responses.activate
+def test_cemaden_client_baixar_serie_horaria_propaga_timeout():
+    import requests
+
+    responses.add(
+        responses.GET,
+        "https://mapservices.cemaden.gov.br/MapaInterativoWS/resources/horario/6846/24",
+        body=requests.exceptions.ConnectTimeout("timeout simulado"),
+    )
+    cliente = CemadenClient()
+    with pytest.raises(CemadenClientError):
+        cliente.baixar_serie_horaria("6846", 24)

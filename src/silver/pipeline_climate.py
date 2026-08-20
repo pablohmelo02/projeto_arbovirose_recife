@@ -18,13 +18,18 @@ import pandas as pd
 from src.clients.minio_client import MinioClient
 from src.ingestion.climate_ingestion import PREFIXO_BRONZE_CLIMA
 from src.profiling.climate_profiler import (
+    listar_todas_series_horarias_cemaden,
     listar_todos_snapshots_apac,
+    selecionar_cadastro_status_cemaden_mais_recentes,
     selecionar_ultima_ingestao_valida_inmet,
 )
 from src.silver.climate import (
+    agregar_diario_cemaden,
     agregar_diario_inmet,
+    extrair_observacoes_horarias_cemaden,
     transformar_diario_apac,
     transformar_estacoes_apac,
+    transformar_estacoes_cemaden,
     transformar_estacoes_inmet,
 )
 from src.utils.inmet_csv import InmetCsvError, ler_estacao_inmet
@@ -135,6 +140,92 @@ def _processar_apac(
     return df_estacoes_final, diarios_por_ano, rejeitados, metricas
 
 
+def _processar_cemaden(
+    minio_client: MinioClient,
+) -> tuple[pd.DataFrame, dict[int, list[pd.DataFrame]], list[pd.DataFrame], list[dict[str, Any]]]:
+    """Processa a Bronze CEMADEN: cadastro+status (só a ingestão mais
+    recente — metadado quase-estático, ver `pipeline_climate.py` docstring)
+    e todas as séries horárias já coletadas (todas as execuções — cada uma
+    cobre uma janela recente que se sobrepõe com a anterior).
+
+    A série horária real é reconstruída acumulando TODAS as execuções (igual
+    à APAC), mas deduplicada por (`codigo_estacao`, `data`, `hora`) antes de
+    agregar para diário — sem isso, janelas sobrepostas contariam a mesma
+    hora mais de uma vez. Em caso de conflito (a mesma hora reportada com
+    valores diferentes em execuções diferentes), a execução mais recente
+    vence (dado mais novo é considerado mais autoritativo).
+    """
+    metricas: list[dict[str, Any]] = []
+
+    selecionado = selecionar_cadastro_status_cemaden_mais_recentes(minio_client)
+    if selecionado is None:
+        metricas.append({"tipo": "cemaden", "aviso": "nenhuma ingestao com cadastro+status com sucesso"})
+        return pd.DataFrame(), {}, [], metricas
+
+    conteudo_cadastro = minio_client.download_bytes(selecionado["cadastro"]["object_key"])
+    conteudo_status = minio_client.download_bytes(selecionado["status"]["object_key"])
+    df_estacoes, metricas_estacoes = transformar_estacoes_cemaden(
+        conteudo_cadastro, conteudo_status, selecionado["cadastro"]["object_key"]
+    )
+    metricas.append({"tipo": "estacoes_cemaden", "run_id": selecionado["run_id"], **metricas_estacoes})
+    logger.info(
+        "CEMADEN estações (run_id=%s): %d válidas, %d rejeitadas",
+        selecionado["run_id"], metricas_estacoes["linhas_validas"], metricas_estacoes["linhas_rejeitadas"],
+    )
+
+    entradas_horario = listar_todas_series_horarias_cemaden(minio_client)
+    observacoes_por_estacao: dict[str, list[pd.DataFrame]] = {}
+    for entrada in sorted(entradas_horario, key=lambda e: e.get("_manifest_run_id") or ""):
+        id_estacao = entrada.get("id_estacao")
+        if not id_estacao:
+            continue
+        try:
+            conteudo = minio_client.download_bytes(entrada["object_key"])
+        except Exception as exc:  # salvaguarda: uma série não pode travar o lote
+            logger.error("Falha ao ler série horária CEMADEN (estação %s): %s", id_estacao, exc)
+            continue
+
+        df_horarias, metricas_extracao = extrair_observacoes_horarias_cemaden(conteudo, id_estacao)
+        if metricas_extracao["linhas_sem_data_hora"]:
+            metricas.append(
+                {
+                    "tipo": "extracao_horaria_cemaden", "estacao": id_estacao,
+                    "run_id": entrada.get("_manifest_run_id"), **metricas_extracao,
+                }
+            )
+        if not df_horarias.empty:
+            observacoes_por_estacao.setdefault(id_estacao, []).append(df_horarias)
+
+    diarios_por_ano: dict[int, list[pd.DataFrame]] = {}
+    rejeitados: list[pd.DataFrame] = []
+
+    for id_estacao, partes in observacoes_por_estacao.items():
+        df_todas = pd.concat(partes, ignore_index=True)
+        # dedup: janelas de execucoes sucessivas se sobrepoem -- a leitura
+        # mais recente (ultima na ordem de concatenacao, ja ordenada por
+        # run_id acima) vence em caso de conflito.
+        df_dedup = df_todas.drop_duplicates(subset=["data", "hora"], keep="last")
+
+        df_valido, df_rejeitado, metricas_diario = agregar_diario_cemaden(
+            df_dedup, resource_id=f"cemaden/horario/{id_estacao}", ingestion_run_id="acumulado"
+        )
+        metricas_diario.update({"estacao": id_estacao, "horas_brutas_antes_dedup": len(df_todas)})
+        metricas.append(metricas_diario)
+        logger.info(
+            "CEMADEN %s: %d dias validos, %d rejeitados (%d horas brutas -> %d apos dedup)",
+            id_estacao, metricas_diario["linhas_validas"], metricas_diario["linhas_rejeitadas"],
+            len(df_todas), len(df_dedup),
+        )
+
+        if not df_valido.empty:
+            for ano, grupo in df_valido.groupby(df_valido["data"].dt.year):
+                diarios_por_ano.setdefault(int(ano), []).append(grupo)
+        if not df_rejeitado.empty:
+            rejeitados.append(df_rejeitado)
+
+    return df_estacoes, diarios_por_ano, rejeitados, metricas
+
+
 def executar_transformacao_silver_climate(minio_client: MinioClient) -> dict[str, Any]:
     """Executa uma rodada completa da transformação Silver de clima e retorna o manifest."""
     run_id = _gerar_run_id()
@@ -144,14 +235,17 @@ def executar_transformacao_silver_climate(minio_client: MinioClient) -> dict[str
 
     df_estacoes_inmet, diarios_inmet, rejeitados_inmet, metricas_inmet = _processar_inmet(minio_client)
     df_estacoes_apac, diarios_apac, rejeitados_apac, metricas_apac = _processar_apac(minio_client)
+    df_estacoes_cemaden, diarios_cemaden, rejeitados_cemaden, metricas_cemaden = _processar_cemaden(minio_client)
 
-    if df_estacoes_inmet.empty and df_estacoes_apac.empty:
+    if df_estacoes_inmet.empty and df_estacoes_apac.empty and df_estacoes_cemaden.empty:
         raise ValueError(
             "Nenhum dado climático encontrado na Bronze. "
             "Rode 'python -m src.ingest_climate' antes da Silver clima."
         )
 
-    df_estacoes = pd.concat([df_estacoes_inmet, df_estacoes_apac], ignore_index=True)
+    df_estacoes = pd.concat(
+        [df_estacoes_inmet, df_estacoes_apac, df_estacoes_cemaden], ignore_index=True
+    )
     if not df_estacoes.empty:
         chave_estacoes = f"{PREFIXO_SILVER_CLIMA}/estacoes/estacoes.parquet"
         minio_client.upload_bytes(
@@ -163,6 +257,8 @@ def executar_transformacao_silver_climate(minio_client: MinioClient) -> dict[str
     for ano, dfs in diarios_inmet.items():
         diarios_por_ano.setdefault(ano, []).extend(dfs)
     for ano, dfs in diarios_apac.items():
+        diarios_por_ano.setdefault(ano, []).extend(dfs)
+    for ano, dfs in diarios_cemaden.items():
         diarios_por_ano.setdefault(ano, []).extend(dfs)
 
     total_validas = 0
@@ -176,7 +272,7 @@ def executar_transformacao_silver_climate(minio_client: MinioClient) -> dict[str
         logger.info("Silver diário salvo: s3://%s/%s (%d linhas)", minio_client.bucket, chave, len(df_ano))
 
     total_rejeitadas = 0
-    todos_rejeitados = rejeitados_inmet + rejeitados_apac
+    todos_rejeitados = rejeitados_inmet + rejeitados_apac + rejeitados_cemaden
     if todos_rejeitados:
         df_rejeitados = pd.concat(todos_rejeitados, ignore_index=True)
         total_rejeitadas = len(df_rejeitados)
@@ -195,6 +291,7 @@ def executar_transformacao_silver_climate(minio_client: MinioClient) -> dict[str
         "processado_em": datetime.now(timezone.utc).isoformat(),
         "metricas_inmet": metricas_inmet,
         "metricas_apac": metricas_apac,
+        "metricas_cemaden": metricas_cemaden,
         "total_estacoes": len(df_estacoes),
         "total_linhas_validas": total_validas,
         "total_linhas_rejeitadas": total_rejeitadas,

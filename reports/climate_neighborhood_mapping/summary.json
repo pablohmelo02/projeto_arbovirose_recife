@@ -1,0 +1,103 @@
+{
+  "elegibilidade": {
+    "fontes": [
+      "APAC",
+      "CEMADEN"
+    ],
+    "total_candidatas": 706,
+    "total_elegiveis": 24,
+    "total_excluidas": 682,
+    "motivos_exclusao": {
+      "sem leitura em silver_clima_diario": 383,
+      "ultima leitura ha mais de 90 dias (estacao considerada inativa)": 299
+    },
+    "data_referencia": "2026-08-20",
+    "limiar_dias_estacao_ativa": 90
+  },
+  "total_bairros": 94,
+  "bairros_associados": 94,
+  "percentual_cobertura": 100.0,
+  "estacoes_distintas_utilizadas": 16,
+  "distancia_km_media": 1.656,
+  "distancia_km_mediana": 1.431,
+  "distancia_km_p90": 2.848,
+  "distancia_km_p95": 3.68,
+  "distancia_km_maxima": 4.632,
+  "distancia_km_minima": 0.109,
+  "bairros_com_estacao_propria": 14,
+  "bairros_com_estacao_de_outro_bairro": 80,
+  "top10_bairros_mais_distantes": [
+    {
+      "codigo_bairro": "914",
+      "nome_bairro": "TOTO",
+      "codigo_estacao": "6532",
+      "distancia_km": 4.632
+    },
+    {
+      "codigo_bairro": "418",
+      "nome_bairro": "GUABIRABA",
+      "codigo_estacao": "6529",
+      "distancia_km": 4.386
+    },
+    {
+      "codigo_bairro": "922",
+      "nome_bairro": "COQUEIRAL",
+      "codigo_estacao": "6532",
+      "distancia_km": 4.125
+    },
+    {
+      "codigo_bairro": "906",
+      "nome_bairro": "SANCHO",
+      "codigo_estacao": "6847",
+      "distancia_km": 4.071
+    },
+    {
+      "codigo_bairro": "752",
+      "nome_bairro": "CURADO",
+      "codigo_estacao": "6536",
+      "distancia_km": 3.762
+    },
+    {
+      "codigo_bairro": "639",
+      "nome_bairro": "PAU FERRO",
+      "codigo_estacao": "6473",
+      "distancia_km": 3.636
+    },
+    {
+      "codigo_bairro": "728",
+      "nome_bairro": "CIDADE UNIVERSITARIA",
+      "codigo_estacao": "6536",
+      "distancia_km": 3.582
+    },
+    {
+      "codigo_bairro": "892",
+      "nome_bairro": "TEJIPIO",
+      "codigo_estacao": "6847",
+      "distancia_km": 3.444
+    },
+    {
+      "codigo_bairro": "94",
+      "nome_bairro": "PAISSANDU",
+      "codigo_estacao": "6846",
+      "distancia_km": 2.985
+    },
+    {
+      "codigo_bairro": "43",
+      "nome_bairro": "ILHA JOANA BEZERRA",
+      "codigo_estacao": "6536",
+      "distancia_km": 2.876
+    }
+  ],
+  "estacoes_mais_utilizadas": {
+    "6536": 18,
+    "6530": 13,
+    "6535": 12,
+    "6846": 8,
+    "6531": 7,
+    "3258": 7,
+    "6847": 6,
+    "6532": 4,
+    "3006": 4,
+    "3253": 3
+  }
+}

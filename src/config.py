@@ -12,6 +12,15 @@ load_dotenv()
 CKAN_TERRITORIO_DATASET_PADRAO = "mapas-de-limites-e-divisoes-territoriais"
 INMET_ANOS_PADRAO = (2024,)
 
+# Defaults reais e já validados (ver src/clients/cemaden_client.py) — não são
+# "obrigatórios" via .env porque o projeto já sabe o endpoint correto; só
+# existem como variável para permitir override em teste/investigação futura,
+# nunca para forçar o usuário a redescobrir esses valores.
+CEMADEN_WFS_URL_PADRAO = "https://gsc.cemaden.gov.br/geoserver/cemaden_dev/wfs"
+CEMADEN_STATUS_URL_PADRAO = "https://resources.cemaden.gov.br/graficos/interativo/getJson2.php"
+CEMADEN_HORARIO_URL_PADRAO = "https://mapservices.cemaden.gov.br/MapaInterativoWS/resources/horario"
+CEMADEN_HORAS_INGESTAO_PADRAO = 48
+
 
 @dataclass(frozen=True)
 class Config:
@@ -24,6 +33,10 @@ class Config:
     http_timeout: int = 30
     ckan_territorio_dataset: str = CKAN_TERRITORIO_DATASET_PADRAO
     inmet_anos: tuple[int, ...] = INMET_ANOS_PADRAO
+    cemaden_wfs_url: str = CEMADEN_WFS_URL_PADRAO
+    cemaden_status_url: str = CEMADEN_STATUS_URL_PADRAO
+    cemaden_horario_url: str = CEMADEN_HORARIO_URL_PADRAO
+    cemaden_horas_ingestao: int = CEMADEN_HORAS_INGESTAO_PADRAO
 
 
 def load_config() -> Config:
@@ -56,6 +69,12 @@ def load_config() -> Config:
             "CKAN_TERRITORIO_DATASET", CKAN_TERRITORIO_DATASET_PADRAO
         ),
         inmet_anos=_parse_anos(os.getenv("INMET_ANOS")),
+        cemaden_wfs_url=os.getenv("CEMADEN_WFS_URL", CEMADEN_WFS_URL_PADRAO),
+        cemaden_status_url=os.getenv("CEMADEN_STATUS_URL", CEMADEN_STATUS_URL_PADRAO),
+        cemaden_horario_url=os.getenv("CEMADEN_HORARIO_URL", CEMADEN_HORARIO_URL_PADRAO),
+        cemaden_horas_ingestao=int(
+            os.getenv("CEMADEN_HORAS_INGESTAO", str(CEMADEN_HORAS_INGESTAO_PADRAO))
+        ),
     )
 
 

@@ -55,6 +55,44 @@ def _parsear_data_apac(valor: Optional[str]) -> Optional[str]:
         return None
 
 
+def _parsear_data_cemaden(valor: Optional[str]) -> Optional[Any]:
+    """Parseia `DD/MM/AAAA`, formato do array `datas` do endpoint
+    `horario/{id}/{horas}` do CEMADEN. Retorna `date`, não `Timestamp` —
+    quem chama decide a granularidade."""
+    if not valor:
+        return None
+    try:
+        return datetime.strptime(valor.strip(), "%d/%m/%Y").date()
+    except ValueError:
+        return None
+
+
+def _parsear_rotulo_hora_cemaden(rotulo: Optional[str]) -> Optional[int]:
+    """Parseia um rótulo de hora do array `horarios` do CEMADEN (ex.: '2h',
+    '0h') para um inteiro 0-23. Qualquer formato inesperado vira `None`
+    (contabilizado por quem chama), nunca levanta exceção."""
+    if not isinstance(rotulo, str) or not rotulo.endswith("h"):
+        return None
+    try:
+        hora = int(rotulo[:-1])
+    except ValueError:
+        return None
+    return hora if 0 <= hora <= 23 else None
+
+
+def _converter_valor_cemaden(valor: object) -> Optional[float]:
+    """Converte uma célula da matriz `acumulados` do CEMADEN. O payload real
+    já traz números nativos (`1.0`, `0.6000000000000001`) via JSON, não
+    strings — mas aceita string também por robustez a formato inesperado."""
+    if valor is None:
+        return None
+    if isinstance(valor, bool):  # bool é subclasse de int em Python — descarta explicitamente
+        return None
+    if isinstance(valor, (int, float)):
+        return float(valor)
+    return converter_float(valor)
+
+
 # --------------------------------------------------------------------------
 # silver_estacao_climatica
 # --------------------------------------------------------------------------
@@ -114,6 +152,78 @@ def transformar_estacoes_apac(conteudo_json: bytes, resource_id: str) -> tuple[p
         )
 
     return _validar_e_deduplicar_estacoes(pd.DataFrame(linhas))
+
+
+def transformar_estacoes_cemaden(
+    conteudo_cadastro: bytes, conteudo_status: bytes, resource_id: str
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Constrói `silver_estacao_climatica` (fonte CEMADEN) juntando dois
+    recursos Bronze complementares:
+
+    - `conteudo_cadastro`: GeoJSON do WFS (`view_pcds_pluviometrica_cemaden`)
+      — tem coordenadas reais e `codestacao` (alfanumérico), mas não o
+      `idEstacao` numérico exigido pela API de valores.
+    - `conteudo_status`: JSON do `getJson2.php` — tem `idestacao` (numérico,
+      usado para chamar `horario/{id}/{horas}`), mas não coordenadas, e
+      mistura tipos de estação (`tipoestacao`) além de pluviométrica.
+
+    A ligação entre os dois é feita pelo nome normalizado da estação
+    (`limpar_texto`) — validado manualmente contra dados reais antes desta
+    implementação: as 18 estações de `cidade=RECIFE` bateram 1:1 por nome
+    nos dois recursos, sem ambiguidade (ver
+    `reports/climate_source_analysis/cemaden_integration_results.md`).
+    Estações do cadastro sem correspondência no status (ou vice-versa) não
+    são incluídas em `silver_estacao_climatica` — sem `idEstacao` não há como
+    buscar observações, e sem coordenada não há como fazer o join espacial
+    da Estratégia A —, mas são contadas em métricas, nunca descartadas
+    silenciosamente.
+    """
+    processado_em = _agora()
+
+    cadastro = json.loads(conteudo_cadastro.decode("utf-8", errors="replace"))
+    features = cadastro.get("features", [])
+
+    status = json.loads(conteudo_status.decode("utf-8", errors="replace"))
+    status_pluviometrico_por_nome: dict[str, dict[str, Any]] = {}
+    for registro in status:
+        if registro.get("tipoestacao") != 1:  # 1 = Pluviométrica (ver cemaden_client.py)
+            continue
+        nome_normalizado = limpar_texto(registro.get("nomeestacao"))
+        if nome_normalizado:
+            status_pluviometrico_por_nome[nome_normalizado] = registro
+
+    linhas = []
+    nomes_cadastro_sem_status = []
+    for feature in features:
+        props = feature.get("properties", {})
+        nome_normalizado = limpar_texto(props.get("nome"))
+        status_estacao = status_pluviometrico_por_nome.get(nome_normalizado) if nome_normalizado else None
+        if status_estacao is None:
+            nomes_cadastro_sem_status.append(props.get("nome"))
+            continue
+
+        linhas.append(
+            {
+                "codigo_estacao": limpar_codigo(status_estacao.get("idestacao")),
+                "nome_estacao": nome_normalizado,
+                "fonte": "CEMADEN",
+                "latitude": converter_float(props.get("latitude")),
+                "longitude": converter_float(props.get("longitude")),
+                "altitude": None,  # nao vem em nenhum dos dois recursos
+                "municipio": limpar_texto(props.get("cidade")),
+                "uf": limpar_texto(props.get("uf")),
+                "data_inicio": None,  # nao vem em nenhum dos dois recursos
+                "data_fim": None,
+                "_source": resource_id,
+                "_processed_at": processado_em,
+            }
+        )
+
+    df_estacoes, metricas = _validar_e_deduplicar_estacoes(pd.DataFrame(linhas))
+    metricas["estacoes_cadastro_sem_status_pluviometrico_correspondente"] = len(
+        nomes_cadastro_sem_status
+    )
+    return df_estacoes, metricas
 
 
 def _validar_e_deduplicar_estacoes(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]]:
@@ -188,6 +298,7 @@ def agregar_diario_inmet(
         base.groupby("data")
         .agg(
             precipitacao_mm=("precipitacao", lambda s: s.sum(min_count=1)),
+            horas_validas_dia=("precipitacao", lambda s: int(s.notna().sum())),
             temperatura_min_c=("temperatura", "min"),
             temperatura_max_c=("temperatura", "max"),
             temperatura_media_c=("temperatura", "mean"),
@@ -251,7 +362,131 @@ def transformar_diario_apac(
     df = pd.DataFrame(linhas)
     if not df.empty:
         df["data"] = pd.to_datetime(df["data"], errors="coerce")
+        # grão da APAC é 1 leitura (o acumulado de 24h) por estação por dia —
+        # "quantas leituras válidas" é binário aqui, não uma contagem 0-24
+        df["horas_validas_dia"] = df["precipitacao_mm"].notna().astype("int64")
     return _validar_clima_diario(df, linhas_lidas_hora=None, linhas_sem_data_hora=None)
+
+
+# --------------------------------------------------------------------------
+# silver_clima_diario — CEMADEN
+# --------------------------------------------------------------------------
+
+
+def extrair_observacoes_horarias_cemaden(
+    conteudo_horario: bytes, codigo_estacao: str
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Parseia a resposta bruta de `horario/{id}/{horas}` em observações
+    horárias individuais: uma linha por (data, hora) com leitura não nula.
+
+    Estrutura real do payload: `datas[i]` é uma linha de calendário,
+    `horarios[j]` é um rótulo de hora-do-dia compartilhado entre as linhas
+    (a mesma lista de rótulos serve para todas as datas), e
+    `acumulados[i][j]` é o valor daquela hora **daquela data específica**
+    — `None` quando aquele rótulo de hora não pertence à data da linha
+    (nunca inferimos hora a partir de posição/índice sem checar as duas
+    listas). Índices fora de alcance ou arrays de tamanho incompatível são
+    ignorados linha a linha, nunca derrubam o parsing inteiro.
+    """
+    dados = json.loads(conteudo_horario.decode("utf-8", errors="replace"))
+    datas_str = dados.get("datas") or []
+    horarios_str = dados.get("horarios") or []
+    acumulados = dados.get("acumulados") or []
+
+    linhas: list[dict[str, Any]] = []
+    linhas_lidas = 0
+    linhas_sem_data_hora = 0
+
+    for i, data_str in enumerate(datas_str):
+        data_base = _parsear_data_cemaden(data_str)
+        if i >= len(acumulados) or not isinstance(acumulados[i], list):
+            continue
+        linha_acumulados = acumulados[i]
+
+        for j, rotulo_hora in enumerate(horarios_str):
+            if j >= len(linha_acumulados):
+                continue
+            valor_bruto = linha_acumulados[j]
+            if valor_bruto is None:
+                continue
+
+            linhas_lidas += 1
+            hora = _parsear_rotulo_hora_cemaden(rotulo_hora)
+            if data_base is None or hora is None:
+                linhas_sem_data_hora += 1
+                continue
+
+            valor = _converter_valor_cemaden(valor_bruto)
+            linhas.append(
+                {
+                    "codigo_estacao": codigo_estacao,
+                    "data": data_base,
+                    "hora": hora,
+                    "precipitacao": valor,
+                }
+            )
+
+    df = pd.DataFrame(linhas, columns=["codigo_estacao", "data", "hora", "precipitacao"])
+    metricas = {"linhas_lidas": linhas_lidas, "linhas_sem_data_hora": linhas_sem_data_hora}
+    return df, metricas
+
+
+def agregar_diario_cemaden(
+    df_horarias: pd.DataFrame, resource_id: str, ingestion_run_id: str
+) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]:
+    """Agrega observações horárias do CEMADEN (já deduplicadas por quem
+    chama, ver `pipeline_climate.py`) em `silver_clima_diario`: 1 linha por
+    (`codigo_estacao`, dia), soma das horas válidas (`min_count=1` — nenhuma
+    leitura válida vira `None`, nunca `0`, igual ao INMET).
+    `temperatura_*`/`umidade_*` sempre nulos (rede só de pluviômetros)."""
+    linhas_lidas_hora = len(df_horarias)
+    if df_horarias.empty:
+        vazio = df_horarias.reindex(columns=list(COLUNAS_SILVER_CLIMA_DIARIO))
+        return vazio, vazio.copy(), {
+            "linhas_lidas": 0, "linhas_validas": 0, "linhas_rejeitadas": 0,
+            "motivos_rejeicao": {}, "linhas_lidas_hora_origem": 0,
+        }
+
+    processado_em = _agora()
+    agregado = (
+        df_horarias.groupby(["codigo_estacao", "data"])
+        .agg(
+            precipitacao_mm=("precipitacao", lambda s: s.sum(min_count=1)),
+            horas_validas_dia=("precipitacao", lambda s: int(s.notna().sum())),
+        )
+        .reset_index()
+    )
+    agregado["data"] = pd.to_datetime(agregado["data"])
+    agregado["fonte"] = "CEMADEN"
+    agregado["temperatura_min_c"] = None
+    agregado["temperatura_max_c"] = None
+    agregado["temperatura_media_c"] = None
+    agregado["umidade_min_pct"] = None
+    agregado["umidade_max_pct"] = None
+    agregado["umidade_media_pct"] = None
+    agregado["_source_resource"] = resource_id
+    agregado["_ingestion_run_id"] = ingestion_run_id
+    agregado["_processed_at"] = processado_em
+
+    return _validar_clima_diario(agregado, linhas_lidas_hora=linhas_lidas_hora, linhas_sem_data_hora=None)
+
+
+def transformar_diario_cemaden(
+    conteudo_horario: bytes, codigo_estacao: str, resource_id: str, ingestion_run_id: str
+) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]:
+    """Conveniência: extrai + agrega uma única resposta `horario/{id}/{horas}`
+    de uma vez (sem deduplicar contra outras execuções — use
+    `extrair_observacoes_horarias_cemaden` + `agregar_diario_cemaden`
+    diretamente quando precisar acumular várias execuções, ver
+    `pipeline_climate.py::_processar_cemaden`)."""
+    df_horarias, metricas_extracao = extrair_observacoes_horarias_cemaden(
+        conteudo_horario, codigo_estacao
+    )
+    df_valido, df_rejeitado, metricas = agregar_diario_cemaden(
+        df_horarias, resource_id, ingestion_run_id
+    )
+    metricas["linhas_sem_data_hora_origem"] = metricas_extracao["linhas_sem_data_hora"]
+    return df_valido, df_rejeitado, metricas
 
 
 def _validar_clima_diario(

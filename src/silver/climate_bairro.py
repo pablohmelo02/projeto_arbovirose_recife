@@ -36,7 +36,7 @@ from src.silver.climate_spatial import (
 )
 from src.silver.schema_climate_bairro import (
     COLUNAS_SILVER_BAIRRO_ESTACAO,
-    FONTE_ELEGIVEL,
+    FONTES_ELEGIVEIS,
     LIMIAR_DIAS_ESTACAO_ATIVA,
     METODO_ASSOCIACAO,
     VERSAO_ESTRATEGIA,
@@ -90,12 +90,18 @@ def filtrar_estacoes_elegiveis(
     df_estacoes: pd.DataFrame,
     df_clima_diario: pd.DataFrame,
     data_referencia: Optional[pd.Timestamp] = None,
-    fonte: str = FONTE_ELEGIVEL,
+    fontes: tuple[str, ...] = FONTES_ELEGIVEIS,
     limiar_dias: int = LIMIAR_DIAS_ESTACAO_ATIVA,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
     """Filtra `silver_estacao_climatica` para as candidatas elegíveis à
-    Estratégia A: fonte correta, coordenada válida, e evidência de atividade
-    recente (última leitura em `silver_clima_diario` dentro de `limiar_dias`).
+    Estratégia A: fonte em `fontes`, coordenada válida, e evidência de
+    atividade recente (última leitura em `silver_clima_diario` dentro de
+    `limiar_dias`) — nunca a partir de metadado de cadastro (`tempo_inatividade`
+    da APAC/CEMADEN não é usado aqui de propósito, só leitura real).
+
+    `codigo_estacao` não é único entre fontes (só dentro de cada uma) — todo
+    cruzamento com `silver_clima_diario` é feito pela chave composta
+    (`fonte`, `codigo_estacao`), nunca só por `codigo_estacao`.
 
     Nenhuma estação é excluída silenciosamente: todo motivo de exclusão é
     contado em `metricas["motivos_exclusao"]`.
@@ -106,14 +112,14 @@ def filtrar_estacoes_elegiveis(
         else pd.Timestamp(data_referencia)
     )
 
-    candidatas = df_estacoes[df_estacoes["fonte"] == fonte].reset_index(drop=True).copy()
+    candidatas = df_estacoes[df_estacoes["fonte"].isin(fontes)].reset_index(drop=True).copy()
     total_candidatas = len(candidatas)
 
     ultima_leitura = calcular_ultima_leitura_por_estacao(df_clima_diario)
-    ultima_leitura_fonte = ultima_leitura.loc[
-        ultima_leitura["fonte"] == fonte, ["codigo_estacao", "ultima_leitura"]
+    ultima_leitura_fontes = ultima_leitura.loc[
+        ultima_leitura["fonte"].isin(fontes), ["fonte", "codigo_estacao", "ultima_leitura"]
     ]
-    candidatas = candidatas.merge(ultima_leitura_fonte, on="codigo_estacao", how="left")
+    candidatas = candidatas.merge(ultima_leitura_fontes, on=["fonte", "codigo_estacao"], how="left")
 
     motivo = pd.Series([None] * len(candidatas), dtype=object)
 
@@ -142,7 +148,7 @@ def filtrar_estacoes_elegiveis(
         str(m): int(c) for m, c in motivo[~elegivel].value_counts().items()
     }
     metricas = {
-        "fonte": fonte,
+        "fontes": list(fontes),
         "total_candidatas": total_candidatas,
         "total_elegiveis": len(df_elegivel),
         "total_excluidas": int((~elegivel).sum()),
@@ -226,10 +232,14 @@ def calcular_estacao_representativa_por_bairro(
     gdf_estacoes = construir_geodataframe_estacoes(df_estacoes_elegiveis)
 
     join_fisico = estacoes_dentro_do_recife(gdf_estacoes, gdf_bairros)
+    # chave composta (fonte, codigo_estacao): codigo_estacao nao e unico entre
+    # fontes (ex.: APAC e CEMADEN podem compartilhar o mesmo codigo textual
+    # para estacoes fisicamente diferentes) -- indexar so por codigo_estacao
+    # colidiria silenciosamente entre fontes.
     bairro_fisico_por_estacao = (
         join_fisico.dropna(subset=["codigo_bairro"])
-        .drop_duplicates(subset=["codigo_estacao"])
-        .set_index("codigo_estacao")["codigo_bairro"]
+        .drop_duplicates(subset=["fonte", "codigo_estacao"])
+        .set_index(["fonte", "codigo_estacao"])["codigo_bairro"]
     )
 
     pontos_metrico = pontos_bairro.to_crs(CRS_CALCULO_METRICO).reset_index(drop=True)
@@ -241,7 +251,9 @@ def calcular_estacao_representativa_por_bairro(
         idx_min = distancias.idxmin()
         estacao = estacoes_metrico.loc[idx_min]
         distancia_km = round(float(distancias.loc[idx_min]) / 1000, 3)
-        bairro_fisico_estacao = bairro_fisico_por_estacao.get(estacao["codigo_estacao"])
+        bairro_fisico_estacao = bairro_fisico_por_estacao.get(
+            (estacao["fonte"], estacao["codigo_estacao"])
+        )
 
         linhas.append(
             {

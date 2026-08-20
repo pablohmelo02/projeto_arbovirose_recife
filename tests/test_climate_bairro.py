@@ -380,6 +380,121 @@ def test_calcular_metricas_cobertura_campos_esperados():
 # --------------------------------------------------------------------------
 
 
+# --------------------------------------------------------------------------
+# multiplas fontes elegiveis (APAC + CEMADEN)
+# --------------------------------------------------------------------------
+
+
+def test_filtra_fontes_apac_e_cemaden_por_padrao_exclui_inmet():
+    df_estacoes = pd.concat(
+        [
+            _df_estacoes_apac(1, fonte="APAC"),
+            _df_estacoes_apac(1, fonte="CEMADEN"),
+            _df_estacoes_apac(1, fonte="INMET"),
+        ],
+        ignore_index=True,
+    )
+    df_diario = pd.concat(
+        [
+            _df_clima_diario_ativo(["E0"], data=DATA_REFERENCIA),
+            pd.DataFrame({"data": [DATA_REFERENCIA], "codigo_estacao": ["E0"], "fonte": ["CEMADEN"]}),
+        ],
+        ignore_index=True,
+    )
+
+    elegiveis, metricas = filtrar_estacoes_elegiveis(df_estacoes, df_diario, data_referencia=DATA_REFERENCIA)
+
+    assert set(elegiveis["fonte"]) == {"APAC", "CEMADEN"}
+    assert metricas["fontes"] == ["APAC", "CEMADEN"]
+
+
+def test_codigo_estacao_colidindo_entre_fontes_nao_contamina_elegibilidade():
+    """APAC e CEMADEN compartilhando o mesmo codigo_estacao textual ('100')
+    -- uma ativa, outra obsoleta. A chave real e (fonte, codigo_estacao),
+    nunca so codigo_estacao."""
+    df_estacoes = pd.DataFrame(
+        {
+            "codigo_estacao": ["100", "100"],
+            "nome_estacao": ["Estacao Ativa", "Estacao Obsoleta"],
+            "fonte": ["APAC", "CEMADEN"],
+            "latitude": [-8.0, -8.0],
+            "longitude": [-34.9, -34.9],
+        }
+    )
+    df_diario = pd.DataFrame(
+        {
+            "data": [DATA_REFERENCIA, pd.Timestamp("2018-01-01")],
+            "codigo_estacao": ["100", "100"],
+            "fonte": ["APAC", "CEMADEN"],
+        }
+    )
+
+    elegiveis, metricas = filtrar_estacoes_elegiveis(df_estacoes, df_diario, data_referencia=DATA_REFERENCIA)
+
+    assert list(elegiveis["fonte"]) == ["APAC"]
+    assert metricas["total_excluidas"] == 1
+
+
+def test_join_fisico_nao_colide_entre_fontes_com_mesmo_codigo_estacao():
+    """calcular_estacao_representativa_por_bairro tambem usa (fonte,
+    codigo_estacao) como chave -- uma estacao CEMADEN fisicamente dentro do
+    bairro nao deve "vazar" estacao_dentro_do_bairro=True para uma estacao
+    APAC de codigo_estacao igual mas fisicamente fora."""
+    gdf_bairros = _gdf_bairros_94().iloc[[0]]
+    bairro = gdf_bairros.iloc[0]
+
+    df_estacoes = pd.DataFrame(
+        {
+            "codigo_estacao": ["100", "100"],
+            "nome_estacao": ["Dentro (CEMADEN)", "Fora (APAC)"],
+            "fonte": ["CEMADEN", "APAC"],
+            # CEMADEN fisicamente dentro do bairro; APAC helipado bem longe
+            "latitude": [bairro["centroide_lat"], bairro["centroide_lat"] + 5.0],
+            "longitude": [bairro["centroide_lon"], bairro["centroide_lon"] + 5.0],
+        }
+    )
+
+    resultado = calcular_estacao_representativa_por_bairro(gdf_bairros, df_estacoes)
+
+    linha = resultado.iloc[0]
+    assert linha["fonte"] == "CEMADEN"
+    assert bool(linha["estacao_dentro_do_bairro"]) is True
+
+
+def test_estrategia_a_prefere_estacao_ativa_mesmo_com_outra_fonte_mais_perto_porem_inativa():
+    """Simula o cenario real do projeto: a estacao APAC mais proxima esta
+    congelada (inativa), e uma estacao CEMADEN um pouco mais distante, mas
+    realmente ativa, deve ser escolhida no lugar -- sem nenhuma prioridade
+    hardcoded, so o filtro de atividade real."""
+    gdf_bairros = _gdf_bairros_94().iloc[[0]]
+    bairro = gdf_bairros.iloc[0]
+    ponto_bairro = Point(bairro["centroide_lon"], bairro["centroide_lat"])
+
+    df_estacoes = pd.DataFrame(
+        {
+            "codigo_estacao": ["APAC_PERTO", "CEMADEN_LONGE"],
+            "nome_estacao": ["APAC Perto (congelada)", "CEMADEN Longe (ativa)"],
+            "fonte": ["APAC", "CEMADEN"],
+            "latitude": [ponto_bairro.y + 0.001, ponto_bairro.y + 0.05],
+            "longitude": [ponto_bairro.x + 0.001, ponto_bairro.x + 0.05],
+        }
+    )
+    df_diario = pd.DataFrame(
+        {
+            "data": [pd.Timestamp("2024-04-09"), DATA_REFERENCIA],
+            "codigo_estacao": ["APAC_PERTO", "CEMADEN_LONGE"],
+            "fonte": ["APAC", "CEMADEN"],
+        }
+    )
+
+    mapeamento, _ = montar_mapeamento_bairro_estacao(
+        gdf_bairros, df_estacoes, df_diario, data_referencia=DATA_REFERENCIA
+    )
+
+    assert mapeamento.iloc[0]["fonte"] == "CEMADEN"
+    assert mapeamento.iloc[0]["codigo_estacao"] == "CEMADEN_LONGE"
+
+
 def test_associar_clima_diario_preserva_none_e_zero():
     mapeamento = pd.DataFrame(
         {"codigo_bairro": ["1"], "nome_bairro": ["BAIRRO 1"], "codigo_estacao": ["E0"], "fonte": ["APAC"]}

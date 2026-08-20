@@ -16,14 +16,28 @@ Duas relações que NUNCA devem ser confundidas (ver docstring de
   climaticamente o bairro X — é o que este módulo produz. Uma estação pode
   estar fisicamente em um bairro e representar vários bairros vizinhos.
 
-Restrito a estações **APAC**: é a fonte com cobertura espacial suficiente
-dentro do Recife para esta estratégia (o INMET não tem nenhuma estação ativa
-em Recife — ver README, seções 5 e 27). Isso não é uma limitação nova desta
-etapa, é a mesma decisão de fonte já tomada para o domínio clima.
+Restrito a **APAC e CEMADEN** (`FONTES_ELEGIVEIS`): são as fontes com
+cobertura espacial suficiente dentro do Recife para esta estratégia (o
+INMET não tem nenhuma estação ativa em Recife — ver README, seções 5 e 27).
+CEMADEN foi adicionado em 2026-08-20 depois que a investigação de
+atualidade da APAC (`reports/climate_source_analysis/apac_freshness_investigation.md`)
+mostrou a rede congelada desde 2024-04-09 — ver
+`reports/climate_source_analysis/cemaden_integration_results.md`.
+
+**Não existe prioridade explícita entre as duas fontes por design, e isso é
+proposital**: `filtrar_estacoes_elegiveis` já exige leitura real recente em
+`silver_clima_diario` (não confia em metadado de cadastro de nenhuma das
+duas fontes — nem `tempo_inatividade` da APAC/CEMADEN). Uma estação
+"congelada" nunca entra no pool de elegíveis, então "escolher a mais
+próxima entre as elegíveis" já implementa a regra que o projeto quer
+(hoje, isso significa CEMADEN na prática, porque a APAC está congelada —
+mas se a APAC voltar a atualizar, volta a competir por atividade real, sem
+precisar mudar nenhum código). Uma prioridade hardcoded destruiria essa
+propriedade.
 """
 from __future__ import annotations
 
-FONTE_ELEGIVEL = "APAC"
+FONTES_ELEGIVEIS = ("APAC", "CEMADEN")
 
 METODO_ASSOCIACAO = "nearest_station"
 VERSAO_ESTRATEGIA = "A.1"
@@ -41,6 +55,9 @@ LIMIAR_DIAS_ESTACAO_ATIVA = 90
 COLUNAS_SILVER_BAIRRO_ESTACAO = (
     "codigo_bairro",
     "nome_bairro",
+    # (fonte, codigo_estacao) e a chave natural da estacao -- codigos sao
+    # unicos por fonte, nao entre fontes (ex.: APAC e CEMADEN podem ter o
+    # mesmo codigo_estacao textual para estacoes diferentes).
     "codigo_estacao",
     "nome_estacao",
     "fonte",
