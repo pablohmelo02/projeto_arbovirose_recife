@@ -31,6 +31,9 @@ implementada).
 - `reports/climate_source_analysis/cemaden_integration_results.md` —
   implementação oficial do CEMADEN (cliente, Bronze, Silver, elegibilidade,
   Estratégia A) com resultado real: 94/94 bairros associados (ver §10.4).
+- `reports/gold_analysis/README.md` — **Gold analítica** (arboviroses +
+  território + clima): grão, joins, cardinalidade, leakage, profiling,
+  visualizações e a limitação crítica de cobertura climática (ver §12).
 - `reports/climate_spatial/summary.json` — cobertura espacial estação x
   bairro (baseline: 311 estações, 22 dentro do Recife, 20/94 bairros com
   estação própria).
@@ -116,6 +119,10 @@ python -m src.ingest_climate && python -m src.transform_climate   # agora INMET 
 python -m src.analyze_climate_coverage        # cobertura espacial (diagnóstico)
 python -m src.transform_climate_bairro        # mapeamento bairro→estação (Silver, Estratégia A)
 python -m src.analyze_climate_neighborhood_mapping   # relatório do mapeamento
+
+python -m src.main && python -m src.transform         # arboviroses (Bronze → Silver)
+python -m src.transform_gold_arboviroses_clima        # Gold: bairro × semana epi × agravo
+python -m src.analyze_gold                            # profiling + visualizações da Gold
 ```
 
 ## 8. Estado do desenvolvimento (ver README §2 para detalhe por fase)
@@ -130,8 +137,14 @@ python -m src.analyze_climate_neighborhood_mapping   # relatório do mapeamento
   validado (§10.3) → **CEMADEN implementado oficialmente na arquitetura em
   2026-08-20 (§10.4) — resultado real: 94/94 bairros associados**, todos
   via CEMADEN (APAC permanece integrada mas inativa; nenhuma foi removida).
-  Suíte: **185/185 passando**.
-- Fase 4 (Gold) em diante: não iniciada. **Não avançar sem autorização.**
+  Suíte: **185/185 passando** naquele momento.
+- **Fase 4 (Gold analítica): implementada e validada em 2026-08-20** — ver
+  §12. `gold_arboviroses_clima_bairro`, grão `bairro × semana epidemiológica
+  × agravo`, 191.478 linhas reais (2013-2025), chave única, sem leakage,
+  com profiling e 6 visualizações de validação. Suíte: **217/217 passando**.
+  **Modelo dimensional (star schema) NÃO foi implementado** — não faz parte
+  desta Gold.
+- Fase 5 (ML) em diante: não iniciada. **Não avançar sem autorização.**
 
 ## 9. Ambiente sem Docker
 
@@ -423,12 +436,20 @@ threshold, sem autorização explícita.
 
 ## 11. Coisas que NÃO fazer sem autorização explícita
 
-- Não implementar Gold (dimensões, fatos, star schema).
-- Não implementar Machine Learning / feature engineering / backtesting.
+- Não implementar modelo dimensional Gold (star schema, surrogate keys,
+  dimensões/fatos separados) — a Gold atual é uma tabela analítica única
+  (§12), não um star schema.
+- Não implementar Machine Learning / feature engineering além das features
+  já existentes na Gold / backtesting / tuning / seleção de algoritmo.
+- Não construir dashboard interativo (as visualizações da §12 são PNG de
+  validação, geradas por script, propositalmente não interativas).
 - Não implementar IDW, Kriging ou interpolação espacial — só Estratégia A.
-- Não fazer join entre os três domínios (arboviroses/território/clima) além
-  do mapeamento clima→bairro descrito acima.
 - Não usar `fillna(0)` em variáveis climáticas ausentes.
+- Não preencher a lacuna climática histórica da Gold misturando fontes
+  (ex.: INMET regional a ~90 km como proxy de clima de bairro) sem decisão
+  arquitetural explícita — ver §12 e `reports/gold_analysis/README.md`.
+- Não usar `codigo_bairro` do SINAN para join com território — espaços de
+  código incompatíveis (21/94); usar `nome_bairro` normalizado (§12).
 - Não "corrigir" geometria inválida automaticamente (`make_valid()`) sem
   reportar explicitamente.
 - Não misturar `converter_decimal_brasileiro` e `converter_float` entre
@@ -441,3 +462,72 @@ threshold, sem autorização explícita.
   propriedade de a APAC voltar a competir sozinha se reativar.
 - Não usar `codigo_estacao` sozinho como chave em merges/índices no domínio
   de clima — não é único entre fontes; sempre `(fonte, codigo_estacao)`.
+
+## 12. Gold analítica `gold_arboviroses_clima_bairro` (sessão de 2026-08-20)
+
+Relatório completo com todos os números reais:
+`reports/gold_analysis/README.md`. Resumo operacional:
+
+**Módulos criados** (`src/gold/`, pacote novo):
+
+- `epidemiologia.py` — calendário de semana epidemiológica (convenção
+  SVS/CDC: domingo→sábado, semana 1 contém 4 de janeiro). **Não é
+  `isocalendar()`** (que é ISO, segunda→domingo) — a regra foi validada
+  empiricamente contra 5.000 pares reais (`data_notificacao`,
+  `semana_notificacao`) da Silver: 5000/5000. A semana dos **casos não é
+  recalculada** — usa `semana_notificacao` do SINAN como está; este módulo
+  resolve o inverso (ano+semana → intervalo de datas) para agregar o clima.
+- `schema_gold_arboviroses_clima.py` — contrato: `VERSAO_SCHEMA_GOLD="1.0"`,
+  `JANELAS_RETROSPECTIVAS_DIAS=(7,14,21,28)`, `COLUNAS_GOLD_*` e a
+  justificativa de cada decisão no docstring.
+- `arboviroses_clima.py` — transformação (dedup → período epidemiológico →
+  join bairro oficial → agregação → grão completo → território → features
+  climáticas). Cada etapa devolve métricas de cardinalidade; joins
+  **levantam exceção** se multiplicarem linhas ou perderem casos.
+- `pipeline_gold_arboviroses_clima.py` + `src/transform_gold_arboviroses_clima.py`
+  — orquestração/I-O e entry point.
+- `profiling_gold.py` + `src/analyze_gold.py` — profiling e 6 visualizações
+  de validação (matplotlib, backend `Agg`, só PNG). Separado da
+  transformação de propósito: nenhuma função de transformação importa
+  matplotlib.
+
+**Grão e chave**: `bairro × semana epidemiológica × agravo`; chave
+`codigo_bairro + agravo + ano_epidemiologico + semana_epidemiologica`.
+Escolhido sobre `bairro+mês` porque `semana_notificacao` já existe no SINAN
+com 0,04% de nulos (não precisa inventar distribuição). Agravos em
+**linhas**, não colunas.
+
+**Decisões que NÃO devem ser revertidas sem motivo novo**:
+
+- Join arboviroses × território por **`nome_bairro` normalizado**, nunca por
+  `codigo_bairro`: verificado que o código do SINAN não é o mesmo espaço de
+  códigos de `silver_bairro_geo` (só 21/94 coincidem; 93/94 bairros oficiais
+  têm >1 código associado). Por nome bate 94/94.
+- **`casos=0` é materializado** (grão cartesiano completo): notificação é
+  compulsória, logo ausência = zero real. Isso é **deliberadamente
+  diferente** do clima, onde ausência = `None` (`missing ≠ 0 mm`).
+- **Sem `incidencia_por_100k`**: nenhuma fonte do projeto tem população por
+  bairro. Não inventar — exigiria nova fonte (IBGE), não autorizada.
+- **Leakage**: features climáticas usam somente `data <= semana_epi_data_fim`
+  da própria linha; janelas retrospectivas terminam nessa data (incluem a
+  própria semana, nunca dias posteriores). Teste dedicado injeta chuva
+  futura e confirma que nenhuma feature muda.
+
+**Resultado real (2026-08-20)**: 191.478 linhas · 94 bairros · 3 agravos ·
+679 semanas (2013-2025) · 156.504 casos preservados (96,33% de
+aproveitamento no join espacial; perdas contadas no manifest) · 0
+duplicatas de chave · 0 casos negativos.
+
+**⚠️ Limitação crítica**: **0% das linhas têm clima real**. A interseção
+temporal entre casos (2013-2025) e clima com leitura real (CEMADEN:
+2026-08-18 a 2026-08-20) é vazia — o CEMADEN só começou a acumular série
+quando foi integrado, depois do fim da série epidemiológica. As colunas
+climáticas existem e o mecanismo é correto/testado, mas ficam `None` no
+histórico. **Não** foi implementada mistura de fontes (INMET regional como
+proxy) — decisão arquitetural pendente de autorização.
+
+**Próximo passo (decisão do usuário, nada iniciado)**: EDA completa. Duas
+frentes possíveis — (1) EDA da dimensão epidemiológica+territorial, que tem
+13 anos de dado real e denso; ou (2) resolver a lacuna climática histórica
+antes de uma EDA integrada clima↔casos (que hoje é impossível com dado
+real).

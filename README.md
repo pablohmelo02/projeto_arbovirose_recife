@@ -22,16 +22,19 @@ Fase 2 — Território
 ✅ Data Quality espacial
 
 Fase 3 — Clima
-✅ Análise APAC/INMET (fontes reais testadas, não só documentação)
-✅ Bronze (INMET: ZIP histórico; APAC: instantâneo de telemetria)
+✅ Análise APAC/INMET/CEMADEN/ANA (fontes reais testadas, não só documentação)
+✅ Bronze (INMET: ZIP histórico; APAC: instantâneo; CEMADEN: cadastro/status/série horária)
 ✅ Profiling (schema, cobertura temporal, achados de qualidade)
 ✅ Silver (silver_estacao_climatica + silver_clima_diario)
 ✅ Data Quality
 ✅ Análise espacial das estações (cobertura + distância a bairro)
+✅ Estratégia A: bairro → estação elegível mais próxima (94/94 bairros)
 
 Fase 4 — Gold
-⬜ Dimensões
-⬜ Fatos semanais
+✅ Gold analítica integrada (arboviroses + território + clima), grão
+   bairro × semana epidemiológica × agravo — 191.478 linhas, 2013-2025
+✅ Profiling + visualizações de validação
+⬜ Modelo dimensional (star schema, surrogate keys) — não iniciado
 
 Fase 5 — ML
 ⬜ Feature engineering
@@ -344,18 +347,32 @@ periodicamente** (cron, agendador) — tanto a APAC quanto o CEMADEN
 acumulam histórico próprio ao longo de execuções sucessivas (cada execução
 é uma janela recente, não uma correção da anterior — ver seção 20).
 
+## 14.1 Pipeline Gold (arboviroses + território + clima)
+
+```bash
+python -m src.transform_gold_arboviroses_clima   # Gold: bairro x semana epi x agravo
+python -m src.analyze_gold                        # Profiling + visualizações de validação
+```
+
+Depende das Silver dos três domínios já existirem no MinIO (seções 12-14).
+Grão, decisões e limitações: seção 29 abaixo e
+`reports/gold_analysis/README.md` (resultados reais).
+
 ## 15. Rodando os testes
 
 ```bash
 pytest
 ```
 
-**185 testes**, todos passando: arboviroses + território inalterados, mais
+**217 testes**, todos passando: arboviroses + território inalterados, mais
 os de clima (parsing do CSV do INMET, clientes HTTP com mock via
 `responses` para INMET/APAC/CEMADEN, ingestão com lineage, profiling com
 seleção de última versão válida por fonte, agregação horário→diário com
 regras de unidade/missing, Data Quality, spatial join e distância
-estação-bairro, pipeline ponta a ponta via `moto`) e os da Estratégia A
+estação-bairro, pipeline ponta a ponta via `moto`), os da **Gold** (grão e
+chave única, conservação de casos, ausência de many-to-many, `missing ≠ 0`,
+**leakage temporal**, reprodutibilidade/idempotência, calendário
+epidemiológico) e os da Estratégia A
 `bairro → estação elegível mais próxima` (elegibilidade multi-fonte,
 deduplicação de execuções sobrepostas do CEMADEN, colisão de chave composta
 `fonte`+`codigo_estacao`, e o caso real "estação cadastrada sem série
@@ -397,6 +414,12 @@ datalake/
             │   └── _controle/manifest_silver_clima_bairro_<run_id>.json
             ├── _rejected/rejeitados_<run_id>.csv
             └── _controle/manifest_silver_clima_<run_id>.json
+
+gold/
+└── recife/
+    └── arboviroses_clima/
+        ├── gold_arboviroses_clima_bairro.parquet   (bairro x semana epi x agravo)
+        └── _controle/manifest_gold_arboviroses_clima_<run_id>.json
 ```
 
 ## 18. Manifests e relatórios
@@ -680,12 +703,67 @@ simulando o MinIO — não contra um MinIO de verdade. Quando você tiver
 Docker disponível, rode `docker compose up -d` e os comandos das seções
 12-14 para confirmar contra o MinIO real.
 
-## 28. Próximos passos (Gold — fora do escopo atual)
+## 28. Próximos passos
 
 - estratégia de atribuição clima→bairro **implementada** (Estratégia A, ver
-  seção 26) — não é mais um próximo passo;
-- agregação de arboviroses + clima por bairro + semana epidemiológica;
-- modelo dimensional (star schema, surrogate keys — a Silver propositalmente
-  não cria nenhuma);
+  seção 26);
+- agregação de arboviroses + clima por bairro + semana epidemiológica
+  **implementada** (Gold, ver seção 29);
+- **EDA completa** da Gold (próximo passo recomendado — ver seção 29 para a
+  ressalva sobre a dimensão climática);
+- modelo dimensional (star schema, surrogate keys — a Silver e a Gold atual
+  propositalmente não criam nenhuma);
 - features para Machine Learning;
 - dashboards / API de consulta / mapa de risco.
+
+## 29. Gold analítica: `gold_arboviroses_clima_bairro`
+
+Primeira camada Gold, integrando os três domínios. Resultados reais
+completos (números, cardinalidade de cada join, profiling, visualizações,
+limitações) em **`reports/gold_analysis/README.md`** — abaixo só o resumo.
+
+**Grão**: `bairro × semana epidemiológica × agravo`. Chave analítica:
+`codigo_bairro + agravo + ano_epidemiologico + semana_epidemiologica`
+(0 duplicatas em 191.478 linhas).
+
+Escolhido sobre `bairro + mês` porque `semana_notificacao` (`AAAASS`) **já
+existe no SINAN** com 0,04% de nulos — os casos já têm resolução semanal, e
+usar mês descartaria precisão real. O clima é **agregado** do diário para a
+semana, nunca o contrário (nenhum caso é distribuído artificialmente em
+dias).
+
+**Semana epidemiológica não é recalculada** para os casos (usa o campo do
+SINAN). `src/gold/epidemiologia.py` implementa o mapeamento inverso
+(ano+semana → intervalo de datas) na convenção SVS/CDC (domingo→sábado,
+semana 1 contém 4 de janeiro), **não** `isocalendar()` — validado
+empiricamente contra 5.000 pares reais da Silver (5000/5000).
+
+**Join arboviroses × território é por `nome_bairro` normalizado, não por
+código**: verificado que o `codigo_bairro` do SINAN não é o mesmo espaço de
+códigos de `silver_bairro_geo` (só 21/94 coincidem); por nome bate 94/94.
+Aproveitamento real: 96,33% dos casos entram no grão espacial; as perdas
+(5.833 sem nome + 125 com nome fora dos 94 oficiais + 72 sem semana válida)
+são contadas no manifest, nunca silenciosas.
+
+**`casos = 0` é materializado** (produto cartesiano completo 94 × 3 × 679
+semanas): notificação de arbovirose é compulsória, então ausência de
+registro é `0` real, não desconhecimento — necessário para modelagem de
+série temporal. Isso é deliberadamente **diferente** da regra do clima,
+onde ausência de leitura é `None` (`missing ≠ 0 mm`, nunca `fillna(0)`).
+
+**Sem `incidencia_por_100k`**: nenhuma fonte do projeto tem população por
+bairro (`silver_bairro_geo` tem área, não população). Não foi inventada.
+
+**Leakage temporal**: toda feature climática usa somente dias com
+`data <= semana_epi_data_fim` da própria linha; janelas retrospectivas
+(`chuva_7d/14d/21d/28d_mm`) terminam nessa data. Teste dedicado injeta
+chuva futura e confirma que nenhuma feature muda.
+
+**⚠️ Limitação crítica**: a interseção temporal real entre casos
+(2013-2025) e clima com leitura real (CEMADEN: 2026-08-18 a 2026-08-20) é
+**0 linhas (0,0000%)**. As colunas climáticas existem e o mecanismo é
+correto/testado, mas ficam `None` em todas as linhas históricas. Não foi
+implementada mistura de fontes (INMET regional a ~90 km como proxy de
+clima de bairro) para preencher isso — seria exatamente a falsa precisão
+que o projeto evita, e é uma decisão arquitetural que exige autorização.
+Ver `reports/gold_analysis/README.md` para o detalhamento.

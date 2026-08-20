@@ -27,3 +27,9 @@ moto[server]>=5.0,<6
 # importam diretamente.
 responses>=0.25,<1
 
+# Visualizações de validação da Gold (`python -m src.analyze_gold`): séries
+# temporais, cobertura, completude e mapa coroplético por bairro. Backend
+# não-interativo (Agg) — gera PNG em reports/gold_analysis/, não abre janela
+# nem serve dashboard.
+matplotlib>=3.8,<4
+

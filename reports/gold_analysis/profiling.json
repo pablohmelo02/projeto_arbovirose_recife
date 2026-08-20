@@ -1,0 +1,173 @@
+{
+  "total_linhas": 191478,
+  "chave_gold": [
+    "codigo_bairro",
+    "agravo",
+    "ano_epidemiologico",
+    "semana_epidemiologica"
+  ],
+  "chave_gold_duplicadas": 0,
+  "total_bairros": 94,
+  "total_agravos": 3,
+  "agravos": [
+    "CHIKUNGUNYA",
+    "DENGUE",
+    "ZIKA"
+  ],
+  "ano_epidemiologico_min": 2013,
+  "ano_epidemiologico_max": 2025,
+  "total_periodos_distintos": 679,
+  "data_inicio_min": "2012-12-30 00:00:00",
+  "data_fim_max": "2026-01-03 00:00:00",
+  "casos": {
+    "total": 156504,
+    "media": 0.8173,
+    "mediana": 0.0,
+    "maximo": 199,
+    "minimo": 0,
+    "linhas_com_caso": 42498,
+    "linhas_sem_caso": 148980,
+    "percentual_linhas_com_caso": 22.1947,
+    "negativos": 0
+  },
+  "casos_por_agravo": {
+    "CHIKUNGUNYA": 39552,
+    "DENGUE": 109792,
+    "ZIKA": 7160
+  },
+  "clima": {
+    "linhas_com_clima_real": 0,
+    "percentual_linhas_com_clima_real": 0.0,
+    "fontes_clima": [
+      "CEMADEN"
+    ],
+    "estacoes_distintas": 16,
+    "precipitacao_negativa": 0
+  },
+  "missing_por_campo": {
+    "codigo_bairro": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "nome_bairro": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "agravo": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "ano_epidemiologico": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "semana_epidemiologica": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "semana_epi_data_inicio": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "semana_epi_data_fim": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "casos": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "area_km2": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "codigo_rpa": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "codigo_microrregiao": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "centroide_lat": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "centroide_lon": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "fonte_clima": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "codigo_estacao_clima": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "distancia_estacao_km": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "metodo_associacao_clima": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "precipitacao_total_semana_mm": {
+      "quantidade_null": 191478,
+      "percentual_null": 100.0
+    },
+    "precipitacao_media_diaria_mm": {
+      "quantidade_null": 191478,
+      "percentual_null": 100.0
+    },
+    "precipitacao_maxima_diaria_mm": {
+      "quantidade_null": 191478,
+      "percentual_null": 100.0
+    },
+    "dias_com_chuva": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "dias_com_dado_valido_semana": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "completude_climatica_semana": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "chuva_7d_mm": {
+      "quantidade_null": 191478,
+      "percentual_null": 100.0
+    },
+    "chuva_14d_mm": {
+      "quantidade_null": 191478,
+      "percentual_null": 100.0
+    },
+    "chuva_21d_mm": {
+      "quantidade_null": 191478,
+      "percentual_null": 100.0
+    },
+    "chuva_28d_mm": {
+      "quantidade_null": 191478,
+      "percentual_null": 100.0
+    },
+    "dias_com_dado_valido_7d": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "dias_com_dado_valido_28d": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "versao_schema_gold": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    },
+    "_processed_at": {
+      "quantidade_null": 0,
+      "percentual_null": 0.0
+    }
+  }
+}
