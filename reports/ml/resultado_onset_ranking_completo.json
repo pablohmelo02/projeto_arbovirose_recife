@@ -1,0 +1,871 @@
+{
+  "dataset_formulacao_a": {
+    "agravo": "DENGUE",
+    "horizonte_semanas": 1,
+    "incluir_clima": false,
+    "incluir_sazonal": true,
+    "incluir_territorio": true,
+    "incluir_historico_local": true,
+    "incluir_momentum": true,
+    "exigir_clima_real": false,
+    "linhas_antes": 63826,
+    "linhas_target_indefinido": 4888,
+    "linhas_apos_filtro_clima_real": 63826,
+    "linhas_excluidas_feature_nan": 188,
+    "linhas_finais": 58750,
+    "proporcao_positiva": 0.12032340425531915,
+    "n_positivos": 7069,
+    "n_negativos": 51681,
+    "n_features": 38,
+    "colunas_features": [
+      "casos_t",
+      "casos_t_menos_1",
+      "casos_t_menos_2",
+      "casos_t_menos_3",
+      "casos_t_menos_4",
+      "media_2s",
+      "media_4s",
+      "media_8s",
+      "soma_4s",
+      "max_4s",
+      "tendencia_1s",
+      "estado_alto_risco_t",
+      "semana_epidemiologica",
+      "mes",
+      "trimestre",
+      "semana_sin",
+      "semana_cos",
+      "media_historica_semana_exata",
+      "area_km2",
+      "centroide_lat",
+      "centroide_lon",
+      "razao_limiar_historico",
+      "z_score_historico_local",
+      "razao_media_recente",
+      "delta_1s",
+      "delta_2s",
+      "aceleracao_1s",
+      "taxa_crescimento_suavizada",
+      "n_semanas_consecutivas_crescimento",
+      "codigo_rpa_1",
+      "codigo_rpa_2",
+      "codigo_rpa_3",
+      "codigo_rpa_4",
+      "codigo_rpa_5",
+      "codigo_rpa_6",
+      "codigo_microrregiao_1",
+      "codigo_microrregiao_2",
+      "codigo_microrregiao_3"
+    ]
+  },
+  "dataset_formulacao_b_h3": {
+    "agravo": "DENGUE",
+    "formulacao": "onset",
+    "horizonte_semanas": 3,
+    "incluir_clima": false,
+    "incluir_sazonal": true,
+    "incluir_territorio": true,
+    "incluir_historico_local": true,
+    "incluir_momentum": true,
+    "linhas_antes": 63826,
+    "linhas_target_indefinido": 5072,
+    "linhas_excluidas_feature_nan": 192,
+    "linhas_finais": 58562,
+    "proporcao_positiva": 0.14762132440831938,
+    "n_positivos": 8645,
+    "n_negativos": 49917,
+    "n_features": 38,
+    "colunas_features": [
+      "casos_t",
+      "casos_t_menos_1",
+      "casos_t_menos_2",
+      "casos_t_menos_3",
+      "casos_t_menos_4",
+      "media_2s",
+      "media_4s",
+      "media_8s",
+      "soma_4s",
+      "max_4s",
+      "tendencia_1s",
+      "estado_alto_risco_t",
+      "semana_epidemiologica",
+      "mes",
+      "trimestre",
+      "semana_sin",
+      "semana_cos",
+      "media_historica_semana_exata",
+      "area_km2",
+      "centroide_lat",
+      "centroide_lon",
+      "razao_limiar_historico",
+      "z_score_historico_local",
+      "razao_media_recente",
+      "delta_1s",
+      "delta_2s",
+      "aceleracao_1s",
+      "taxa_crescimento_suavizada",
+      "n_semanas_consecutivas_crescimento",
+      "codigo_rpa_1",
+      "codigo_rpa_2",
+      "codigo_rpa_3",
+      "codigo_rpa_4",
+      "codigo_rpa_5",
+      "codigo_rpa_6",
+      "codigo_microrregiao_1",
+      "codigo_microrregiao_2",
+      "codigo_microrregiao_3"
+    ]
+  },
+  "dataset_formulacao_b_h1": {
+    "agravo": "DENGUE",
+    "formulacao": "onset",
+    "horizonte_semanas": 1,
+    "incluir_clima": false,
+    "incluir_sazonal": true,
+    "incluir_territorio": true,
+    "incluir_historico_local": true,
+    "incluir_momentum": true,
+    "linhas_antes": 63826,
+    "linhas_target_indefinido": 4888,
+    "linhas_excluidas_feature_nan": 188,
+    "linhas_finais": 58750,
+    "proporcao_positiva": 0.05179574468085106,
+    "n_positivos": 3043,
+    "n_negativos": 55707,
+    "n_features": 38,
+    "colunas_features": [
+      "casos_t",
+      "casos_t_menos_1",
+      "casos_t_menos_2",
+      "casos_t_menos_3",
+      "casos_t_menos_4",
+      "media_2s",
+      "media_4s",
+      "media_8s",
+      "soma_4s",
+      "max_4s",
+      "tendencia_1s",
+      "estado_alto_risco_t",
+      "semana_epidemiologica",
+      "mes",
+      "trimestre",
+      "semana_sin",
+      "semana_cos",
+      "media_historica_semana_exata",
+      "area_km2",
+      "centroide_lat",
+      "centroide_lon",
+      "razao_limiar_historico",
+      "z_score_historico_local",
+      "razao_media_recente",
+      "delta_1s",
+      "delta_2s",
+      "aceleracao_1s",
+      "taxa_crescimento_suavizada",
+      "n_semanas_consecutivas_crescimento",
+      "codigo_rpa_1",
+      "codigo_rpa_2",
+      "codigo_rpa_3",
+      "codigo_rpa_4",
+      "codigo_rpa_5",
+      "codigo_rpa_6",
+      "codigo_microrregiao_1",
+      "codigo_microrregiao_2",
+      "codigo_microrregiao_3"
+    ]
+  },
+  "walk_forward_onset_h3": [
+    {
+      "ano_teste": 2019,
+      "horizonte": 3,
+      "n_teste": 4888,
+      "prevalencia": 0.18514729950900163,
+      "pr_auc": 0.47874005668946784,
+      "precision": 0.4007467330429372,
+      "recall": 0.7116022099447514,
+      "f1": 0.5127388535031847,
+      "eventos_reais": 318,
+      "eventos_top10_antes": 160,
+      "taxa_top10_antes": 0.5031446540880503,
+      "lead_time_mediano_top10": 2.0
+    },
+    {
+      "ano_teste": 2020,
+      "horizonte": 3,
+      "n_teste": 4982,
+      "prevalencia": 0.08711360899237254,
+      "pr_auc": 0.2618913288386666,
+      "precision": 0.23422459893048128,
+      "recall": 0.5046082949308756,
+      "f1": 0.31994156318480643,
+      "eventos_reais": 150,
+      "eventos_top10_antes": 69,
+      "taxa_top10_antes": 0.46,
+      "lead_time_mediano_top10": 2.0
+    },
+    {
+      "ano_teste": 2021,
+      "horizonte": 3,
+      "n_teste": 4888,
+      "prevalencia": 0.1976268412438625,
+      "pr_auc": 0.47406724578473614,
+      "precision": 0.3879358052019923,
+      "recall": 0.7256728778467909,
+      "f1": 0.5055896141363144,
+      "eventos_reais": 341,
+      "eventos_top10_antes": 147,
+      "taxa_top10_antes": 0.4310850439882698,
+      "lead_time_mediano_top10": 2.0
+    },
+    {
+      "ano_teste": 2022,
+      "horizonte": 3,
+      "n_teste": 4888,
+      "prevalencia": 0.04582651391162029,
+      "pr_auc": 0.10788576992104928,
+      "precision": 0.08896034297963558,
+      "recall": 0.3705357142857143,
+      "f1": 0.14347450302506481,
+      "eventos_reais": 81,
+      "eventos_top10_antes": 36,
+      "taxa_top10_antes": 0.4444444444444444,
+      "lead_time_mediano_top10": 2.5
+    },
+    {
+      "ano_teste": 2023,
+      "horizonte": 3,
+      "n_teste": 4888,
+      "prevalencia": 0.07283142389525368,
+      "pr_auc": 0.16750609350345946,
+      "precision": 0.15320041972717732,
+      "recall": 0.4101123595505618,
+      "f1": 0.22307104660045837,
+      "eventos_reais": 117,
+      "eventos_top10_antes": 57,
+      "taxa_top10_antes": 0.48717948717948717,
+      "lead_time_mediano_top10": 3.0
+    },
+    {
+      "ano_teste": 2024,
+      "horizonte": 3,
+      "n_teste": 4888,
+      "prevalencia": 0.24120294599018002,
+      "pr_auc": 0.29403802981906335,
+      "precision": 0.257563025210084,
+      "recall": 0.5199321458863444,
+      "f1": 0.3444787861758921,
+      "eventos_reais": 406,
+      "eventos_top10_antes": 154,
+      "taxa_top10_antes": 0.3793103448275862,
+      "lead_time_mediano_top10": 2.0
+    },
+    {
+      "ano_teste": 2025,
+      "horizonte": 3,
+      "n_teste": 4700,
+      "prevalencia": 0.23,
+      "pr_auc": 0.4161406030217395,
+      "precision": 0.31950207468879666,
+      "recall": 0.7835337650323775,
+      "f1": 0.45391211146838156,
+      "eventos_reais": 397,
+      "eventos_top10_antes": 149,
+      "taxa_top10_antes": 0.37531486146095716,
+      "lead_time_mediano_top10": 2.0
+    }
+  ],
+  "walk_forward_onset_h1": [
+    {
+      "ano_teste": 2019,
+      "horizonte": 1,
+      "n_teste": 4888,
+      "prevalencia": 0.06505728314238952,
+      "pr_auc": 0.3342024829365158,
+      "precision": 0.20207253886010362,
+      "recall": 0.7358490566037735,
+      "f1": 0.3170731707317073,
+      "eventos_reais": 318,
+      "eventos_top10_antes": 174,
+      "taxa_top10_antes": 0.5471698113207547,
+      "lead_time_mediano_top10": 2.0
+    },
+    {
+      "ano_teste": 2020,
+      "horizonte": 1,
+      "n_teste": 4982,
+      "prevalencia": 0.030309112806101966,
+      "pr_auc": 0.17532132164467465,
+      "precision": 0.1225071225071225,
+      "recall": 0.5695364238410596,
+      "f1": 0.20164126611957797,
+      "eventos_reais": 150,
+      "eventos_top10_antes": 73,
+      "taxa_top10_antes": 0.4866666666666667,
+      "lead_time_mediano_top10": 2.0
+    },
+    {
+      "ano_teste": 2021,
+      "horizonte": 1,
+      "n_teste": 4888,
+      "prevalencia": 0.06976268412438626,
+      "pr_auc": 0.356924897788278,
+      "precision": 0.229706390328152,
+      "recall": 0.7800586510263929,
+      "f1": 0.3549032688458973,
+      "eventos_reais": 341,
+      "eventos_top10_antes": 159,
+      "taxa_top10_antes": 0.4662756598240469,
+      "lead_time_mediano_top10": 2.0
+    },
+    {
+      "ano_teste": 2022,
+      "horizonte": 1,
+      "n_teste": 4888,
+      "prevalencia": 0.016366612111292964,
+      "pr_auc": 0.04937929119910328,
+      "precision": 0.045454545454545456,
+      "recall": 0.4375,
+      "f1": 0.08235294117647059,
+      "eventos_reais": 81,
+      "eventos_top10_antes": 40,
+      "taxa_top10_antes": 0.49382716049382713,
+      "lead_time_mediano_top10": 2.5
+    },
+    {
+      "ano_teste": 2023,
+      "horizonte": 1,
+      "n_teste": 4888,
+      "prevalencia": 0.024549918166939442,
+      "pr_auc": 0.07755799770379904,
+      "precision": 0.0580964153275649,
+      "recall": 0.39166666666666666,
+      "f1": 0.10118406889128095,
+      "eventos_reais": 117,
+      "eventos_top10_antes": 60,
+      "taxa_top10_antes": 0.5128205128205128,
+      "lead_time_mediano_top10": 2.0
+    },
+    {
+      "ano_teste": 2024,
+      "horizonte": 1,
+      "n_teste": 4888,
+      "prevalencia": 0.08367430441898527,
+      "pr_auc": 0.14674847647404674,
+      "precision": 0.12475633528265107,
+      "recall": 0.6259168704156479,
+      "f1": 0.20804550995530272,
+      "eventos_reais": 406,
+      "eventos_top10_antes": 179,
+      "taxa_top10_antes": 0.4408866995073892,
+      "lead_time_mediano_top10": 2.0
+    },
+    {
+      "ano_teste": 2025,
+      "horizonte": 1,
+      "n_teste": 4888,
+      "prevalencia": 0.07999181669394435,
+      "pr_auc": 0.2412378480106555,
+      "precision": 0.14331649058337162,
+      "recall": 0.7979539641943734,
+      "f1": 0.24299065420560748,
+      "eventos_reais": 397,
+      "eventos_top10_antes": 155,
+      "taxa_top10_antes": 0.3904282115869018,
+      "lead_time_mediano_top10": 2.0
+    }
+  ],
+  "walk_forward_onset_h3_resumo": {
+    "pr_auc_media": 0.3143241610825975,
+    "pr_auc_mediana": 0.29403802981906335,
+    "pr_auc_min": 0.10788576992104928,
+    "pr_auc_max": 0.47874005668946784,
+    "pr_auc_desvio": 0.1473375438798684
+  },
+  "ranking_modelo_onset_h3": {
+    "nome": "modelo_onset_h3",
+    "recall_em_k": [
+      {
+        "k": 5,
+        "recall_micro": 0.10168195718654434,
+        "recall_macro": 0.15059039003536454,
+        "n_positivos_totais": 2616,
+        "n_semanas_com_positivo": 149
+      },
+      {
+        "k": 10,
+        "recall_micro": 0.17584097859327216,
+        "recall_macro": 0.22407003669477704,
+        "n_positivos_totais": 2616,
+        "n_semanas_com_positivo": 149
+      },
+      {
+        "k": 15,
+        "recall_micro": 0.24808868501529052,
+        "recall_macro": 0.30976517270169407,
+        "n_positivos_totais": 2616,
+        "n_semanas_com_positivo": 149
+      },
+      {
+        "k": 20,
+        "recall_micro": 0.3130733944954128,
+        "recall_macro": 0.37755992050633125,
+        "n_positivos_totais": 2616,
+        "n_semanas_com_positivo": 149
+      }
+    ],
+    "precision_em_k": [
+      {
+        "k": 5,
+        "precision_media": 0.34545454545454546,
+        "precision_mediana": 0.2,
+        "n_semanas": 154
+      },
+      {
+        "k": 10,
+        "precision_media": 0.2987012987012987,
+        "precision_mediana": 0.3,
+        "n_semanas": 154
+      },
+      {
+        "k": 15,
+        "precision_media": 0.28095238095238095,
+        "precision_mediana": 0.26666666666666666,
+        "n_semanas": 154
+      },
+      {
+        "k": 20,
+        "precision_media": 0.26590909090909093,
+        "precision_mediana": 0.25,
+        "n_semanas": 154
+      }
+    ],
+    "resumo_posicao_antes_episodios": {
+      "n_episodios": 920,
+      "n_com_ranking_disponivel_antes": 920,
+      "posicao_media_antes": 24.183695652173913,
+      "posicao_mediana_antes": 16.0,
+      "antecedencia_media_semanas": 2.4260869565217393,
+      "pct_top_5_antes": 25.76086956521739,
+      "pct_top_10_antes": 38.369565217391305,
+      "pct_top_15_antes": 48.15217391304348,
+      "pct_top_20_antes": 57.608695652173914
+    },
+    "estabilidade_por_k": {
+      "5": {
+        "k": 5,
+        "n_pares_consecutivos": 153,
+        "jaccard_medio": 0.2301068575578379,
+        "jaccard_mediano": 0.25
+      },
+      "10": {
+        "k": 10,
+        "n_pares_consecutivos": 153,
+        "jaccard_medio": 0.2943604590997294,
+        "jaccard_mediano": 0.25
+      },
+      "15": {
+        "k": 15,
+        "n_pares_consecutivos": 153,
+        "jaccard_medio": 0.3459260306323617,
+        "jaccard_mediano": 0.36363636363636365
+      },
+      "20": {
+        "k": 20,
+        "n_pares_consecutivos": 153,
+        "jaccard_medio": 0.39867432677614445,
+        "jaccard_mediano": 0.42857142857142855
+      }
+    }
+  },
+  "persistencia_topk_10_resumo": {
+    "media_semanas": 0.3576086956521739,
+    "pct_pelo_menos_2_semanas": 8.26086956521739
+  },
+  "lead_time_minimo_pct": {
+    ">=1_semana(s)": 100.0,
+    ">=2_semana(s)": 69.23913043478261,
+    ">=3_semana(s)": 46.73913043478261
+  },
+  "ranking_modelo_formulacao_a": {
+    "nome": "modelo_estado_t1",
+    "recall_em_k": [
+      {
+        "k": 5,
+        "recall_micro": 0.13151927437641722,
+        "recall_macro": 0.1453932435608695,
+        "n_positivos_totais": 1323,
+        "n_semanas_com_positivo": 138
+      },
+      {
+        "k": 10,
+        "recall_micro": 0.23885109599395313,
+        "recall_macro": 0.2624488064153984,
+        "n_positivos_totais": 1323,
+        "n_semanas_com_positivo": 138
+      },
+      {
+        "k": 15,
+        "recall_micro": 0.327286470143613,
+        "recall_macro": 0.35937165185011677,
+        "n_positivos_totais": 1323,
+        "n_semanas_com_positivo": 138
+      },
+      {
+        "k": 20,
+        "recall_micro": 0.40967498110355255,
+        "recall_macro": 0.4586813986671608,
+        "n_positivos_totais": 1323,
+        "n_semanas_com_positivo": 138
+      }
+    ],
+    "precision_em_k": [
+      {
+        "k": 5,
+        "precision_media": 0.22307692307692306,
+        "precision_mediana": 0.2,
+        "n_semanas": 156
+      },
+      {
+        "k": 10,
+        "precision_media": 0.20256410256410257,
+        "precision_mediana": 0.1,
+        "n_semanas": 156
+      },
+      {
+        "k": 15,
+        "precision_media": 0.18504273504273505,
+        "precision_mediana": 0.13333333333333333,
+        "n_semanas": 156
+      },
+      {
+        "k": 20,
+        "precision_media": 0.17371794871794874,
+        "precision_mediana": 0.1,
+        "n_semanas": 156
+      }
+    ],
+    "resumo_posicao_antes_episodios": {
+      "n_episodios": 920,
+      "n_com_ranking_disponivel_antes": 920,
+      "posicao_media_antes": 24.972826086956523,
+      "posicao_mediana_antes": 19.0,
+      "antecedencia_media_semanas": 2.525,
+      "pct_top_5_antes": 20.76086956521739,
+      "pct_top_10_antes": 33.15217391304348,
+      "pct_top_15_antes": 43.26086956521739,
+      "pct_top_20_antes": 52.71739130434783
+    },
+    "estabilidade_por_k": {
+      "5": {
+        "k": 5,
+        "n_pares_consecutivos": 155,
+        "jaccard_medio": 0.2853558627752176,
+        "jaccard_mediano": 0.25
+      },
+      "10": {
+        "k": 10,
+        "n_pares_consecutivos": 155,
+        "jaccard_medio": 0.3498627242460259,
+        "jaccard_mediano": 0.3333333333333333
+      },
+      "15": {
+        "k": 15,
+        "n_pares_consecutivos": 155,
+        "jaccard_medio": 0.4077974935893555,
+        "jaccard_mediano": 0.36363636363636365
+      },
+      "20": {
+        "k": 20,
+        "n_pares_consecutivos": 155,
+        "jaccard_medio": 0.44720593990421625,
+        "jaccard_mediano": 0.42857142857142855
+      }
+    }
+  },
+  "baselines_ranking": {
+    "casos_atuais": {
+      "recall_em_k_semanal": [
+        {
+          "k": 5,
+          "recall_micro": 0.04969418960244648,
+          "recall_macro": 0.04171072894345101,
+          "n_positivos_totais": 2616,
+          "n_semanas_com_positivo": 149
+        },
+        {
+          "k": 10,
+          "recall_micro": 0.10435779816513761,
+          "recall_macro": 0.08558430922264217,
+          "n_positivos_totais": 2616,
+          "n_semanas_com_positivo": 149
+        },
+        {
+          "k": 15,
+          "recall_micro": 0.15672782874617738,
+          "recall_macro": 0.13102549032010607,
+          "n_positivos_totais": 2616,
+          "n_semanas_com_positivo": 149
+        },
+        {
+          "k": 20,
+          "recall_micro": 0.2037461773700306,
+          "recall_macro": 0.16738015706614087,
+          "n_positivos_totais": 2616,
+          "n_semanas_com_positivo": 149
+        }
+      ],
+      "recall_em_k_por_episodio": {
+        "n_episodios": 920,
+        "n_com_ranking_disponivel_antes": 920,
+        "posicao_media_antes": 31.069565217391304,
+        "posicao_mediana_antes": 28.0,
+        "antecedencia_media_semanas": 2.743478260869565,
+        "pct_top_5_antes": 11.41304347826087,
+        "pct_top_10_antes": 20.434782608695652,
+        "pct_top_15_antes": 29.782608695652176,
+        "pct_top_20_antes": 37.71739130434783
+      },
+      "lead_time_mediano": 2.743478260869565
+    },
+    "crescimento_recente": {
+      "recall_em_k_semanal": [
+        {
+          "k": 5,
+          "recall_micro": 0.047018348623853214,
+          "recall_macro": 0.04132575061135096,
+          "n_positivos_totais": 2616,
+          "n_semanas_com_positivo": 149
+        },
+        {
+          "k": 10,
+          "recall_micro": 0.0871559633027523,
+          "recall_macro": 0.07707931125079981,
+          "n_positivos_totais": 2616,
+          "n_semanas_com_positivo": 149
+        },
+        {
+          "k": 15,
+          "recall_micro": 0.13302752293577982,
+          "recall_macro": 0.12705161935968726,
+          "n_positivos_totais": 2616,
+          "n_semanas_com_positivo": 149
+        },
+        {
+          "k": 20,
+          "recall_micro": 0.1918960244648318,
+          "recall_macro": 0.17997839411666242,
+          "n_positivos_totais": 2616,
+          "n_semanas_com_positivo": 149
+        }
+      ],
+      "recall_em_k_por_episodio": {
+        "n_episodios": 920,
+        "n_com_ranking_disponivel_antes": 920,
+        "posicao_media_antes": 18.830434782608695,
+        "posicao_mediana_antes": 16.0,
+        "antecedencia_media_semanas": 2.639130434782609,
+        "pct_top_5_antes": 18.369565217391305,
+        "pct_top_10_antes": 34.67391304347826,
+        "pct_top_15_antes": 48.80434782608696,
+        "pct_top_20_antes": 63.15217391304348
+      },
+      "lead_time_mediano": 2.639130434782609
+    },
+    "razao_historica_local": {
+      "recall_em_k_semanal": [
+        {
+          "k": 5,
+          "recall_micro": 0.0581039755351682,
+          "recall_macro": 0.06567292040817332,
+          "n_positivos_totais": 2616,
+          "n_semanas_com_positivo": 149
+        },
+        {
+          "k": 10,
+          "recall_micro": 0.11467889908256881,
+          "recall_macro": 0.12633792274534064,
+          "n_positivos_totais": 2616,
+          "n_semanas_com_positivo": 149
+        },
+        {
+          "k": 15,
+          "recall_micro": 0.16819571865443425,
+          "recall_macro": 0.18007753853298364,
+          "n_positivos_totais": 2616,
+          "n_semanas_com_positivo": 149
+        },
+        {
+          "k": 20,
+          "recall_micro": 0.22553516819571864,
+          "recall_macro": 0.22806456841841818,
+          "n_positivos_totais": 2616,
+          "n_semanas_com_positivo": 149
+        }
+      ],
+      "recall_em_k_por_episodio": {
+        "n_episodios": 920,
+        "n_com_ranking_disponivel_antes": 920,
+        "posicao_media_antes": 24.24891304347826,
+        "posicao_mediana_antes": 16.0,
+        "antecedencia_media_semanas": 2.7130434782608694,
+        "pct_top_5_antes": 19.782608695652172,
+        "pct_top_10_antes": 35.76086956521739,
+        "pct_top_15_antes": 48.69565217391305,
+        "pct_top_20_antes": 57.934782608695656
+      },
+      "lead_time_mediano": 2.7130434782608694
+    }
+  },
+  "tabela_comparacao_baselines": [
+    {
+      "metodo": "casos_atuais",
+      "recall_5_pct": 11.41304347826087,
+      "recall_10_pct": 20.434782608695652,
+      "recall_15_pct": 29.782608695652176,
+      "recall_20_pct": 37.71739130434783,
+      "lead_time_mediano": 2.743478260869565
+    },
+    {
+      "metodo": "crescimento_recente",
+      "recall_5_pct": 18.369565217391305,
+      "recall_10_pct": 34.67391304347826,
+      "recall_15_pct": 48.80434782608696,
+      "recall_20_pct": 63.15217391304348,
+      "lead_time_mediano": 2.639130434782609
+    },
+    {
+      "metodo": "razao_historica_local",
+      "recall_5_pct": 19.782608695652172,
+      "recall_10_pct": 35.76086956521739,
+      "recall_15_pct": 48.69565217391305,
+      "recall_20_pct": 57.934782608695656,
+      "lead_time_mediano": 2.7130434782608694
+    },
+    {
+      "metodo": "modelo_onset_h3",
+      "recall_5_pct": 25.76086956521739,
+      "recall_10_pct": 38.369565217391305,
+      "recall_15_pct": 48.15217391304348,
+      "recall_20_pct": 57.608695652173914,
+      "lead_time_mediano": 2.4260869565217393
+    }
+  ],
+  "grandes_episodios": {
+    "n": 92,
+    "n_episodios": 92,
+    "n_com_ranking_disponivel_antes": 92,
+    "posicao_media_antes": 30.380434782608695,
+    "posicao_mediana_antes": 20.0,
+    "antecedencia_media_semanas": 2.0760869565217392,
+    "pct_top_5_antes": 18.478260869565215,
+    "pct_top_10_antes": 30.434782608695656,
+    "pct_top_15_antes": 39.130434782608695,
+    "pct_top_20_antes": 51.08695652173913
+  },
+  "desempenho_por_ano": [
+    {
+      "ano": 2023,
+      "n_episodios": 117,
+      "recall_top10_pct": 42.73504273504273,
+      "recall_top20_pct": 62.39316239316239,
+      "lead_time_mediano": 3.0
+    },
+    {
+      "ano": 2024,
+      "n_episodios": 406,
+      "recall_top10_pct": 37.19211822660098,
+      "recall_top20_pct": 57.389162561576356,
+      "lead_time_mediano": 2.0
+    },
+    {
+      "ano": 2025,
+      "n_episodios": 397,
+      "recall_top10_pct": 38.287153652392945,
+      "recall_top20_pct": 56.42317380352645,
+      "lead_time_mediano": 2.0
+    }
+  ],
+  "desempenho_por_rpa": [
+    {
+      "codigo_rpa": "1",
+      "n_episodios": 129,
+      "recall_top10_pct": 31.007751937984494,
+      "recall_top20_pct": 50.3875968992248
+    },
+    {
+      "codigo_rpa": "2",
+      "n_episodios": 146,
+      "recall_top10_pct": 39.726027397260275,
+      "recall_top20_pct": 63.6986301369863
+    },
+    {
+      "codigo_rpa": "3",
+      "n_episodios": 277,
+      "recall_top10_pct": 31.40794223826715,
+      "recall_top20_pct": 53.79061371841155
+    },
+    {
+      "codigo_rpa": "4",
+      "n_episodios": 97,
+      "recall_top10_pct": 35.051546391752574,
+      "recall_top20_pct": 53.608247422680414
+    },
+    {
+      "codigo_rpa": "5",
+      "n_episodios": 197,
+      "recall_top10_pct": 59.390862944162436,
+      "recall_top20_pct": 74.11167512690355
+    },
+    {
+      "codigo_rpa": "6",
+      "n_episodios": 74,
+      "recall_top10_pct": 22.972972972972975,
+      "recall_top20_pct": 33.78378378378378
+    }
+  ],
+  "ipsep_onset_ranking": [
+    {
+      "codigo_bairro": "213",
+      "nome_bairro": "IPSEP",
+      "codigo_rpa": "6",
+      "n_episodios": 6,
+      "n_detectados_top20": 1,
+      "posicao_mediana_antes": 39.0,
+      "lead_time_mediano": 3.0,
+      "taxa_top20": 0.16666666666666666
+    }
+  ],
+  "bairros_zero_deteccao_top20": {
+    "n": 2,
+    "codigos": [
+      "477",
+      "930"
+    ]
+  },
+  "cenario_antecipacao_genuina": {
+    "n_episodios_genuinos": 762,
+    "n_episodios_pos_episodio_recente": 158,
+    "resumo_genuinos": {
+      "n_episodios": 762,
+      "n_com_ranking_disponivel_antes": 762,
+      "posicao_media_antes": 26.385826771653544,
+      "posicao_mediana_antes": 18.5,
+      "antecedencia_media_semanas": 2.484251968503937,
+      "pct_top_5_antes": 20.99737532808399,
+      "pct_top_10_antes": 33.46456692913386,
+      "pct_top_15_antes": 43.30708661417323,
+      "pct_top_20_antes": 53.805774278215225
+    },
+    "resumo_pos_episodio_recente": {
+      "n_episodios": 158,
+      "n_com_ranking_disponivel_antes": 158,
+      "posicao_media_antes": 13.563291139240507,
+      "posicao_mediana_antes": 6.0,
+      "antecedencia_media_semanas": 2.1455696202531644,
+      "pct_top_5_antes": 48.734177215189874,
+      "pct_top_10_antes": 62.0253164556962,
+      "pct_top_15_antes": 71.51898734177216,
+      "pct_top_20_antes": 75.9493670886076
+    }
+  }
+}

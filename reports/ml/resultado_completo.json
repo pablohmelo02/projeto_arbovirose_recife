@@ -1,0 +1,428 @@
+{
+  "horizonte_principal": 1,
+  "dataset_base": {
+    "agravo": "DENGUE",
+    "horizonte_semanas": 1,
+    "incluir_clima": false,
+    "exigir_clima_real": false,
+    "linhas_antes": 63826,
+    "linhas_target_indefinido": 4888,
+    "linhas_apos_filtro_clima_real": 63826,
+    "linhas_excluidas_feature_nan": 188,
+    "linhas_finais": 58750,
+    "proporcao_positiva": 0.12032340425531915,
+    "n_positivos": 7069,
+    "n_negativos": 51681,
+    "n_features": 30,
+    "colunas_features": [
+      "casos_t",
+      "casos_t_menos_1",
+      "casos_t_menos_2",
+      "casos_t_menos_3",
+      "casos_t_menos_4",
+      "media_2s",
+      "media_4s",
+      "media_8s",
+      "soma_4s",
+      "max_4s",
+      "tendencia_1s",
+      "estado_alto_risco_t",
+      "semana_epidemiologica",
+      "mes",
+      "trimestre",
+      "semana_sin",
+      "semana_cos",
+      "media_historica_semana_exata",
+      "area_km2",
+      "centroide_lat",
+      "centroide_lon",
+      "codigo_rpa_1",
+      "codigo_rpa_2",
+      "codigo_rpa_3",
+      "codigo_rpa_4",
+      "codigo_rpa_5",
+      "codigo_rpa_6",
+      "codigo_microrregiao_1",
+      "codigo_microrregiao_2",
+      "codigo_microrregiao_3"
+    ]
+  },
+  "split": {
+    "n_treino": 29328,
+    "n_validacao": 14758,
+    "n_teste": 14664,
+    "ano_treino_fim": 2019,
+    "ano_validacao_fim": 2022
+  },
+  "baselines_classificacao": [
+    {
+      "threshold": 0.5,
+      "n": 14664,
+      "n_positivos": 1323,
+      "n_negativos": 13341,
+      "proporcao_positiva": 0.09022094926350245,
+      "precision": 0.30599848139711466,
+      "recall": 0.30461073318216175,
+      "f1": 0.3053030303030303,
+      "pr_auc": 0.15594910153095953,
+      "roc_auc": 0.6180500633904212,
+      "matriz_confusao": {
+        "verdadeiro_negativo": 12427,
+        "falso_positivo": 914,
+        "falso_negativo": 920,
+        "verdadeiro_positivo": 403
+      },
+      "nome": "persistencia"
+    },
+    {
+      "threshold": 0.5,
+      "n": 14664,
+      "n_positivos": 1323,
+      "n_negativos": 13341,
+      "proporcao_positiva": 0.09022094926350245,
+      "precision": 0.14644970414201183,
+      "recall": 0.07482993197278912,
+      "f1": 0.09904952476238119,
+      "pr_auc": 0.09442854316597594,
+      "roc_auc": 0.5157899003991073,
+      "matriz_confusao": {
+        "verdadeiro_negativo": 12764,
+        "falso_positivo": 577,
+        "falso_negativo": 1224,
+        "verdadeiro_positivo": 99
+      },
+      "nome": "crescimento_recente"
+    },
+    {
+      "threshold": 0.5,
+      "n": 14664,
+      "n_positivos": 1323,
+      "n_negativos": 13341,
+      "proporcao_positiva": 0.09022094926350245,
+      "precision": 0.172818063395571,
+      "recall": 0.6016628873771731,
+      "f1": 0.2685107100691516,
+      "pr_auc": 0.13991656744122472,
+      "roc_auc": 0.6580385496026859,
+      "matriz_confusao": {
+        "verdadeiro_negativo": 9531,
+        "falso_positivo": 3810,
+        "falso_negativo": 527,
+        "verdadeiro_positivo": 796
+      },
+      "nome": "sazonal_simples"
+    }
+  ],
+  "baselines_quantitativos": {
+    "persistencia": {
+      "mae": 1.187670485542826,
+      "rmse": 2.196218790929605,
+      "n": 14664
+    },
+    "media_movel_4s": {
+      "mae": 1.083554964539007,
+      "rmse": 2.0386245386404998,
+      "n": 14664
+    }
+  },
+  "modelos_classificacao": [
+    {
+      "threshold": 0.45,
+      "n": 14664,
+      "n_positivos": 1323,
+      "n_negativos": 13341,
+      "proporcao_positiva": 0.09022094926350245,
+      "precision": 0.3031026252983294,
+      "recall": 0.3839758125472411,
+      "f1": 0.3387795931977326,
+      "pr_auc": 0.27784961008936193,
+      "roc_auc": 0.7306887825214787,
+      "matriz_confusao": {
+        "verdadeiro_negativo": 12173,
+        "falso_positivo": 1168,
+        "falso_negativo": 815,
+        "verdadeiro_positivo": 508
+      },
+      "nome": "logistic_regression"
+    },
+    {
+      "threshold": 0.7,
+      "n": 14664,
+      "n_positivos": 1323,
+      "n_negativos": 13341,
+      "proporcao_positiva": 0.09022094926350245,
+      "precision": 0.3717228464419476,
+      "recall": 0.3000755857898715,
+      "f1": 0.33207862818904227,
+      "pr_auc": 0.2915189298603932,
+      "roc_auc": 0.7534113746273897,
+      "matriz_confusao": {
+        "verdadeiro_negativo": 12670,
+        "falso_positivo": 671,
+        "falso_negativo": 926,
+        "verdadeiro_positivo": 397
+      },
+      "nome": "arvore_histgb"
+    }
+  ],
+  "thresholds_escolhidos_na_validacao": {
+    "logistic_regression": 0.45,
+    "arvore_histgb": 0.7
+  },
+  "top_features": [
+    {
+      "feature": "estado_alto_risco_t",
+      "importancia_media": 0.08740367806657512,
+      "importancia_std": 0.007258856033803684
+    },
+    {
+      "feature": "media_historica_semana_exata",
+      "importancia_media": 0.07400854054084319,
+      "importancia_std": 0.004766201275412098
+    },
+    {
+      "feature": "media_8s",
+      "importancia_media": 0.03377672032486582,
+      "importancia_std": 0.0011363008558053476
+    },
+    {
+      "feature": "media_4s",
+      "importancia_media": 0.033417705036028436,
+      "importancia_std": 0.001184457347563791
+    },
+    {
+      "feature": "casos_t_menos_1",
+      "importancia_media": 0.02468356842410463,
+      "importancia_std": 0.0006071839573826832
+    },
+    {
+      "feature": "media_2s",
+      "importancia_media": 0.017369800758852395,
+      "importancia_std": 0.0019296068740140367
+    },
+    {
+      "feature": "casos_t_menos_2",
+      "importancia_media": 0.012228256401811766,
+      "importancia_std": 0.0009803966709113854
+    },
+    {
+      "feature": "max_4s",
+      "importancia_media": 0.0037837959617712967,
+      "importancia_std": 0.0006588306950532333
+    },
+    {
+      "feature": "casos_t_menos_3",
+      "importancia_media": 0.003208362041548529,
+      "importancia_std": 0.0003122918660130108
+    },
+    {
+      "feature": "area_km2",
+      "importancia_media": 0.0030552071827247063,
+      "importancia_std": 0.000913802089421107
+    }
+  ],
+  "walk_forward": [
+    {
+      "ano_teste": 2019,
+      "n_treino": 24440,
+      "n_teste": 4888,
+      "precision": 0.40253748558246827,
+      "recall": 0.60801393728223,
+      "f1": 0.48438584316446914,
+      "pr_auc": 0.4466654161940983,
+      "roc_auc": 0.8547561702519468,
+      "n_positivos": 574
+    },
+    {
+      "ano_teste": 2020,
+      "n_treino": 29328,
+      "n_teste": 4982,
+      "precision": 0.28205128205128205,
+      "recall": 0.4954954954954955,
+      "f1": 0.35947712418300654,
+      "pr_auc": 0.28832782559466846,
+      "roc_auc": 0.8587511355893708,
+      "n_positivos": 222
+    },
+    {
+      "ano_teste": 2021,
+      "n_treino": 34310,
+      "n_teste": 4888,
+      "precision": 0.4753623188405797,
+      "recall": 0.8058968058968059,
+      "f1": 0.5979945305378305,
+      "pr_auc": 0.6517214980830195,
+      "roc_auc": 0.8915727047170346,
+      "n_positivos": 814
+    },
+    {
+      "ano_teste": 2022,
+      "n_treino": 39198,
+      "n_teste": 4888,
+      "precision": 0.1337579617834395,
+      "recall": 0.22105263157894736,
+      "f1": 0.16666666666666666,
+      "pr_auc": 0.14261619251553223,
+      "roc_auc": 0.7937156159750515,
+      "n_positivos": 95
+    },
+    {
+      "ano_teste": 2023,
+      "n_treino": 44086,
+      "n_teste": 4888,
+      "precision": 0.08943089430894309,
+      "recall": 0.17054263565891473,
+      "f1": 0.11733333333333333,
+      "pr_auc": 0.07399788133094898,
+      "roc_auc": 0.7316402540433385,
+      "n_positivos": 129
+    },
+    {
+      "ano_teste": 2024,
+      "n_treino": 48974,
+      "n_teste": 4888,
+      "precision": 0.21440536013400335,
+      "recall": 0.4563279857397504,
+      "f1": 0.2917378917378917,
+      "pr_auc": 0.2547448820480288,
+      "roc_auc": 0.6642756772856421,
+      "n_positivos": 561
+    },
+    {
+      "ano_teste": 2025,
+      "n_treino": 53862,
+      "n_teste": 4888,
+      "precision": 0.26904598490048043,
+      "recall": 0.6192733017377567,
+      "f1": 0.3751196172248804,
+      "pr_auc": 0.37070975240473625,
+      "roc_auc": 0.769412251732466,
+      "n_positivos": 633
+    }
+  ],
+  "alerta_resumo": {
+    "n_episodios": 920,
+    "n_detectados": 362,
+    "n_perdidos": 558,
+    "taxa_deteccao": 0.3934782608695652,
+    "n_antecipados": 295,
+    "n_simultaneos": 6,
+    "n_tardios": 61,
+    "lead_time_medio_semanas": 2.2624309392265194,
+    "lead_time_mediano_semanas": 3.0,
+    "n_falsos_alertas": 319
+  },
+  "epidemias_grandes_resumo": {
+    "n": 92,
+    "taxa_deteccao": 0.7934782608695652
+  },
+  "horizonte_secundario_t2": {
+    "dataset": {
+      "agravo": "DENGUE",
+      "horizonte_semanas": 2,
+      "incluir_clima": false,
+      "exigir_clima_real": false,
+      "linhas_antes": 63826,
+      "linhas_target_indefinido": 4888,
+      "linhas_apos_filtro_clima_real": 63826,
+      "linhas_excluidas_feature_nan": 282,
+      "linhas_finais": 58656,
+      "proporcao_positiva": 0.1202093562465903,
+      "n_positivos": 7051,
+      "n_negativos": 51605,
+      "n_features": 30,
+      "colunas_features": [
+        "casos_t",
+        "casos_t_menos_1",
+        "casos_t_menos_2",
+        "casos_t_menos_3",
+        "casos_t_menos_4",
+        "media_2s",
+        "media_4s",
+        "media_8s",
+        "soma_4s",
+        "max_4s",
+        "tendencia_1s",
+        "estado_alto_risco_t",
+        "semana_epidemiologica",
+        "mes",
+        "trimestre",
+        "semana_sin",
+        "semana_cos",
+        "media_historica_semana_exata",
+        "area_km2",
+        "centroide_lat",
+        "centroide_lon",
+        "codigo_rpa_1",
+        "codigo_rpa_2",
+        "codigo_rpa_3",
+        "codigo_rpa_4",
+        "codigo_rpa_5",
+        "codigo_rpa_6",
+        "codigo_microrregiao_1",
+        "codigo_microrregiao_2",
+        "codigo_microrregiao_3"
+      ]
+    },
+    "metricas": {
+      "threshold": 0.5,
+      "n": 14570,
+      "n_positivos": 1323,
+      "n_negativos": 13247,
+      "proporcao_positiva": 0.09080301990391215,
+      "precision": 0.2376237623762376,
+      "recall": 0.41723356009070295,
+      "f1": 0.3027975863960505,
+      "pr_auc": 0.2501166935512713,
+      "roc_auc": 0.728631037897826,
+      "matriz_confusao": {
+        "verdadeiro_negativo": 11476,
+        "falso_positivo": 1771,
+        "falso_negativo": 771,
+        "verdadeiro_positivo": 552
+      }
+    }
+  },
+  "comparacao_clima": {
+    "n_linhas": 3851,
+    "n_treino_2024": 1305,
+    "n_teste_2025": 2546,
+    "base": {
+      "threshold": 0.5,
+      "n": 2546,
+      "n_positivos": 383,
+      "n_negativos": 2163,
+      "proporcao_positiva": 0.15043205027494108,
+      "precision": 0.13836477987421383,
+      "recall": 0.057441253263707574,
+      "f1": 0.08118081180811808,
+      "pr_auc": 0.13298734186859767,
+      "roc_auc": 0.44420885797093057,
+      "matriz_confusao": {
+        "verdadeiro_negativo": 2026,
+        "falso_positivo": 137,
+        "falso_negativo": 361,
+        "verdadeiro_positivo": 22
+      }
+    },
+    "base_mais_clima": {
+      "threshold": 0.5,
+      "n": 2546,
+      "n_positivos": 383,
+      "n_negativos": 2163,
+      "proporcao_positiva": 0.15043205027494108,
+      "precision": 0.21518987341772153,
+      "recall": 0.044386422976501305,
+      "f1": 0.0735930735930736,
+      "pr_auc": 0.15834462384516398,
+      "roc_auc": 0.5068853214940569,
+      "matriz_confusao": {
+        "verdadeiro_negativo": 2101,
+        "falso_positivo": 62,
+        "falso_negativo": 366,
+        "verdadeiro_positivo": 17
+      }
+    },
+    "ganho_pr_auc": 0.02535728197656631
+  }
+}

@@ -1,0 +1,785 @@
+{
+  "diagnostico_alvo_por_ano": [
+    {
+      "ano": 2013,
+      "n_linhas": 4888,
+      "casos_totais": 3220.0,
+      "casos_medio": 0.6587561374795418,
+      "pct_positivo": 0.0,
+      "pct_indefinido": 100.0,
+      "limiar_medio": NaN,
+      "n_bairros_com_caso": 92,
+      "pct_tipo_geral": 0.0
+    },
+    {
+      "ano": 2014,
+      "n_linhas": 4982,
+      "casos_totais": 1201.0,
+      "casos_medio": 0.24106784423926134,
+      "pct_positivo": 2.1075873143315937,
+      "pct_indefinido": 0.0,
+      "limiar_medio": 1.812765957446808,
+      "n_bairros_com_caso": 89,
+      "pct_tipo_geral": 100.0
+    },
+    {
+      "ano": 2015,
+      "n_linhas": 4888,
+      "casos_totais": 33294.0,
+      "casos_medio": 6.811374795417349,
+      "pct_positivo": 59.49263502454992,
+      "pct_indefinido": 0.0,
+      "limiar_medio": 1.3553191489361716,
+      "n_bairros_com_caso": 94,
+      "pct_tipo_geral": 100.0
+    },
+    {
+      "ano": 2016,
+      "n_linhas": 4888,
+      "casos_totais": 19141.0,
+      "casos_medio": 3.9159165302782326,
+      "pct_positivo": 18.269230769230766,
+      "pct_indefinido": 0.0,
+      "limiar_medio": 7.716612111292961,
+      "n_bairros_com_caso": 93,
+      "pct_tipo_geral": 7.6923076923076925
+    },
+    {
+      "ano": 2017,
+      "n_linhas": 4888,
+      "casos_totais": 2486.0,
+      "casos_medio": 0.5085924713584288,
+      "pct_positivo": 1.1456628477905073,
+      "pct_indefinido": 0.0,
+      "limiar_medio": 8.366407528641574,
+      "n_bairros_com_caso": 91,
+      "pct_tipo_geral": 3.8461538461538463
+    },
+    {
+      "ano": 2018,
+      "n_linhas": 4888,
+      "casos_totais": 2633.0,
+      "casos_medio": 0.5386661211129297,
+      "pct_positivo": 2.0049099836333877,
+      "pct_indefinido": 0.0,
+      "limiar_medio": 7.526963993453355,
+      "n_bairros_com_caso": 92,
+      "pct_tipo_geral": 0.0
+    },
+    {
+      "ano": 2019,
+      "n_linhas": 4888,
+      "casos_totais": 7245.0,
+      "casos_medio": 1.482201309328969,
+      "pct_positivo": 11.7430441898527,
+      "pct_indefinido": 0.0,
+      "limiar_medio": 6.793637479541737,
+      "n_bairros_com_caso": 93,
+      "pct_tipo_geral": 0.0
+    },
+    {
+      "ano": 2020,
+      "n_linhas": 4982,
+      "casos_totais": 3585.0,
+      "casos_medio": 0.7195905258932156,
+      "pct_positivo": 4.4359694901645925,
+      "pct_indefinido": 0.0,
+      "limiar_medio": 6.393235648334004,
+      "n_bairros_com_caso": 91,
+      "pct_tipo_geral": 0.0
+    },
+    {
+      "ano": 2021,
+      "n_linhas": 4888,
+      "casos_totais": 10891.0,
+      "casos_medio": 2.2281096563011458,
+      "pct_positivo": 16.653027823240592,
+      "pct_indefinido": 0.0,
+      "limiar_medio": 5.849488543371524,
+      "n_bairros_com_caso": 93,
+      "pct_tipo_geral": 0.0
+    },
+    {
+      "ano": 2022,
+      "n_linhas": 4888,
+      "casos_totais": 2876.0,
+      "casos_medio": 0.588379705400982,
+      "pct_positivo": 1.9639934533551555,
+      "pct_indefinido": 0.0,
+      "limiar_medio": 5.672933715220951,
+      "n_bairros_com_caso": 92,
+      "pct_tipo_geral": 0.0
+    },
+    {
+      "ano": 2023,
+      "n_linhas": 4888,
+      "casos_totais": 3522.0,
+      "casos_medio": 0.7205400981996727,
+      "pct_positivo": 2.5777414075286416,
+      "pct_indefinido": 0.0,
+      "limiar_medio": 4.963113747954176,
+      "n_bairros_com_caso": 92,
+      "pct_tipo_geral": 0.0
+    },
+    {
+      "ano": 2024,
+      "n_linhas": 4888,
+      "casos_totais": 10536.0,
+      "casos_medio": 2.155482815057283,
+      "pct_positivo": 11.395253682487725,
+      "pct_indefinido": 0.0,
+      "limiar_medio": 4.546051554828152,
+      "n_bairros_com_caso": 93,
+      "pct_tipo_geral": 0.0
+    },
+    {
+      "ano": 2025,
+      "n_linhas": 4982,
+      "casos_totais": 9162.0,
+      "casos_medio": 1.8390204737053393,
+      "pct_positivo": 12.846246487354476,
+      "pct_indefinido": 0.0,
+      "limiar_medio": 4.495503813729427,
+      "n_bairros_com_caso": 93,
+      "pct_tipo_geral": 0.0
+    }
+  ],
+  "diagnostico_episodios_por_ano": [
+    {
+      "ano": 2014,
+      "n_episodios": 94,
+      "duracao_media_semanas": 1.1170212765957446,
+      "casos_totais_episodio_media": 2.4680851063829787,
+      "casos_pico_media": 2.24468085106383,
+      "casos_pico_mediana": 2.0,
+      "n_bairros_distintos": 54
+    },
+    {
+      "ano": 2015,
+      "n_episodios": 668,
+      "duracao_media_semanas": 4.5553892215568865,
+      "casos_totais_episodio_media": 54.205089820359284,
+      "casos_pico_media": 9.196107784431138,
+      "casos_pico_mediana": 3.0,
+      "n_bairros_distintos": 94
+    },
+    {
+      "ano": 2016,
+      "n_episodios": 357,
+      "duracao_media_semanas": 2.123249299719888,
+      "casos_totais_episodio_media": 21.5406162464986,
+      "casos_pico_media": 8.568627450980392,
+      "casos_pico_mediana": 4.0,
+      "n_bairros_distintos": 91
+    },
+    {
+      "ano": 2017,
+      "n_episodios": 51,
+      "duracao_media_semanas": 1.0980392156862746,
+      "casos_totais_episodio_media": 3.0588235294117645,
+      "casos_pico_media": 2.7450980392156863,
+      "casos_pico_mediana": 2.0,
+      "n_bairros_distintos": 37
+    },
+    {
+      "ano": 2018,
+      "n_episodios": 82,
+      "duracao_media_semanas": 1.1951219512195121,
+      "casos_totais_episodio_media": 3.3780487804878048,
+      "casos_pico_media": 2.768292682926829,
+      "casos_pico_mediana": 2.0,
+      "n_bairros_distintos": 54
+    },
+    {
+      "ano": 2019,
+      "n_episodios": 318,
+      "duracao_media_semanas": 1.8050314465408805,
+      "casos_totais_episodio_media": 9.742138364779874,
+      "casos_pico_media": 5.430817610062893,
+      "casos_pico_mediana": 4.0,
+      "n_bairros_distintos": 91
+    },
+    {
+      "ano": 2020,
+      "n_episodios": 150,
+      "duracao_media_semanas": 1.4733333333333334,
+      "casos_totais_episodio_media": 7.773333333333333,
+      "casos_pico_media": 5.34,
+      "casos_pico_mediana": 4.0,
+      "n_bairros_distintos": 72
+    },
+    {
+      "ano": 2021,
+      "n_episodios": 341,
+      "duracao_media_semanas": 2.3870967741935485,
+      "casos_totais_episodio_media": 20.885630498533725,
+      "casos_pico_media": 8.070381231671554,
+      "casos_pico_mediana": 5.0,
+      "n_bairros_distintos": 92
+    },
+    {
+      "ano": 2022,
+      "n_episodios": 81,
+      "duracao_media_semanas": 1.1851851851851851,
+      "casos_totais_episodio_media": 3.9012345679012346,
+      "casos_pico_media": 2.9012345679012346,
+      "casos_pico_mediana": 2.0,
+      "n_bairros_distintos": 49
+    },
+    {
+      "ano": 2023,
+      "n_episodios": 117,
+      "duracao_media_semanas": 1.0769230769230769,
+      "casos_totais_episodio_media": 2.6495726495726495,
+      "casos_pico_media": 2.4957264957264957,
+      "casos_pico_mediana": 2.0,
+      "n_bairros_distintos": 56
+    },
+    {
+      "ano": 2024,
+      "n_episodios": 406,
+      "duracao_media_semanas": 1.374384236453202,
+      "casos_totais_episodio_media": 8.738916256157635,
+      "casos_pico_media": 5.724137931034483,
+      "casos_pico_mediana": 3.0,
+      "n_bairros_distintos": 92
+    },
+    {
+      "ano": 2025,
+      "n_episodios": 397,
+      "duracao_media_semanas": 1.6095717884130982,
+      "casos_totais_episodio_media": 8.481108312342569,
+      "casos_pico_media": 4.853904282115869,
+      "casos_pico_mediana": 3.0,
+      "n_bairros_distintos": 92
+    }
+  ],
+  "ablation_features": [
+    {
+      "configuracao": "epi_basica",
+      "n_features": 12,
+      "pr_auc": 0.2647356600428968,
+      "roc_auc": 0.683179564040926,
+      "recall": 0.4565381708238851,
+      "precision": 0.21052631578947367,
+      "f1": 0.2881679389312977
+    },
+    {
+      "configuracao": "+sazonal",
+      "n_features": 18,
+      "pr_auc": 0.28886015607706556,
+      "roc_auc": 0.7528652317434483,
+      "recall": 0.45427059712774,
+      "precision": 0.2702338129496403,
+      "f1": 0.3388779250070482
+    },
+    {
+      "configuracao": "+territorio",
+      "n_features": 30,
+      "pr_auc": 0.2915189298603932,
+      "roc_auc": 0.7534113746273897,
+      "recall": 0.4512471655328798,
+      "precision": 0.2697695436059648,
+      "f1": 0.3376696832579186
+    },
+    {
+      "configuracao": "+historico_local",
+      "n_features": 33,
+      "pr_auc": 0.30050193750478577,
+      "roc_auc": 0.7706515465625405,
+      "recall": 0.4557823129251701,
+      "precision": 0.28190743338008417,
+      "f1": 0.3483535528596187
+    },
+    {
+      "configuracao": "+momentum (completo)",
+      "n_features": 38,
+      "pr_auc": 0.3032564592014253,
+      "roc_auc": 0.7720623000051614,
+      "recall": 0.46485260770975056,
+      "precision": 0.2781546811397558,
+      "f1": 0.34804753820033957
+    }
+  ],
+  "alvo_alternativo_comparacao": [
+    {
+      "ano": 2014,
+      "n_positivos_oficial": 105,
+      "n_positivos_alt": 28,
+      "concordancia": 0.9768821603927987,
+      "jaccard": 0.08130081300813008
+    },
+    {
+      "ano": 2015,
+      "n_positivos_oficial": 2908,
+      "n_positivos_alt": 495,
+      "concordancia": 0.5018412438625205,
+      "jaccard": 0.1658102089756766
+    },
+    {
+      "ano": 2016,
+      "n_positivos_oficial": 893,
+      "n_positivos_alt": 250,
+      "concordancia": 0.8361292962356792,
+      "jaccard": 0.17592592592592593
+    },
+    {
+      "ano": 2017,
+      "n_positivos_oficial": 56,
+      "n_positivos_alt": 31,
+      "concordancia": 0.9867021276595744,
+      "jaccard": 0.14473684210526316
+    },
+    {
+      "ano": 2018,
+      "n_positivos_oficial": 98,
+      "n_positivos_alt": 42,
+      "concordancia": 0.9762684124386252,
+      "jaccard": 0.09375
+    },
+    {
+      "ano": 2019,
+      "n_positivos_oficial": 574,
+      "n_positivos_alt": 150,
+      "concordancia": 0.8919803600654664,
+      "jaccard": 0.15654952076677317
+    },
+    {
+      "ano": 2020,
+      "n_positivos_oficial": 221,
+      "n_positivos_alt": 85,
+      "concordancia": 0.9554395824969891,
+      "jaccard": 0.1590909090909091
+    },
+    {
+      "ano": 2021,
+      "n_positivos_oficial": 814,
+      "n_positivos_alt": 198,
+      "concordancia": 0.8551554828150573,
+      "jaccard": 0.17674418604651163
+    },
+    {
+      "ano": 2022,
+      "n_positivos_oficial": 96,
+      "n_positivos_alt": 65,
+      "concordancia": 0.976063829787234,
+      "jaccard": 0.15827338129496402
+    },
+    {
+      "ano": 2023,
+      "n_positivos_oficial": 126,
+      "n_positivos_alt": 69,
+      "concordancia": 0.9662438625204582,
+      "jaccard": 0.08333333333333333
+    },
+    {
+      "ano": 2024,
+      "n_positivos_oficial": 557,
+      "n_positivos_alt": 269,
+      "concordancia": 0.8817512274959084,
+      "jaccard": 0.17663817663817663
+    },
+    {
+      "ano": 2025,
+      "n_positivos_oficial": 640,
+      "n_positivos_alt": 216,
+      "concordancia": 0.8739462063428342,
+      "jaccard": 0.15363881401617252
+    }
+  ],
+  "tuning_hiperparametros": [
+    {
+      "max_depth": 4,
+      "learning_rate": 0.1,
+      "max_iter": 150,
+      "pr_auc_media_walk_forward": 0.33687858842387436,
+      "pr_auc_mediana_walk_forward": 0.32730132167481907,
+      "pr_auc_min_walk_forward": 0.07378601651025159
+    },
+    {
+      "max_depth": 6,
+      "learning_rate": 0.1,
+      "max_iter": 200,
+      "pr_auc_media_walk_forward": 0.33329779261233233,
+      "pr_auc_mediana_walk_forward": 0.3232560454790647,
+      "pr_auc_min_walk_forward": 0.07389186357346886
+    },
+    {
+      "max_depth": 6,
+      "learning_rate": 0.05,
+      "max_iter": 300,
+      "pr_auc_media_walk_forward": 0.33756878937132884,
+      "pr_auc_mediana_walk_forward": 0.3258864966845242,
+      "pr_auc_min_walk_forward": 0.07285101237940708
+    },
+    {
+      "max_depth": 8,
+      "learning_rate": 0.1,
+      "max_iter": 200,
+      "pr_auc_media_walk_forward": 0.3358728746821828,
+      "pr_auc_mediana_walk_forward": 0.32322240768299826,
+      "pr_auc_min_walk_forward": 0.07144305176369037
+    }
+  ],
+  "melhores_hiperparametros": {
+    "max_depth": 4,
+    "learning_rate": 0.1,
+    "max_iter": 150
+  },
+  "walk_forward_final": [
+    {
+      "ano_teste": 2019,
+      "n_treino": 24440,
+      "n_teste": 4888,
+      "n_positivos": 574,
+      "pr_auc": 0.486218795008915,
+      "roc_auc": 0.8663172653979668,
+      "recall": 0.6445993031358885,
+      "precision": 0.4277456647398844,
+      "f1": 0.5142460041695622,
+      "prevalencia": 0.117430441898527,
+      "lift_pr_auc": 4.140483397218775
+    },
+    {
+      "ano_teste": 2020,
+      "n_treino": 29328,
+      "n_teste": 4982,
+      "n_positivos": 222,
+      "pr_auc": 0.32730132167481907,
+      "roc_auc": 0.8604034181240064,
+      "recall": 0.49099099099099097,
+      "precision": 0.30277777777777776,
+      "f1": 0.3745704467353952,
+      "prevalencia": 0.04456041750301084,
+      "lift_pr_auc": 7.34511344407184
+    },
+    {
+      "ano_teste": 2021,
+      "n_treino": 34310,
+      "n_teste": 4888,
+      "n_positivos": 814,
+      "pr_auc": 0.6638663677354528,
+      "roc_auc": 0.8972714849003509,
+      "recall": 0.8108108108108109,
+      "precision": 0.48,
+      "f1": 0.6030150753768844,
+      "prevalencia": 0.1665302782324059,
+      "lift_pr_auc": 3.986460449006011
+    },
+    {
+      "ano_teste": 2022,
+      "n_treino": 39198,
+      "n_teste": 4888,
+      "n_positivos": 95,
+      "pr_auc": 0.1417797506314711,
+      "roc_auc": 0.8072232532091757,
+      "recall": 0.24210526315789474,
+      "precision": 0.1393939393939394,
+      "f1": 0.17692307692307693,
+      "prevalencia": 0.019435351882160393,
+      "lift_pr_auc": 7.2949412745961135
+    },
+    {
+      "ano_teste": 2023,
+      "n_treino": 44086,
+      "n_teste": 4888,
+      "n_positivos": 129,
+      "pr_auc": 0.07378601651025159,
+      "roc_auc": 0.7433088835352356,
+      "recall": 0.17829457364341086,
+      "precision": 0.09663865546218488,
+      "f1": 0.12534059945504086,
+      "prevalencia": 0.026391162029459903,
+      "lift_pr_auc": 2.7958608426520137
+    },
+    {
+      "ano_teste": 2024,
+      "n_treino": 48974,
+      "n_teste": 4888,
+      "n_positivos": 561,
+      "pr_auc": 0.27987062593039347,
+      "roc_auc": 0.6876242818071827,
+      "recall": 0.48841354723707664,
+      "precision": 0.2247744052502051,
+      "f1": 0.30786516853932583,
+      "prevalencia": 0.1147708674304419,
+      "lift_pr_auc": 2.438516255878366
+    },
+    {
+      "ano_teste": 2025,
+      "n_treino": 53862,
+      "n_teste": 4888,
+      "n_positivos": 633,
+      "pr_auc": 0.38532724147581715,
+      "roc_auc": 0.7831732206139788,
+      "recall": 0.6635071090047393,
+      "precision": 0.2813127930341594,
+      "f1": 0.3951081843838194,
+      "prevalencia": 0.12950081833060556,
+      "lift_pr_auc": 2.975481131648964
+    }
+  ],
+  "walk_forward_resumo_variancia": {
+    "pr_auc_media": 0.33687858842387436,
+    "pr_auc_mediana": 0.32730132167481907,
+    "pr_auc_min": 0.07378601651025159,
+    "pr_auc_max": 0.6638663677354528,
+    "pr_auc_desvio": 0.2009119487215895,
+    "roc_auc_media": 0.8064745439411283,
+    "roc_auc_min": 0.6876242818071827,
+    "lift_pr_auc_media": 4.425265256438869,
+    "lift_pr_auc_mediana": 3.986460449006011
+  },
+  "threshold_operacional": [
+    {
+      "threshold": 0.3,
+      "precision": 0.19483101391650098,
+      "recall": 0.6666666666666666,
+      "f1": 0.30153846153846153,
+      "episodios_detectados_pct": 0.8065217391304348,
+      "lead_time_mediano": 4.0,
+      "n_falsos_alertas": 2284,
+      "bairros_alertados_por_semana_media": 29.206451612903226,
+      "falsos_alertas_por_semana_media": 14.831168831168831
+    },
+    {
+      "threshold": 0.4,
+      "precision": 0.23117775695095283,
+      "recall": 0.5593348450491308,
+      "f1": 0.3271441202475685,
+      "episodios_detectados_pct": 0.7086956521739131,
+      "lead_time_mediano": 4.0,
+      "n_falsos_alertas": 1433,
+      "bairros_alertados_por_semana_media": 21.05921052631579,
+      "falsos_alertas_por_semana_media": 9.553333333333333
+    },
+    {
+      "threshold": 0.5,
+      "precision": 0.28092433167195285,
+      "recall": 0.46863189720332576,
+      "f1": 0.35127478753541075,
+      "episodios_detectados_pct": 0.5858695652173913,
+      "lead_time_mediano": 3.0,
+      "n_falsos_alertas": 869,
+      "bairros_alertados_por_semana_media": 15.32638888888889,
+      "falsos_alertas_por_semana_media": 6.389705882352941
+    },
+    {
+      "threshold": 0.6,
+      "precision": 0.32558139534883723,
+      "recall": 0.37037037037037035,
+      "f1": 0.3465346534653465,
+      "episodios_detectados_pct": 0.45869565217391306,
+      "lead_time_mediano": 3.0,
+      "n_falsos_alertas": 506,
+      "bairros_alertados_por_semana_media": 12.235772357723578,
+      "falsos_alertas_por_semana_media": 4.477876106194691
+    },
+    {
+      "threshold": 0.7,
+      "precision": 0.39655172413793105,
+      "recall": 0.29554043839758126,
+      "f1": 0.3386747509744478,
+      "episodios_detectados_pct": 0.3684782608695652,
+      "lead_time_mediano": 3.0,
+      "n_falsos_alertas": 262,
+      "bairros_alertados_por_semana_media": 9.045871559633028,
+      "falsos_alertas_por_semana_media": 3.046511627906977
+    }
+  ],
+  "threshold_escolhido_na_validacao": 0.6,
+  "alerta_resumo_final": {
+    "n_episodios": 920,
+    "n_detectados": 422,
+    "n_perdidos": 498,
+    "taxa_deteccao": 0.45869565217391306,
+    "n_antecipados": 352,
+    "n_simultaneos": 8,
+    "n_tardios": 62,
+    "lead_time_medio_semanas": 2.4360189573459716,
+    "lead_time_mediano_semanas": 3.0,
+    "n_falsos_alertas": 506
+  },
+  "metricas_semanais_final": {
+    "bairros_alertados_por_semana_media": 12.235772357723578,
+    "bairros_alertados_por_semana_mediana": 7.0,
+    "bairros_alertados_por_semana_max": 53,
+    "falsos_alertas_por_semana_media": 4.477876106194691,
+    "falsos_alertas_por_semana_mediana": 3.0,
+    "n_semanas_com_pelo_menos_1_falso_alerta": 113
+  },
+  "duracao_falsos_alertas_final": {
+    "n_sequencias": 338,
+    "duracao_media_semanas": 1.4970414201183433,
+    "duracao_maxima_semanas": 5
+  },
+  "epidemias_grandes_resumo_final": {
+    "n": 92,
+    "taxa_deteccao": 0.782608695652174
+  },
+  "metricas_classificacao_final_teste": {
+    "threshold": 0.6,
+    "n": 14664,
+    "n_positivos": 1323,
+    "n_negativos": 13341,
+    "proporcao_positiva": 0.09022094926350245,
+    "precision": 0.32558139534883723,
+    "recall": 0.37037037037037035,
+    "f1": 0.3465346534653465,
+    "pr_auc": 0.30776562405324503,
+    "roc_auc": 0.7747336664637788,
+    "matriz_confusao": {
+      "verdadeiro_negativo": 12326,
+      "falso_positivo": 1015,
+      "falso_negativo": 833,
+      "verdadeiro_positivo": 490
+    }
+  },
+  "recall_em_k": [
+    {
+      "k": 5,
+      "recall_micro": 0.13151927437641722,
+      "recall_macro": 0.1453932435608695,
+      "n_positivos_totais": 1323,
+      "n_semanas_com_positivo": 138
+    },
+    {
+      "k": 10,
+      "recall_micro": 0.23885109599395313,
+      "recall_macro": 0.2624488064153984,
+      "n_positivos_totais": 1323,
+      "n_semanas_com_positivo": 138
+    },
+    {
+      "k": 20,
+      "recall_micro": 0.40967498110355255,
+      "recall_macro": 0.4586813986671608,
+      "n_positivos_totais": 1323,
+      "n_semanas_com_positivo": 138
+    }
+  ],
+  "resumo_posicao_antes_episodios": {
+    "n_episodios": 920,
+    "n_com_ranking_disponivel_antes": 920,
+    "posicao_media_antes": 24.972826086956523,
+    "posicao_mediana_antes": 19.0,
+    "antecedencia_media_semanas": 2.525,
+    "pct_top_5_antes": 20.76086956521739,
+    "pct_top_10_antes": 33.15217391304348,
+    "pct_top_20_antes": 52.71739130434783
+  },
+  "calibracao": {
+    "metodo": "isotonic",
+    "n_validacao_usada": 14758,
+    "brier_antes": 0.11564337943995029,
+    "brier_depois": 0.07308040622566207,
+    "melhora_absoluta": 0.042562973214288216
+  },
+  "feature_importance_estabilidade": [
+    {
+      "feature": "razao_limiar_historico",
+      "media": 0.16966428769245495,
+      "desvio": 0.0968904949172664,
+      "minimo": 0.021025758859842494,
+      "maximo": 0.31382427432601706
+    },
+    {
+      "feature": "media_historica_semana_exata",
+      "media": 0.033580462665900694,
+      "desvio": 0.01802046494517684,
+      "minimo": 0.013715921622303728,
+      "maximo": 0.06320252162172924
+    },
+    {
+      "feature": "media_8s",
+      "media": 0.031823577348946634,
+      "desvio": 0.023448650164100946,
+      "minimo": 0.003748799815724064,
+      "maximo": 0.06851319723245702
+    },
+    {
+      "feature": "z_score_historico_local",
+      "media": 0.009717894208449566,
+      "desvio": 0.007871730207416114,
+      "minimo": -0.00017884268616137158,
+      "maximo": 0.019925608959460644
+    },
+    {
+      "feature": "razao_media_recente",
+      "media": 0.008457748159607262,
+      "desvio": 0.0032717667732164207,
+      "minimo": 0.00438136433255069,
+      "maximo": 0.01415758988229926
+    },
+    {
+      "feature": "semana_epidemiologica",
+      "media": 0.007883946024369457,
+      "desvio": 0.007220460079439089,
+      "minimo": -0.0019176801864915587,
+      "maximo": 0.016779930735972153
+    },
+    {
+      "feature": "taxa_crescimento_suavizada",
+      "media": 0.007689785709685133,
+      "desvio": 0.004773766765902214,
+      "minimo": -0.0002693642388632937,
+      "maximo": 0.01496276560733878
+    },
+    {
+      "feature": "casos_t_menos_1",
+      "media": 0.006891975106221084,
+      "desvio": 0.006549510464474064,
+      "minimo": 0.0005787718182431687,
+      "maximo": 0.01717196433644323
+    },
+    {
+      "feature": "media_4s",
+      "media": 0.00393205627736313,
+      "desvio": 0.005415323581388664,
+      "minimo": -0.002290126198644734,
+      "maximo": 0.015143342504204016
+    },
+    {
+      "feature": "estado_alto_risco_t",
+      "media": 0.003631989805410328,
+      "desvio": 0.005203652200316963,
+      "minimo": -0.0035242355940454015,
+      "maximo": 0.01180048196199505
+    },
+    {
+      "feature": "area_km2",
+      "media": 0.002086583035369213,
+      "desvio": 0.002445183731223852,
+      "minimo": -0.0006416800652294293,
+      "maximo": 0.006225230156327107
+    },
+    {
+      "feature": "delta_2s",
+      "media": 0.0020512776083830377,
+      "desvio": 0.0027780464205846033,
+      "minimo": -0.0026201993488545647,
+      "maximo": 0.006189716950834275
+    },
+    {
+      "feature": "casos_t_menos_4",
+      "media": 0.0015388281687438333,
+      "desvio": 0.0011113209521316947,
+      "minimo": 0.0003921033741401403,
+      "maximo": 0.003095567203392343
+    },
+    {
+      "feature": "casos_t_menos_2",
+      "media": 0.0014505937390090087,
+      "desvio": 0.0022679828318035405,
+      "minimo": -0.0008112655339976479,
+      "maximo": 0.005383648815874054
+    },
+    {
+      "feature": "aceleracao_1s",
+      "media": 0.0006563886778963064,
+      "desvio": 0.0018517676217445214,
+      "minimo": -0.0014951975203419028,
+      "maximo": 0.004468389686093348
+    }
+  ]
+}

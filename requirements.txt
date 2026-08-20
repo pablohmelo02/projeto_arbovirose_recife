@@ -47,3 +47,10 @@ plotly>=5.20,<6
 # trendline="ols")` depende disso internamente).
 statsmodels>=0.14,<1
 
+# Etapa de Machine Learning (`src/ml/`): baseline de alerta antecipado de
+# dengue. LogisticRegression (modelo interpretável) e
+# HistGradientBoostingClassifier (modelo de árvores nativo do sklearn, sem
+# exigir XGBoost/LightGBM como dependência extra) cobrem as seções 23-24 do
+# pedido com a menor superfície de dependência nova possível.
+scikit-learn>=1.4,<2
+
