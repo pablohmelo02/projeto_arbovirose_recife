@@ -33,3 +33,17 @@ responses>=0.25,<1
 # nem serve dashboard.
 matplotlib>=3.8,<4
 
+# Dashboard web (EDA interativa), publicado a partir da Gold já pronta —
+# ver dashboard/ e src/eda/. Streamlit é o framework da aplicação (roda
+# local via `streamlit run dashboard/app.py` e é publicável no Streamlit
+# Community Cloud); Plotly é a única biblioteca de gráficos/mapa da
+# aplicação (choropleth via GeoJSON, sem Folium/PyDeck em paralelo — ver
+# decisão registrada em CLAUDE.md).
+streamlit>=1.38,<2
+plotly>=5.20,<6
+
+# Usado só pela linha de tendência (OLS) dos scatter plots de lag
+# clima x casos na página "Clima x Arboviroses" (`px.scatter(...,
+# trendline="ols")` depende disso internamente).
+statsmodels>=0.14,<1
+

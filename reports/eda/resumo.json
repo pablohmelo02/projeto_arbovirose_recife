@@ -1,0 +1,64 @@
+{
+  "resumo_epidemiologico": {
+    "total_linhas": 191478,
+    "total_casos": 156504,
+    "total_bairros": 94,
+    "ano_epidemiologico_min": 2013,
+    "ano_epidemiologico_max": 2025,
+    "total_semanas_distintas": 679,
+    "agravos_presentes": [
+      "CHIKUNGUNYA",
+      "DENGUE",
+      "ZIKA"
+    ],
+    "bairros_com_pelo_menos_1_caso": 94,
+    "bairros_com_clima_real": 90,
+    "percentual_linhas_com_clima_real": 6.1151
+  },
+  "resumo_climatico": {
+    "total_linhas": 191478,
+    "linhas_com_clima_real": 11709,
+    "percentual_linhas_com_clima_real": 6.1151,
+    "bairros_com_clima_real": 90,
+    "total_bairros": 94,
+    "percentual_bairros_com_clima_real": 95.74,
+    "anos_com_clima_real": [
+      2024,
+      2025
+    ],
+    "estacoes_distintas": 15,
+    "fontes_climaticas": [
+      "CEMADEN"
+    ]
+  },
+  "achados": [
+    {
+      "tipo": "observação",
+      "achado": "O ano epidemiológico com mais casos de arboviroses no total é 2015."
+    },
+    {
+      "tipo": "observação",
+      "achado": "A semana epidemiológica com maior média de casos é a semana 11 (356.5 casos/ano em média, 13 anos observados)."
+    },
+    {
+      "tipo": "observação",
+      "achado": "Os 3 bairros com mais casos totais (2013-2025, todos os agravos) são: COHAB, IBURA, VARZEA."
+    },
+    {
+      "tipo": "hipótese",
+      "achado": "Para DENGUE, a janela de lag com maior correlação exploratória (Pearson) observada é 28 dias (r=0.1194, n=4137) — observação exploratória sobre janela climática curta (2024-2025), NÃO uma conclusão causal nem generalizável a 2013-2023."
+    },
+    {
+      "tipo": "hipótese",
+      "achado": "Para ZIKA, a janela de lag com maior correlação exploratória (Pearson) observada é 28 dias (r=0.0289, n=4137) — observação exploratória sobre janela climática curta (2024-2025), NÃO uma conclusão causal nem generalizável a 2013-2023."
+    },
+    {
+      "tipo": "hipótese",
+      "achado": "Para CHIKUNGUNYA, a janela de lag com maior correlação exploratória (Pearson) observada é 28 dias (r=0.0518, n=4137) — observação exploratória sobre janela climática curta (2024-2025), NÃO uma conclusão causal nem generalizável a 2013-2023."
+    },
+    {
+      "tipo": "limitação",
+      "achado": "Cobertura climática real começa em 2024 — qualquer achado envolvendo clima é restrito a 2024-2025, nunca aos 13 anos completos."
+    }
+  ]
+}

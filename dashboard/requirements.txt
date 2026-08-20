@@ -1,0 +1,13 @@
+# Requirements mínimos para publicar SÓ o dashboard (Streamlit Community
+# Cloud lê este arquivo quando o app apontado é dashboard/app.py). O
+# dashboard nunca importa geopandas/boto3/moto/pytest/matplotlib -- só lê
+# os arquivos estáticos em dashboard/data/ (Parquet + GeoJSON via `json`
+# puro) e usa `src/eda/` (pandas puro). Deixar esses pacotes de fora aqui
+# evita builds pesados/frágeis no Cloud (GDAL do geopandas, em particular).
+# `requirements.txt` na raiz do repo continua sendo o completo, usado para
+# rodar o pipeline (ingestão/Silver/Gold/backfill) localmente.
+streamlit>=1.38,<2
+plotly>=5.20,<6
+statsmodels>=0.14,<1
+pandas>=2.2,<4
+pyarrow>=16.0,<26
