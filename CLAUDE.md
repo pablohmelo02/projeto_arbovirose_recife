@@ -18,6 +18,9 @@ implementada).
   contra ele antes de assumir algo sobre arquitetura/decisões.
 - `reports/climate_source_analysis/source_analysis.md` — investigação real
   (HTTP) de APAC x INMET.
+- `reports/climate_source_analysis/apac_freshness_investigation.md` —
+  investigação real de por que a rede APAC (PCDs) não tem leituras após
+  2024-04-09 (ver §10 para o resumo).
 - `reports/climate_spatial/summary.json` — cobertura espacial estação x
   bairro (baseline: 311 estações, 22 dentro do Recife, 20/94 bairros com
   estação própria).
@@ -108,9 +111,15 @@ python -m src.transform_climate_bairro        # NOVO: mapeamento bairro→estaç
 
 - Fase 1 (Arboviroses) e Fase 2 (Território): completas.
 - Fase 3 (Clima): Bronze/Profiling/Silver/DQ/análise espacial completos.
-- **Sessão atual**: implementando associação Silver `bairro → estação APAC
-  elegível mais próxima` (Estratégia A), item novo dentro da Fase 3 — ver
-  §10 abaixo para o resultado real desta sessão.
+- Mapeamento Silver `bairro → estação APAC elegível mais próxima`
+  (Estratégia A): **código completo e testado (156/156)**, mas **bloqueado
+  em produção**: a rede APAC está sem leituras recentes (ver §10) e o
+  filtro de elegibilidade corretamente recusa gerar associações. Investigação
+  técnica concluída — ver
+  `reports/climate_source_analysis/apac_freshness_investigation.md`.
+  **Próxima decisão é do usuário** (não avançar sozinho): aguardar a rede
+  voltar, contatar a APAC, ou avaliar fonte alternativa — nenhuma dessas
+  ações foi tomada ainda.
 - Fase 4 (Gold) em diante: não iniciada. **Não avançar sem autorização.**
 
 ## 9. Ambiente sem Docker
@@ -193,6 +202,37 @@ ativa agora, ou (b) o relógio do ambiente onde o pipeline roda estar à
 frente do tempo real — nenhuma das duas hipóteses foi confirmada. Enquanto
 isso não for esclarecido, `LIMIAR_DIAS_ESTACAO_ATIVA=90` não deve ser
 alterado nem contornado só para forçar cobertura.
+
+### 10.1 Investigação de atualidade da APAC (sessão de 2026-08-19, continuação)
+
+Investigação completa em
+`reports/climate_source_analysis/apac_freshness_investigation.md`. Resumo:
+
+- **Confirmado**: a resposta ao vivo do endpoint (reconsultado diretamente,
+  fora do Bronze) é **idêntica, byte a byte**, ao que já estava armazenado
+  — o endpoint serve um conjunto de dados congelado, não telemetria real.
+- **Confirmado**: `ServicoMonitoramentoPCDs.php` (usado por `apac_client.py`)
+  **é o mesmo endpoint que o painel público atual da APAC** referencia como
+  fonte oficial de "Coleta de Dados (PCDs)" (`ServicoMapa.php?mapeamento=1/`
+  do módulo `mod_painel_mapa`, atual, baseado em OpenLayers). **Não é
+  endpoint legado.**
+- **Confirmado**: parsing 100% correto (299/299, formato `DD-MM-AAAA`
+  inequívoco, sem inversão dia/mês) e campo `"Data último dado"` significa
+  literalmente última transmissão recebida — não é bug nosso nem campo
+  com semântica diferente.
+- **Achado**: 157/299 estações (52,5%) pararam de transmitir no mesmo dia
+  (`2024-04-09`, horários distintos e plausíveis), mais 18 em `2024-04-08`
+  — um evento concentrado, não apenas morte gradual e independente por
+  estação. Causa raiz exata não confirmada (hipótese em aberto).
+- **Classificação: A — rede real desatualizada** (não B/C/D). Ver relatório
+  para descarte detalhado de cada hipótese alternativa.
+- **Diagnóstico isolado (não persistido em Silver)**: ignorando só a idade
+  da estação, a Estratégia A cobre **94/94 bairros**, com 27 estações
+  distintas, distância mediana 1,1 km e máxima 3,6 km — a cobertura
+  geométrica é excelente; o único problema é atualidade temporal.
+- **Recomendação**: manter `LIMIAR_DIAS_ESTACAO_ATIVA=90` e o resultado
+  0/94 como correto. Não implementar fonte alternativa nem relaxar o
+  threshold sem essa decisão vir do usuário primeiro.
 
 ## 11. Coisas que NÃO fazer sem autorização explícita
 
