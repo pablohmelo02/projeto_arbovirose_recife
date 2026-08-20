@@ -21,6 +21,10 @@ implementada).
 - `reports/climate_source_analysis/apac_freshness_investigation.md` —
   investigação real de por que a rede APAC (PCDs) não tem leituras após
   2024-04-09 (ver §10 para o resumo).
+- `reports/climate_source_analysis/alternative_sources_analysis.md` —
+  comparação real (HTTP) de CEMADEN e ANA/Hidroweb como fontes climáticas
+  alternativas à APAC (ver §10.2 para o resumo e a próxima fonte
+  recomendada).
 - `reports/climate_spatial/summary.json` — cobertura espacial estação x
   bairro (baseline: 311 estações, 22 dentro do Recife, 20/94 bairros com
   estação própria).
@@ -117,9 +121,12 @@ python -m src.transform_climate_bairro        # NOVO: mapeamento bairro→estaç
   filtro de elegibilidade corretamente recusa gerar associações. Investigação
   técnica concluída — ver
   `reports/climate_source_analysis/apac_freshness_investigation.md`.
-  **Próxima decisão é do usuário** (não avançar sozinho): aguardar a rede
-  voltar, contatar a APAC, ou avaliar fonte alternativa — nenhuma dessas
-  ações foi tomada ainda.
+- Investigação de fontes alternativas (CEMADEN, ANA/Hidroweb) concluída
+  — ver §10.2 e `reports/climate_source_analysis/alternative_sources_analysis.md`.
+  **CEMADEN recomendado como próxima fonte a implementar** (condicional a
+  confirmar o endpoint de valores de precipitação por estação — ainda não
+  encontrado). **Nada foi implementado ainda — decisão de avançar é do
+  usuário.**
 - Fase 4 (Gold) em diante: não iniciada. **Não avançar sem autorização.**
 
 ## 9. Ambiente sem Docker
@@ -196,12 +203,10 @@ persistir um mapeamento vazio silenciosamente; por isso não há
 `reports/climate_neighborhood_mapping/` nem Parquet/manifest gravados nesta
 execução.
 
-**Próximo passo (não iniciado, decisão do usuário)**: investigar se a
-defasagem é (a) a rede APAC real estar de fato sem manutenção/telemetria
-ativa agora, ou (b) o relógio do ambiente onde o pipeline roda estar à
-frente do tempo real — nenhuma das duas hipóteses foi confirmada. Enquanto
-isso não for esclarecido, `LIMIAR_DIAS_ESTACAO_ATIVA=90` não deve ser
-alterado nem contornado só para forçar cobertura.
+**Atualização**: a dúvida sobre rede real vs. relógio do ambiente, levantada
+logo abaixo, foi **resolvida na investigação seguinte (§10.1): é a rede
+real** (confirmado por reconsulta ao vivo idêntica ao Bronze). Ver §10.1 e
+§10.2 para o estado atual completo.
 
 ### 10.1 Investigação de atualidade da APAC (sessão de 2026-08-19, continuação)
 
@@ -233,6 +238,46 @@ Investigação completa em
 - **Recomendação**: manter `LIMIAR_DIAS_ESTACAO_ATIVA=90` e o resultado
   0/94 como correto. Não implementar fonte alternativa nem relaxar o
   threshold sem essa decisão vir do usuário primeiro.
+
+### 10.2 Investigação de fontes alternativas: CEMADEN e ANA/Hidroweb (sessão de 2026-08-19, continuação)
+
+Investigação completa em
+`reports/climate_source_analysis/alternative_sources_analysis.md`
+(metodologia: requisições HTTP reais, spatial join geométrico real contra
+`silver_bairro_geo`, diagnóstico da Estratégia A só em memória — nada
+persistido em Silver, nenhum cliente definitivo criado). Resumo:
+
+- **CEMADEN**: 437 estações pluviométricas cadastradas em PE, **19
+  fisicamente dentro do Recife** (spatial join real), **15/19 elegíveis**
+  pelo limiar de 90 dias do projeto (campo nativo `tempo_inatividade`, real
+  e atualizado). Mesmos nomes/coordenadas da rede PCD da APAC — é
+  provavelmente o mesmo hardware físico, mas com sinal de atividade mais
+  confiável que o endpoint atual da APAC. Diagnóstico da Estratégia A:
+  **94/94 bairros**, 18 estações distintas (só elegíveis), distância
+  mediana 1,41 km, máxima 5,37 km. **Gap conhecido**: não foi encontrado
+  ainda um endpoint com os *valores* de precipitação por estação (só
+  cadastro + status de atividade); o único layer de valores achado no
+  GeoServer (`precipitacao_bacia_24`) é agregado por bacia hidrográfica e
+  está congelado desde 2017. Histórico mensal existe (2011-2026) mas é
+  bloqueado por CAPTCHA.
+- **ANA/Hidroweb**: 85 estações cadastradas em PE (43 pluviométricas + 42
+  telemétricas), só **1 dentro do Recife** (Afogados). API REST nova exige
+  login (401 sem token, nenhum modo anônimo); SOAP legado morto (timeout);
+  serviço de telemetria com service definition vazia. Nenhum dado real
+  obtido. Diagnóstico da Estratégia A (só cadastro): 94/94 "cobertos" mas
+  com apenas 2 estações distintas, distância mediana 5,45 km, máxima 11,19
+  km — muito pior que APAC/CEMADEN.
+- **Classificação**: INMET = PRIMÁRIA (mantida). APAC = **rebaixada de
+  complementar para RESERVA** (feed atual congelado, mas pipeline pronto
+  para reusar se a rede voltar). CEMADEN = **COMPLEMENTAR (condicional)** —
+  candidata mais forte, mas falta confirmar o endpoint de valores. ANA =
+  RESERVA (autenticação obrigatória, baixíssima densidade em Recife).
+- **Recomendação explícita**: **CEMADEN é a próxima fonte a implementar**,
+  condicionado a uma investigação técnica adicional pequena e focada (achar
+  o endpoint real de valores de precipitação por estação — candidatos não
+  testados: `view_pcds_agrometeorologica_cemaden`,
+  `view_pcds_hidrologicas_cemaden`, ou serviço de observações separado).
+  **Nada disso foi implementado — aguardando autorização do usuário.**
 
 ## 11. Coisas que NÃO fazer sem autorização explícita
 
