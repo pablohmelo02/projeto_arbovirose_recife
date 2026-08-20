@@ -33,7 +33,14 @@ implementada).
   Estratégia A) com resultado real: 94/94 bairros associados (ver §10.4).
 - `reports/gold_analysis/README.md` — **Gold analítica** (arboviroses +
   território + clima): grão, joins, cardinalidade, leakage, profiling,
-  visualizações e a limitação crítica de cobertura climática (ver §12).
+  visualizações e a cobertura climática real, atualizada após o backfill
+  (ver §12 e §13).
+- `reports/climate_source_analysis/cemaden_historical_backfill_analysis.md`
+  — investigação de profundidade histórica do CEMADEN e o backfill
+  implementado (ver §13).
+- `reports/eda/README.md` — EDA reproduzível (histórica 2013-2025 +
+  integrada com clima 2024-2025) e o dashboard Streamlit que a consome
+  (ver §14).
 - `reports/climate_spatial/summary.json` — cobertura espacial estação x
   bairro (baseline: 311 estações, 22 dentro do Recife, 20/94 bairros com
   estação própria).
@@ -116,6 +123,7 @@ pytest                        # roda toda a suíte
 
 python -m src.ingest_territorio && python -m src.transform_territorio
 python -m src.ingest_climate && python -m src.transform_climate   # agora INMET + APAC + CEMADEN
+python -m src.backfill_climate_cemaden --dias 730      # backfill historico CEMADEN (ver CLAUDE.md §13)
 python -m src.analyze_climate_coverage        # cobertura espacial (diagnóstico)
 python -m src.transform_climate_bairro        # mapeamento bairro→estação (Silver, Estratégia A)
 python -m src.analyze_climate_neighborhood_mapping   # relatório do mapeamento
@@ -123,6 +131,10 @@ python -m src.analyze_climate_neighborhood_mapping   # relatório do mapeamento
 python -m src.main && python -m src.transform         # arboviroses (Bronze → Silver)
 python -m src.transform_gold_arboviroses_clima        # Gold: bairro × semana epi × agravo
 python -m src.analyze_gold                            # profiling + visualizações da Gold
+
+python -m src.validate_dengue_onset_ranking_evidence  # validação estatística do candidato (§18)
+python -m src.plot_evidence_validation                # figuras A-I da validação (§18)
+streamlit run tools/model_validation_app.py           # visualização técnica experimental (§18)
 ```
 
 ## 8. Estado do desenvolvimento (ver README §2 para detalhe por fase)
@@ -462,6 +474,17 @@ threshold, sem autorização explícita.
   propriedade de a APAC voltar a competir sozinha se reativar.
 - Não usar `codigo_estacao` sozinho como chave em merges/índices no domínio
   de clima — não é único entre fontes; sempre `(fonte, codigo_estacao)`.
+- Não afirmar ganho do modelo sobre rankings simples em **Top-10, Top-15 ou
+  Top-20** — validado em 2026-08-20: só **Top-5** tem IC que não cruza zero
+  (§18). Em Top-20 o baseline é significativamente melhor.
+- Não integrar o ranking preditivo às 7 páginas do dashboard público
+  (*Recife Alerta*) — a visualização técnica vive em
+  `tools/model_validation_app.py`, separada de propósito (§18).
+- Não alterar modelo/feature/target/hiperparâmetro de
+  `dengue_onset_ranking_candidate_v1` e reaproveitar os números da §18:
+  qualquer mudança cria **nova versão** e exige nova validação.
+- Não treinar modelo nem gerar previsão futura dentro de qualquer app
+  Streamlit — a página técnica só lê artefatos de backtest já calculados.
 
 ## 12. Gold analítica `gold_arboviroses_clima_bairro` (sessão de 2026-08-20)
 
@@ -518,16 +541,495 @@ com 0,04% de nulos (não precisa inventar distribuição). Agravos em
 aproveitamento no join espacial; perdas contadas no manifest) · 0
 duplicatas de chave · 0 casos negativos.
 
-**⚠️ Limitação crítica**: **0% das linhas têm clima real**. A interseção
-temporal entre casos (2013-2025) e clima com leitura real (CEMADEN:
-2026-08-18 a 2026-08-20) é vazia — o CEMADEN só começou a acumular série
-quando foi integrado, depois do fim da série epidemiológica. As colunas
-climáticas existem e o mecanismo é correto/testado, mas ficam `None` no
-histórico. **Não** foi implementada mistura de fontes (INMET regional como
-proxy) — decisão arquitetural pendente de autorização.
+**Limitação original (resolvida parcialmente em 2026-08-20, ver §13)**:
+nesta execução original, **0% das linhas tinham clima real** — a
+interseção temporal entre casos (2013-2025) e clima com leitura real
+(CEMADEN: 2026-08-18 a 2026-08-20) era vazia. Depois do backfill histórico
+(§13), a Gold foi reconstruída e a cobertura real subiu para 6,11%
+(2024-2025). **Não** foi implementada mistura de fontes (INMET regional
+como proxy) — decisão arquitetural que continua exigindo autorização, não
+mudou.
 
-**Próximo passo (decisão do usuário, nada iniciado)**: EDA completa. Duas
-frentes possíveis — (1) EDA da dimensão epidemiológica+territorial, que tem
-13 anos de dado real e denso; ou (2) resolver a lacuna climática histórica
-antes de uma EDA integrada clima↔casos (que hoje é impossível com dado
-real).
+**Próximo passo (decisão do usuário)**: EDA. Com o backfill (§13), agora
+existem duas janelas possíveis — (1) EDA clima×arboviroses restrita a
+2024-2025 (dado real, 90/94 e 65/94 bairros cobertos); ou (2) EDA completa
+da dimensão epidemiológica+territorial (13 anos, sem clima). Para
+2013-2023, EDA integrada com clima real continua impossível — nenhuma fonte
+investigada resolve esse trecho (ver §13, seção "próxima fonte" do
+relatório de backfill).
+
+## 13. Backfill histórico do CEMADEN e reconstrução da Gold (sessão de 2026-08-20)
+
+Investigação e execução completas em
+`reports/climate_source_analysis/cemaden_historical_backfill_analysis.md`
+(ver também `reports/gold_analysis/README.md`, seção "Atualização"). Resumo
+operacional:
+
+- **Profundidade histórica real do CEMADEN**: validada tecnicamente até
+  **1825 dias (5 anos)** por estação via `horario/{id}/{horas}` (Porto:
+  2021-08-21 → 2026-08-20, 400 MB, 200 OK, sem CAPTCHA/login). O endpoint
+  só aceita "últimas N horas a partir de agora" — **não existe parâmetro
+  de data inicial**, logo não há chunking real por intervalo (a
+  profundidade é a maior requisição bem-sucedida por estação, não a soma
+  de várias). Achado operacional: janelas ≥ ~2 anos podem exceder 60s na
+  1ª requisição a uma estação ("cold start" reproduzível — a mesma
+  requisição repetida responde em segundos), por isso o backfill usa
+  timeout alto (180s) + retentativa, nunca chunking por data.
+- **Backfill implementado**: sim.
+  `src/ingestion/cemaden_backfill.py` (`executar_backfill_cemaden`,
+  `estacoes_com_backfill_suficiente` para checkpoint/retomada) +
+  `python -m src.backfill_climate_cemaden --dias N`. Grava em
+  `bronze/recife/clima/cemaden/horario_backfill/...` (prefixo distinto do
+  operacional `.../horario/...`). **Nenhuma mudança em
+  `pipeline_climate.py`**: a Silver já acumulava/deduplicava qualquer
+  entrada `tipo="horario"` de qualquer manifest CEMADEN, operacional ou
+  backfill — confirmado com teste de integração dedicado.
+- **Intervalo obtido nesta execução**: 730 dias (2 anos, 2024-08-20 →
+  2026-08-20) — não os 1825 dias validados tecnicamente, por limitação de
+  memória do ambiente local (`moto` em memória, sem MinIO/Docker real,
+  ~1,9-2,3 GB livres observados nesta sessão). Documentado como decisão de
+  ambiente, não limite do CEMADEN — `--dias 1825` funcionaria sem mudança
+  de código num ambiente com MinIO real.
+- **Estações**: as 16 que a Estratégia A já usa (`silver_bairro_estacao`),
+  não as 407 de PE nem as 35 candidatas da Grande Recife — partiu do
+  mapeamento espacial atual, conforme decidido. 16/16 sucesso, 0 erros.
+  Achado real: a estação `6532` só tem leitura real desde 2026-04-14
+  (começou a operar no meio da janela de 730 dias pedida) — tratado
+  corretamente pelo mecanismo existente (`horas_validas_dia`,
+  `missing ≠ 0`), sem mudança de código.
+- **Estratégia A não precisou de versão temporal** (bairro+período →
+  estação elegível naquele período): a elegibilidade depende só da leitura
+  mais recente (invariante a backfill), e `transform_climate_bairro` deu o
+  mesmo mapeamento 94/94 antes e depois do backfill.
+- **Cobertura dos bairros**: 2024 = 90/94 (95,74%), 2025 = 65/94 (69,15%);
+  2013-2023 seguem 0/94 (fora da janela de 730 dias a partir de
+  2026-08-20).
+- **Percentual da Gold com clima real**: 0% → **6,1151%** (11.709/191.478
+  linhas), 8.210 casos reais em semanas com clima real, os 3 agravos
+  representados, 0 leakage (reconfirmado), 0 duplicatas (inalterado).
+- **Limitações**: 2013-2023 continuam sem clima real (nenhuma fonte
+  investigada resolve); profundidade aplicada (730d) é menor que a
+  validada tecnicamente (1825d) só por causa do ambiente local; payload do
+  endpoint cresce ao quadrado da janela (documentado), o que tornaria 10+
+  anos caro mesmo com MinIO real.
+- **Classificação: B — histórico parcial útil.**
+- **Próximo passo (decisão do usuário, nada iniciado)**: EDA
+  clima×arboviroses restrita a 2024-2025; ou rodar o backfill com
+  `--dias 1825` num ambiente com MinIO real para estender a janela a
+  2021-2025 antes da EDA; ou investigar ANA/Hidroweb ou produtos de
+  precipitação em grade para 2013-2023 (não iniciado, não autorizado).
+  Suíte: **226/226 passando** (baseline era 217).
+
+## 14. Dashboard Streamlit + EDA reproduzível (sessão de 2026-08-20)
+
+**Dashboard criado.** Tecnologia: **Streamlit** (1.62, `st.navigation`/
+`st.Page`) + **Plotly** (única lib de gráfico/mapa — sem Folium/PyDeck em
+paralelo, decisão registrada). Produto analítico principal do projeto a
+partir desta etapa (não descartável).
+
+**Estrutura**: `dashboard/{app.py, _bootstrap.py, pages/, components/,
+utils/, data/, requirements.txt}` + `.streamlit/config.toml`. Lógica
+analítica reutilizável em `src/eda/` (`filtros.py`, `epidemiologia.py`,
+`clima.py`, `correlacao.py`, `relatorio.py`) — puro pandas, sem Streamlit,
+usada tanto pelo dashboard quanto por `reports/eda/`
+(`python -m src.generate_eda_report`). **Nenhuma lógica da Gold foi
+reimplementada** (dashboard só consome, nunca recalcula join/Estratégia A/
+agregação epidemiológica).
+
+**Páginas** (7): Visão Geral, Epidemiologia (2013-2025), Mapa
+Epidemiológico, Ranking de Bairros, Clima (CEMADEN), Clima × Arboviroses
+(2024-2025, restrita automaticamente a linhas com clima real), Qualidade
+dos Dados.
+
+**Comandos**:
+```bash
+python -m src.export_dashboard_dataset   # gera dashboard/data/
+streamlit run dashboard/app.py
+python -m src.generate_eda_report        # gera reports/eda/
+python scripts/verificar_deploy_dashboard.py
+```
+
+**Dataset usado**: `dashboard/data/gold_arboviroses_clima_bairro.parquet`
+(0,34 MB, 191.478 linhas) + `bairro_geo.geojson` (2,16 MB, 94 bairros) —
+exportados uma vez do Data Lake (MinIO/moto), nunca lidos em tempo real
+pelo dashboard (permite deploy sem infraestrutura local). Seguro por
+construção (Gold já agregada, sem dado individual do SINAN); o script de
+exportação levanta erro se aparecer coluna potencialmente identificável.
+
+**Achados principais da EDA** (`reports/eda/README.md`, todos com N de
+observações reportado):
+- Ano com mais casos de arboviroses (2013-2025): **2015**. Pico de Zika em
+  2016, onda de chikungunya em 2021, alta de dengue 2024-2025.
+- Sazonalidade real: pico médio na **semana epidemiológica 11**
+  (fev/mar), platô elevado entre semanas ~8-25.
+- Maior carga histórica: **COHAB, IBURA, VÁRZEA, ÁGUA FRIA** (contagem
+  absoluta — sem incidência, sem dado de população por bairro).
+- EDA integrada (só 2024-2025, n=3.903-4.137 observações por agravo):
+  correlação exploratória (Pearson) casos×chuva **cresce com o lag**
+  (28d > 21d > 14d > 7d) nos 3 agravos, mas é **fraca** em todos os casos
+  (< 0,12) — Dengue tem a maior correlação exploratória entre os três.
+  **Não é causalidade, não é generalizável a 2013-2023.**
+
+**Status de deploy**: preparado, **não publicado nesta sessão** (nenhuma
+credencial do Streamlit Community Cloud disponível/configurada neste
+ambiente). `dashboard/requirements.txt` (mínimo, sem geopandas/boto3/moto),
+`.streamlit/config.toml`, sem caminho absoluto local, sem segredo no
+código — verificado por `scripts/verificar_deploy_dashboard.py`. Testado
+localmente via `streamlit run` + browser real: as 7 páginas carregam,
+filtros (agravo/ano/RPA/bairro) funcionam, mapa renderiza, sem erro de
+console.
+
+**Testes**: 30 novos (`test_eda.py` 25, `test_eda_relatorio.py` 3,
+`test_export_dashboard_dataset.py` 2) — camada analítica (filtros,
+agregação, ranking, correlação, cobertura, **DataFrame vazio** [achou e
+corrigiu um bug real em `cobertura_por_ano`/`cobertura_por_bairro`],
+bairro sem clima, rejeição de dado identificável na exportação). Suíte
+total: **256/256 passando** (baseline era 226, 0 regressões).
+
+**Próximo passo (decisão do usuário, nada iniciado)**: publicar no
+Streamlit Community Cloud (credenciais/repositório GitHub pendentes do
+usuário); ou avançar para feature engineering/Machine Learning a partir
+dos achados da EDA — **iniciado na sessão seguinte, ver §15**.
+
+## 15. Machine Learning: alerta antecipado de dengue por bairro (sessão de 2026-08-20, continuação)
+
+Relatório completo em `reports/ml/dengue_early_warning_baseline.md`
+(formalização, target, features, split, baselines, modelos, métricas
+técnicas/operacionais, lead time, comparação com clima, limitações,
+decisão). Resumo operacional — ver também README §32:
+
+- **DENGUE é o agravo preditivo principal a partir de agora.** Zika/
+  Chikungunya seguem só para EDA/comparação.
+- **Pacote novo `src/ml/`** (`target.py`, `features.py`, `dataset.py`,
+  `split.py`, `baselines.py`, `models.py`, `evaluation.py`,
+  `alert_metrics.py`) + entry point
+  `python -m src.evaluate_dengue_alert_baseline`. Consome
+  `dashboard/data/gold_arboviroses_clima_bairro.parquet` — nenhum
+  join/agregação da Gold é reimplementado.
+- **Definição de "risco elevado"** (`target.py`): `casos > percentil 90`
+  da distribuição histórica do MESMO bairro numa janela de `±2` semanas em
+  torno da semana alvo, usando só anos anteriores (fallback para
+  distribuição geral do bairro se amostra sazonal < 15; indefinido se nem
+  isso, nunca forçado a 0/1). Não é um corte absoluto (`casos > N`) —
+  justificado pela variação de escala entre bairros (COHAB 6.817 casos
+  acumulados vs. PAU FERRO 1, em 13 anos) e pela ausência de dado de
+  população por bairro no projeto.
+- **Horizonte principal: t+1 semana** (t+2 avaliado à parte, PR-AUC menor:
+  0,250 vs 0,292). **Target ≠ previsão de contagem** — é estado de risco
+  elevado em t+1 (Saída B/alerta), distinto da previsão quantitativa
+  (Saída A, `casos_t+1`), que existe só como baseline de apoio.
+  Split temporal: treino 2013-2019, validação 2020-2022, teste 2023-2025
+  (nunca aleatório); threshold de decisão escolhido por F1 na validação,
+  nunca no teste.
+- **Resultado real** (teste 2023-2025, 14.664 linhas, 58.750 linhas no
+  dataset supervisionado completo, 12,03% positivo): HistGradientBoosting
+  PR-AUC 0,292 / Logistic Regression PR-AUC 0,278 — ambos superam
+  claramente os 3 baselines (persistência PR-AUC 0,156, crescimento
+  recente 0,094, sazonal simples 0,140). Episódios detectados: 39,3%
+  geral, **79,3% nas epidemias grandes** (top 10% por casos). Lead time
+  mediano nos episódios detectados: **3 semanas** (81,5% das detecções são
+  antecipadas, não simultâneas/tardias). Walk-forward por ano mostra
+  **forte instabilidade** (PR-AUC de 0,074 em 2023 a 0,652 em 2021) — não
+  generaliza uniformemente entre ciclos epidêmicos. Vários bairros com
+  histórico suficiente têm 0% de detecção — heterogeneidade espacial real,
+  não ruído disperso.
+- **Comparação BASE × BASE+CLIMA** (2024→2025, mesmas linhas, mesmo split,
+  só o modelo de árvore por aceitar `NaN` nativamente): ganho de PR-AUC
+  **+0,025**, pequeno e estatisticamente frágil (treino de só 1.305 linhas
+  de um único ano). **Clima não foi incorporado ao modelo principal** —
+  regra explícita de não forçar clima sem ganho robusto.
+- **Classificação: B — existe sinal, mas precisa melhorar.** **Decisão:
+  SIM**, avançar para uma etapa de otimização (não para produção) — ver
+  ressalvas específicas no relatório (investigar falha de 2023, elevar
+  taxa de detecção geral, heterogeneidade por bairro, calibração de
+  probabilidade antes de qualquer exibição de "risco: X%").
+- **Testes**: 29 novos, incluindo leakage adversarial (injeção de
+  `casos=99999` no futuro confirmando que features/limiares passados não
+  mudam) em target/features/dataset, e testes de episódio/lead time/split.
+  Suíte total: **285/285 passando** (baseline era 256, 0 regressões).
+- **Dependência nova**: `scikit-learn` (`requirements.txt`) — única
+  adição, usada por `LogisticRegression`/`HistGradientBoostingClassifier`.
+- **Não alterado**: Bronze, Silver, Gold, dashboard, dados climáticos.
+  Nenhum tuning extensivo, ensemble, deep learning, calibração avançada,
+  categorias verde/amarelo/vermelho ou deploy — conforme regra de parada
+  explícita desta etapa.
+- **Próximo passo (decisão do usuário)**: otimização do sistema de alerta
+  — **executada na sessão seguinte, ver §16**.
+
+## 16. Machine Learning: otimização e diagnóstico de robustez (sessão de 2026-08-20, continuação)
+
+Relatório completo em `reports/ml/dengue_early_warning_optimization.md`
+(ver também README §33). Resumo operacional:
+
+- **Diagnóstico de 2023** (pior ano da etapa anterior, PR-AUC 0,074):
+  NÃO é falha de feature/target/modelo. Evidência: prevalência do target
+  2,6% (5-6x menor que anos "normais" como 2019/2021/2024/2025);
+  episódios mais curtos (1,08 semana vs 1,5-2,4 nos outros anos), mais
+  fracos (pico mediano 2 casos) e mais restritos espacialmente (56/94
+  bairros vs 91-92/94); drift de features (KS test) **menor** em 2023 que
+  em 2024/2025 (que têm melhor desempenho absoluto) — descarta drift como
+  causa. `lift_pr_auc = PR-AUC/prevalência` (`src/ml/diagnostics.py`)
+  mostra que, corrigindo por prevalência, 2023 (2,80x) não é o pior ano —
+  2024 é (2,44x). **Confirmação decisiva**: mesmo após todas as
+  melhorias desta etapa (features + tuning), o PR-AUC de 2023 não mudou
+  (0,0738 → 0,0738) — é um limite estrutural do ano epidemiológico, não
+  do pipeline.
+- **Features novas** (`src/ml/features.py`): histórico local
+  (`razao_limiar_historico = casos_t/(limiar_historico_local+1)`,
+  `z_score_historico_local`, `razao_media_recente`, suavização de Laplace
+  `+1` para nunca gerar `inf`/`NaN` por divisão por zero) e momentum
+  (`delta_1s/2s`, `aceleracao_1s`, `taxa_crescimento_suavizada`,
+  `n_semanas_consecutivas_crescimento`). Ablation cumulativo
+  (`ablation_features.csv`): sazonal é o grupo com maior ganho isolado
+  (+0,024 PR-AUC), histórico local o segundo (+0,009) — e
+  `razao_limiar_historico` acaba sendo a feature MAIS importante do
+  modelo em TODOS os 7 folds do walk-forward (permutation importance).
+  Território e momentum têm ganho marginal (+0,003 cada), mantidos por
+  não piorarem nada.
+- **Target alternativo** (`calcular_estado_alto_risco_v2_experimental`,
+  anomalia sazonal + crescimento em 2 semanas): comparado, **não
+  adotado** — concordância baixa com o oficial (Jaccard 0,08-0,18,
+  pior ainda no ano de epidemia grande 2015: 50,2% de concordância) e
+  risco de target auto-realizável se combinado com features de momentum
+  (seção 12 do pedido da etapa). Target oficial (`estado_alto_risco`,
+  P90 histórico-sazonal) **mantido sem alteração**.
+- **Tuning controlado**: grade pequena (4 combinações), avaliada por
+  MEDIANA do PR-AUC no walk-forward completo (generalização, não só
+  validação isolada) — as 4 combinações tiveram desempenho
+  estatisticamente indistinguível; escolhida a mais simples
+  (`max_depth=4`, `max_iter=150`) por parcimônia.
+- **Resultado real** (teste 2023-2025, mesmo split da etapa anterior):
+  PR-AUC 0,292 → **0,308**; episódios detectados 39,3% → **45,9%**;
+  bairros com 0% de detecção 12 → **7** (IPSEP — bairro de volume
+  substancial, 1.629 casos acumulados — continua em 0%, achado
+  específico a investigar); epidemias grandes seguem em ~78-79%
+  (estável); Brier Score calibrado (isotonic, fit só na validação,
+  `sklearn.frozen.FrozenEstimator`) **0,116 → 0,073** (-37%).
+- **Threshold operacional** (`threshold_operacional.csv`): tabela
+  completa 0,3-0,7 com Precision/Recall/episódios detectados/lead
+  time/falsos alertas por semana/bairros alertados por semana — não um
+  único limiar escondido. Threshold 0,6 (escolhido por F1 na validação):
+  mediana de 7 bairros alertados/semana (máximo observado numa semana:
+  53); sequências de falsos alertas consecutivos no mesmo bairro: média
+  1,5 semana, máxima 5 (a maioria isolada, não persistente).
+- **Ranking territorial** (`src/ml/ranking.py`, novo): Recall@20 semanal
+  41-46% (~2x o acaso); em 52,7% dos episódios reais o bairro já estava
+  no Top-20 de risco da cidade em algum momento das 4 semanas antes do
+  início (mais informativo que Recall@K semanal isolado, mas ainda
+  modesto).
+- **Instabilidade entre anos persiste**: desvio-padrão do PR-AUC entre os
+  7 folds do walk-forward = 0,201 (min 0,074 em 2023, max 0,664 em 2021)
+  — não resolvida pela otimização, é estrutural.
+- **2025 não é mais holdout puro** — já usado como teste na etapa
+  anterior; documentado explicitamente, não escondido.
+- **Classificação: B — melhorou, mas ainda apresenta fragilidades
+  relevantes. Decisão explícita: NÃO integrar ao dashboard nesta etapa.**
+  Se/quando integrado no futuro, mostrar score/ranking de risco, não
+  probabilidade calibrada como número de confiança absoluto (mesmo com o
+  Brier Score melhorado, a instabilidade entre anos e a heterogeneidade
+  territorial tornam arriscado comunicar "82% de chance" como medida
+  uniformemente confiável).
+- **Testes**: 21 novos (features de histórico local/momentum sem
+  leakage e sem `inf`/`NaN` por divisão por zero; diagnóstico de
+  drift/lift; ranking sem olhar o futuro do próprio episódio; calibração
+  determinística; métricas operacionais semanais). Suíte total:
+  **306/306 passando** (baseline era 285, 0 regressões).
+- **Dependência nova**: nenhuma — reutiliza `scikit-learn`
+  (`CalibratedClassifierCV`/`FrozenEstimator`, `permutation_importance`,
+  já disponíveis na versão já instalada).
+- **Não alterado**: Bronze, Silver, Gold, dashboard, dados climáticos,
+  definição oficial do target (`estado_alto_risco`),
+  `src/ml/baselines.py` (baselines da etapa anterior preservados sem
+  mudança). Nenhum deploy, nenhuma integração ao Streamlit, nenhum
+  ensemble/deep learning/AutoML, clima mantido fora do modelo principal
+  (não revisitado nesta etapa, por instrução explícita).
+- **Próximo passo (decisão do usuário)**: investigar bairros com 0% de
+  detecção; explorar onset + ranking — **executado na sessão seguinte,
+  ver §17**.
+
+## 17. Machine Learning: onset + ranking territorial preventivo (sessão de 2026-08-20, continuação)
+
+Relatório completo em `reports/ml/dengue_onset_ranking_analysis.md` (ver
+também README §34). Resumo operacional:
+
+- **Reformulação**: Formulação A (`estado_alto_risco` em t+1, já
+  existente, preservada sem alteração) vs **Formulação B** (`src/ml/onset.py`,
+  novo): "um novo episódio vai COMEÇAR entre t+1 e t+3?" — só a PRIMEIRA
+  semana de cada episódio conta como positivo (reaproveita
+  `alert_metrics.construir_episodios`, não reimplementado). Produto
+  tratado como **ranking territorial semanal** (Top-K bairros), não
+  classificação binária isolada.
+- **Onset ≠ continuação**: testado explicitamente
+  (`test_onset_nao_marca_semanas_de_continuacao_mesmo_com_horizonte_maior`)
+  — se o bairro já está ativo em `t`, isso nunca "descobre" um onset novo
+  automaticamente ao continuar em `t+1` (só conta se o episódio atual
+  terminar e um novo genuinamente começar, com gap).
+- **Horizonte h=3 escolhido sobre h=1**: PR-AUC walk-forward médio 0,314
+  (h=3) vs 0,197 (h=1) — mais valor preventivo E melhor sinal bruto.
+- **Resultado real** (teste 2023-2025, mesmo split/features/hiperparâmetros
+  das etapas anteriores, sem clima): walk-forward do onset h=3 é **mais
+  estável** que a Formulação A (desvio-padrão de PR-AUC 0,147 vs 0,201;
+  piso 0,108 vs 0,074) — 2022 (não 2023) passa a ser o pior ano (menor
+  número de episódios da série). Recall@10 "por episódio" (bairro no
+  Top-10 em algum momento das 4 semanas antes do início real): **38,4%**
+  (Formulação B) vs 33,2% (Formulação A). Bairros com 0% de detecção:
+  7 → **2** (Poço, Ponto de Parada).
+- **Achado honesto (não escondido)**: comparado a 3 baselines de ranking
+  sem modelo (`casos_t`, `taxa_crescimento_suavizada`,
+  `razao_limiar_historico`), o modelo só vence claramente em **Top-5**
+  (25,8% vs melhor baseline 19,8%) e **Top-10** (38,4% vs 35,8%) — em
+  **Top-15/20 os baselines simples empatam ou SUPERAM o modelo**
+  (Recall@20: baseline "crescimento recente" 63,2% vs modelo 57,6%). O
+  valor de ML se concentra no cenário operacional mais restritivo
+  (poucos bairros priorizáveis por semana).
+- **Achado novo — disparidade regional**: Recall@20 por RPA varia de
+  **74,1% (RPA 5) a 33,8% (RPA 6)** — não investigado a fundo. IPSEP
+  (RPA 6, bairro de volume substancial já flagado nas etapas anteriores)
+  melhora de 0% para 16,7% de detecção, mas continua entre os piores
+  (posição mediana 39ª de ~94).
+- **Achado crítico para o desafio**: separando episódios que ocorrem
+  logo após atividade recente ("recaída") dos que ocorrem após período
+  de baixa ("antecipação genuína") — **antecipação genuína é o cenário
+  mais comum (762/920 episódios, 82,8%) E o mais difícil** (Recall@20
+  53,8% vs 76,0% em recaídas). É exatamente o cenário mais relevante
+  para o objetivo do desafio (detectar o INÍCIO de algo novo).
+- **Persistência do sinal é fraca**: só 8,3% dos episódios têm 2+ semanas
+  CONSECUTIVAS de destaque no Top-10 antes do início — a maioria é um
+  sinal de 1 semana isolada. Estabilidade do ranking semana a semana
+  (Jaccard): 0,23 (Top-5) a 0,40 (Top-20) — lista muda de forma
+  substancial semana a semana.
+- **Grandes episódios têm desempenho PIOR sob ranking competitivo**
+  (Recall@20 51,1% vs 57,6% geral) — ao contrário do achado da etapa
+  anterior sob classificação binária (79% de detecção). Explicação:
+  ranking é relativo entre os 94 bairros na mesma semana; epidemias
+  grandes tendem a elevar vários bairros simultaneamente, "competindo"
+  entre si pelo Top-K.
+- **Classificação: B — existe valor, mas as limitações ainda são fortes.
+  Decisão preservada: NÃO integrar ao dashboard.** Se/quando integrado,
+  mostrar score/ranking, não probabilidade (mesmo com a calibração já
+  melhorada na etapa anterior) — a instabilidade semanal do ranking e a
+  fraqueza no cenário de antecipação genuína tornam mais honesto
+  comunicar posição relativa que uma % de confiança.
+- **Bug real corrigido**: `alert_metrics.construir_episodios` devolvia
+  um DataFrame SEM NENHUMA COLUNA quando não havia episódios (histórico
+  totalmente indefinido) — `pd.DataFrame([])` sem `columns=` explícito.
+  Corrigido com lista de colunas fixa, encontrado ao testar onset com
+  histórico curto antes de afetar qualquer resultado real.
+- **Testes**: 17 novos (definição de onset — só 1ª semana conta, episódio
+  já ativo não vira onset novo, gap conta como novo evento, leakage
+  adversarial, dois bairros não se misturam; Precision@K, estabilidade
+  de ranking Jaccard 0/1, persistência consecutiva no Top-K). Suíte
+  total: **317/317 passando** (baseline era 306, 0 regressões).
+- **Dependência nova**: nenhuma.
+- **Não alterado**: Bronze, Silver, Gold, dashboard, dados climáticos,
+  Formulação A completa (`src/ml/target.py`, `dataset.py::montar_dataset`
+  — preservada intacta como referência comparativa, conforme instrução
+  explícita), `src/ml/baselines.py`. Nenhum deploy, nenhuma integração ao
+  Streamlit, nenhuma categoria de risco (verde/amarelo/vermelho), clima
+  não revisitado.
+- **Próximo passo (decisão do usuário, nada iniciado)**: investigar a
+  disparidade regional (RPA 6/IPSEP); investigar por que "antecipação
+  genuína" é tão mais difícil que "recaída"; considerar um ranking
+  híbrido modelo+`razao_limiar_historico` para robustecer Top-15/20. Só
+  depois disso, reconsiderar página experimental no dashboard.
+
+## 18. Validação estatística da evidência do ranking (sessão de 2026-08-20, continuação)
+
+Relatório completo em `reports/ml/dengue_ranking_evidence_validation.md`
+(ver também README §35). **Etapa de avaliação, não de melhoria**: nenhum
+retreino exploratório, feature, algoritmo, tuning, target ou hiperparâmetro
+foi alterado. **A pesquisa de ML desta versão está encerrada aqui.**
+
+- **Candidato congelado `dengue_onset_ranking_candidate_v1`**: onset h=3,
+  38 features (sem clima), `HistGradientBoostingClassifier`
+  (`max_depth=4`, `lr=0.1`, `max_iter=150`), seeds 42, split 2013-2019 /
+  2020-2022 / **teste 2023-2025 (14.476 linhas)**, 920 episódios reais em
+  93 bairros. **Reprodutibilidade verificada**: duas execuções na mesma
+  sessão devolveram resultado idêntico campo a campo.
+- **Metodologia**: bootstrap percentil (2.000 reamostragens, seed 42) com
+  unidade de reamostragem = **episódio** (nunca linha semanal — semanas do
+  mesmo episódio não são independentes); delta modelo × baseline sempre
+  **pareado** (mesmos índices reamostrados nos dois lados, mesmo conjunto
+  de episódios); sensibilidade por **cluster `bairro`** e por
+  **cluster `bairro × ano`** (reamostra clusters inteiros).
+- **Resultado central (restringe a leitura da etapa anterior)**: o ganho
+  do modelo é estatisticamente defensável **só em K=5** (+5,98 pp, IC
+  [+2,83; +9,13], e IC>0 também nos dois esquemas de cluster). Em **K=10 o
+  IC cruza zero** (+2,61 pp, IC [−0,76; +5,98]) — o "38,4% vs 35,8%" da
+  etapa anterior **não se sustenta como diferença**. Em **K=20 o modelo é
+  significativamente PIOR** que o baseline `crescimento_recente` (−5,54
+  pp, IC [−10,11; −1,30]).
+- **Por ano**: Δ@5 positivo nos 3 anos (+1,7 / +5,7 / +7,6 pp) — ganho
+  consistente em sinal. Δ@10 **negativo em 2023 e 2024, positivo só em
+  2025**; o leave-one-year-out confirma: excluir 2025 **inverte o sinal**
+  de Δ@10 (−1,72 pp), enquanto Δ@5 permanece +4,8 a +6,6 pp excluindo
+  qualquer ano. **K=10 depende de um único ano; K=5 não.**
+- **Territorial**: RPA 5 Recall@10 59,4% (n=197) × RPA 6 22,97% (n=74).
+  Zero detecção em Top-20: **2 bairros** (POÇO n=8, PONTO DE PARADA n=3);
+  em Top-10: 16 bairros (98 episódios). **Amostra pequena está
+  praticamente descartada como explicação**: 93/94 bairros têm episódio,
+  só 1 tem N ≤ 2 (mediana 9). IPSEP: 6 episódios, **0 em Top-10**, melhor
+  posição mediana **39ª de ~94** → limitação sistemática, não ruído.
+- **Grandes episódios (top 10%, n=92)**: Recall@10 30,4% — **pior** que a
+  média (38,4%), o inverso do que a classificação binária sugeria (~79%).
+  Ranking é relativo: numa epidemia grande vários bairros competem pelo
+  mesmo Top-K.
+- **Antecipação genuína (762/920 = 82,8%) × recaída (158)**: Recall@10
+  33,5% vs 62,0%, **ICs sem sobreposição em nenhum K**; posição mediana
+  18,5ª vs 6ª. O cenário mais relevante para a Prefeitura é o pior.
+- **Lead time (353 episódios detectados @10)**: mediana 2 semanas (IC
+  [2,3]), média 2,39, p25/p75 1/3, ≥2 semanas 69,1%, ≥3 semanas 45,6%.
+  `% ≥1 semana = 100%` **por construção** (janela `[inicio-4, inicio-1]`
+  — destaque na própria semana de início nunca conta).
+- **Carga operacional** (unidades separadas — episódio × priorização):
+  Top-5 antecipa 237/920 episódios com 770 priorizações, das quais
+  **65,5% não precedem episódio**; Top-10 antecipa 353/920 com 70,1% de
+  priorizações sem episódio futuro. **Estabilidade do Top-10**: Jaccard
+  médio 0,294 (mediano 0,25) em 153 pares consecutivos — só ~2-4 dos 10
+  bairros permanecem de uma semana para a seguinte.
+- **Claims**: "prevê surtos" e "reduz incidência" = **NÃO PERMITIDOS**.
+  "Ganho sobre regras simples em Top-10" = **NÃO PERMITIDO** (IC cruza
+  zero) — só vale reescrito para **Top-5**. "Identifica antecipadamente
+  bairros prioritários" e "pode apoiar priorização preventiva" =
+  **permitidos com ressalva** (período, K, taxa real e limitações
+  explícitas). Nunca usar "previsão oficial", "probabilidade real de
+  surto", "% de chance", categorias verde/amarelo/vermelho — exibir
+  **posição/ranking**, nunca probabilidade como confiança absoluta.
+- **Classificação: B — evidência sugestiva, mas ainda incerta.**
+- **Decisão de produto: SIM como funcionalidade experimental, FORA do
+  dashboard público.** A decisão preservada continua valendo: as 7 páginas
+  do *Recife Alerta* seguem intactas. A visualização técnica é um **app
+  separado** — `streamlit run tools/model_validation_app.py` — escolhido
+  em vez de `dashboard/pages/8_*.py` porque é a alternativa com menor
+  risco de confusão entre material técnico e produto operacional. A página
+  abre com "Validação experimental — não representa ferramenta operacional
+  de previsão", **só lê artefatos de backtest** (`reports/ml/evidence_*`),
+  nunca treina, nunca prevê futuro, nunca mostra probabilidade
+  operacional.
+- **Módulos**: `src/ml/evidence_validation.py` (bootstrap por episódio/
+  cluster, delta pareado, agregação por grupo, leave-one-group-out, carga
+  de priorização, série de Jaccard), `src/validate_dengue_onset_ranking_evidence.py`
+  (entry point estatístico), `src/plot_evidence_validation.py` (9 figuras
+  A-I, matplotlib `Agg`, separado da análise), `tools/model_validation_app.py`.
+- **Testes**: 25 no total para esta etapa (11 novos nesta sessão: carga de
+  priorização incluindo alvo indefinido nunca forçado a 0, Jaccard
+  idêntico/disjunto/lacuna e coerência com `estabilidade_ranking`,
+  contrato do dataset da visualização técnica, geração das 9 figuras sobre
+  artefatos sintéticos). Suíte total: **342/342 passando** (baseline era
+  331, 0 regressões).
+- **Dependência nova**: nenhuma.
+- **Não alterado**: Bronze, Silver, Gold, clima, dashboard público
+  (7 páginas), target, features, modelo, hiperparâmetros,
+  `src/ml/baselines.py`. Nenhum deploy, nenhuma previsão futura, nenhuma
+  categoria de risco.
+- **Comandos**:
+  ```bash
+  python -m src.validate_dengue_onset_ranking_evidence   # estatistica (seed 42)
+  python -m src.plot_evidence_validation                 # figuras A-I
+  streamlit run tools/model_validation_app.py            # visualizacao tecnica
+  ```
+- **Próximo passo (decisão do usuário)**: se o caminho for produto/
+  submissão — página experimental de priorização retrospectiva, publicar o
+  Streamlit e preparar material para a Prefeitura, usando **apenas** os
+  claims permitidos e a frase da seção 13 do relatório. Qualquer mudança
+  de modelo/feature/target cria **nova versão** e exige nova validação.
