@@ -216,7 +216,14 @@ def main() -> int:
     ctx_clima, X_clima, y_clima, m_clima = montar_dataset(
         df_gold, agravo="DENGUE", horizonte=HORIZONTE_PRINCIPAL, incluir_clima=True, exigir_clima_real=True, permitir_nan_features=True
     )
-    assert len(ctx_base_c) == len(ctx_clima), "BASE e BASE+CLIMA devem ter exatamente as mesmas linhas"
+    # Invariante do experimento, não uma checagem de desenvolvimento: se as
+    # duas variantes não avaliarem as MESMAS linhas, a comparação é inválida.
+    # Levanta em vez de `assert` para que a verificação sobreviva a `python -O`.
+    if len(ctx_base_c) != len(ctx_clima):
+        raise ValueError(
+            "BASE e BASE+CLIMA devem ter exatamente as mesmas linhas "
+            f"({len(ctx_base_c)} vs {len(ctx_clima)}) — comparação inválida"
+        )
 
     idx_tr_c = ctx_base_c.index[ctx_base_c["ano_epidemiologico"] == 2024]
     idx_te_c = ctx_base_c.index[ctx_base_c["ano_epidemiologico"] == 2025]

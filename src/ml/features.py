@@ -107,6 +107,28 @@ FEATURES_CLIMATICAS = (
     "chuva_28d_mm",
 )
 
+FEATURES_CLIMATICAS_GRADE = (
+    "precipitacao_semana_grade_mm",
+    "precipitacao_2s_grade_mm",
+    "precipitacao_3s_grade_mm",
+    "precipitacao_4s_grade_mm",
+    "temperatura_media_grade_c",
+    "temperatura_minima_grade_c",
+    "temperatura_maxima_grade_c",
+    "umidade_relativa_media_grade_pct",
+)
+"""Clima em GRADE (reanálise, Gold >= 1.1) — grupo separado de
+`FEATURES_CLIMATICAS` (que é clima de ESTAÇÃO) porque as duas famílias têm
+naturezas diferentes: a de estação existe só em 2024-2025 e distingue 16
+pontos de medição; a de grade cobre 2013-2025 mas produz no máximo 2 valores
+distintos entre os 94 bairros na mesma semana (ver
+`reports/climate_source_analysis/gridded_climate_investigation.md`).
+
+**Desligado por padrão.** O candidato congelado
+`dengue_onset_ranking_candidate_v1` é definido sem clima; ligar este grupo
+cria uma variante nova, que exige validação própria. Usado apenas pelo
+experimento controlado `src/experiment_dengue_ranking_clima.py`."""
+
 
 def construir_indice_semana_global(df: pd.DataFrame) -> pd.DataFrame:
     """Índice sequencial 0..N-1 sobre as combinações distintas
@@ -194,6 +216,7 @@ def selecionar_matriz_features(
     incluir_historico_local: bool = True,
     incluir_momentum: bool = True,
     incluir_clima: bool = False,
+    incluir_clima_grade: bool = False,
 ) -> tuple[pd.DataFrame, list[str]]:
     """Monta a matriz `X` (features numéricas/one-hot) a partir de
     `df` (já processado por `construir_features_epidemiologicas_e_sazonais`).
@@ -213,6 +236,14 @@ def selecionar_matriz_features(
         colunas_numericas += list(FEATURES_MOMENTUM)
     if incluir_clima:
         colunas_numericas += list(FEATURES_CLIMATICAS)
+    if incluir_clima_grade:
+        faltando = [c for c in FEATURES_CLIMATICAS_GRADE if c not in df.columns]
+        if faltando:
+            raise ValueError(
+                f"clima em grade pedido mas ausente no DataFrame: {faltando}. "
+                "A Gold precisa ser >= 1.1 (rode 'python -m src.enrich_gold_clima_grade')."
+            )
+        colunas_numericas += list(FEATURES_CLIMATICAS_GRADE)
 
     X_num = df[colunas_numericas].copy()
     if incluir_territorio:

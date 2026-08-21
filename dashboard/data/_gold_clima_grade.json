@@ -1,0 +1,144 @@
+{
+  "linhas_com_precipitacao_grade": 63826,
+  "linhas_com_temperatura_grade": 63826,
+  "percentual_linhas_com_clima_grade": 100.0,
+  "celulas_precipitacao_distintas": 2,
+  "celulas_temperatura_distintas": 3,
+  "cardinalidade_preservada": true,
+  "antes": {
+    "linhas": 191478,
+    "casos_totais": 156504,
+    "bairros": 94,
+    "agravos": 3,
+    "semanas": 679
+  },
+  "colunas_adicionadas": [
+    "fonte_clima_grade",
+    "celula_grade_precipitacao",
+    "celula_grade_temperatura",
+    "precipitacao_semana_grade_mm",
+    "precipitacao_2s_grade_mm",
+    "precipitacao_3s_grade_mm",
+    "precipitacao_4s_grade_mm",
+    "temperatura_media_grade_c",
+    "temperatura_minima_grade_c",
+    "temperatura_maxima_grade_c",
+    "umidade_relativa_media_grade_pct",
+    "dias_validos_precipitacao_grade_semana",
+    "dias_validos_temperatura_grade_semana",
+    "cobertura_grade_semana"
+  ],
+  "resolucao_graus": {
+    "ERA5": 0.25,
+    "ERA5-LAND": 0.1
+  },
+  "versao_schema_clima_grade": "1.0",
+  "versao_schema_gold": "1.1",
+  "cobertura_por_ano": [
+    {
+      "ano_epidemiologico": 2013,
+      "linhas": 14664,
+      "com_grade": 14664,
+      "com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2014,
+      "linhas": 14946,
+      "com_grade": 14946,
+      "com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2015,
+      "linhas": 14664,
+      "com_grade": 14664,
+      "com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2016,
+      "linhas": 14664,
+      "com_grade": 14664,
+      "com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2017,
+      "linhas": 14664,
+      "com_grade": 14664,
+      "com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2018,
+      "linhas": 14664,
+      "com_grade": 14664,
+      "com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2019,
+      "linhas": 14664,
+      "com_grade": 14664,
+      "com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2020,
+      "linhas": 14946,
+      "com_grade": 14946,
+      "com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2021,
+      "linhas": 14664,
+      "com_grade": 14664,
+      "com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2022,
+      "linhas": 14664,
+      "com_grade": 14664,
+      "com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2023,
+      "linhas": 14664,
+      "com_grade": 14664,
+      "com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2024,
+      "linhas": 14664,
+      "com_grade": 14664,
+      "com_estacao": 3915,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 26.7
+    },
+    {
+      "ano_epidemiologico": 2025,
+      "linhas": 14946,
+      "com_grade": 14946,
+      "com_estacao": 7794,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 52.15
+    }
+  ],
+  "avisos_qualidade": []
+}

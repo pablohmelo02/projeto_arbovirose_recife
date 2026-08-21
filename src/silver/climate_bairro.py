@@ -1,7 +1,8 @@
 """Silver: mapeamento `bairro -> estação climática representativa`.
 
 Implementa a Estratégia A (estação APAC elegível mais próxima), decidida em
-`README.md` (seção 26) e detalhada em `src/silver/schema_climate_bairro.py`.
+`docs/arquitetura_e_pipeline.md` (seção 26) e detalhada em
+`src/silver/schema_climate_bairro.py`.
 
 Este módulo reutiliza as abstrações já existentes do domínio clima/território
 (`src/silver/climate_spatial.py`, `src/silver/schema_territorio.py`) — não

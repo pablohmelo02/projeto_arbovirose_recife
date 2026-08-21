@@ -33,7 +33,12 @@ class InmetClientError(Exception):
 
 class InmetClient:
     def __init__(self, timeout: int = 60, url_base: str = URL_BASE) -> None:
-        self._timeout = timeout
+        # Timeout é obrigatório e positivo: uma requisição sem timeout pode
+        # travar o pipeline indefinidamente se a fonte aceitar a conexão e
+        # nunca responder (achado da análise estática — B113).
+        if not timeout or timeout <= 0:
+            raise ValueError(f"timeout deve ser um inteiro positivo (recebido: {timeout!r})")
+        self._timeout = int(timeout)
         self._url_base = url_base.rstrip("/")
 
     def baixar_zip_ano(self, ano: int) -> bytes:
@@ -76,9 +81,10 @@ class InmetClient:
             "https://portal.inmet.gov.br/uploads/normais/"
             "Normal-Climatologica-ESTA%C3%87%C3%95ES.xlsx"
         )
+        timeout_efetivo = int(timeout) if timeout and timeout > 0 else self._timeout
         try:
             response = requests.get(
-                url, timeout=timeout or self._timeout, headers={"User-Agent": "Mozilla/5.0"}
+                url, timeout=timeout_efetivo, headers={"User-Agent": "Mozilla/5.0"}
             )
             response.raise_for_status()
         except requests.RequestException as exc:

@@ -2,7 +2,7 @@
 (`silver_bairro_estacao_climatica`).
 
 Implementa a **Estratégia A** (estação elegível mais próxima), decisão
-registrada em `README.md` (seção 26): as estratégias B/C/D (múltiplas
+registrada em `docs/arquitetura_e_pipeline.md` (seção 26): as estratégias B/C/D (múltiplas
 estações, IDW, kriging) exigem profundidade histórica que a APAC ainda não
 tem no nosso Data Lake — não são implementadas aqui.
 

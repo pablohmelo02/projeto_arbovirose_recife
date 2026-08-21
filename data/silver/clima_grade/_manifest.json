@@ -1,0 +1,24 @@
+{
+  "dominio": "clima",
+  "camada": "silver",
+  "fonte": "grade (reanalise)",
+  "destino": "local",
+  "arquivos": {
+    "diario": "data\\silver\\clima_grade\\clima_grade_diario.parquet",
+    "bairro_celula": "data\\silver\\clima_grade\\bairro_celula_grade.parquet"
+  },
+  "metricas": {
+    "linhas_antes": 23765,
+    "linhas_validas": 23765,
+    "duplicatas_removidas": 0,
+    "motivos_rejeicao": {},
+    "celulas_distintas": 5,
+    "data_minima": "2012-12-30",
+    "data_maxima": "2026-01-03",
+    "bairros_mapeados": 94,
+    "grades": [
+      "ERA5",
+      "ERA5-LAND"
+    ]
+  }
+}

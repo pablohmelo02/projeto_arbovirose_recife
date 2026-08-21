@@ -1,0 +1,32 @@
+{
+  "gerado_em": "2026-08-21T10:48:15.276795+00:00",
+  "backtest_available": true,
+  "backtest_periodo": {
+    "ano_inicio": 2023,
+    "ano_fim": 2025,
+    "semanas": 154,
+    "linhas": 14476
+  },
+  "model_version": "dengue_onset_ranking_candidate_v1",
+  "feature_schema_version": "38-c963ad29a875",
+  "trained_until": 2019,
+  "target_definition": "onset: existe inicio de novo episodio de risco elevado de dengue no bairro em alguma das semanas t+1..t+3 (percentil 90 historico-sazonal local)",
+  "horizon": 3,
+  "git_commit": "b6c7b924f8fa1da835616fa91056eeddb11a8062",
+  "gold_schema_version": "1.1",
+  "epidemiologia": {
+    "semana_epi_maxima": "2025-53",
+    "data_maxima_evento": "2026-01-03",
+    "atraso_dias": 230,
+    "status": "ATRASADO"
+  },
+  "current_projection_available": false,
+  "reason": "epidemiological_data_stale",
+  "detalhe": "o último período epidemiológico publicado (2025-53) está 32 semanas atrás do presente, acima do limite de 4 semanas para uma priorização referente ao período atual",
+  "semanas_de_atraso": 32,
+  "semanas_limite": 4,
+  "semana_epi_maxima": "2025-53",
+  "data_maxima_evento": "2026-01-03",
+  "evidencia_validada_disponivel": true,
+  "id_candidato_validado": "dengue_onset_ranking_candidate_v1"
+}

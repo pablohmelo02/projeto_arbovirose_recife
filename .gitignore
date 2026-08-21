@@ -1,9 +1,80 @@
+# ---------------------------------------------------------------------------
+# Ambiente Python
+# ---------------------------------------------------------------------------
 .venv/
+venv/
+env/
 __pycache__/
-*.pyc
-.env
-.pytest_cache/
+*.py[cod]
 *.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ---------------------------------------------------------------------------
+# Segredos e credenciais — NUNCA versionar
+# ---------------------------------------------------------------------------
+# `.env.example` é versionado de propósito (só placeholders); `.env` e
+# variantes carregam valor real e ficam fora.
+.env
+.env.*
+!.env.example
+
+# Segredos do Streamlit (local e deploy). O diretório `.streamlit/` continua
+# versionado por causa de `config.toml`, que não tem segredo nenhum.
+.streamlit/secrets.toml
+
+# Chaves, certificados e credenciais em qualquer formato
+*.pem
+*.key
+*.ppk
+*.pfx
+*.p12
+*.jks
+*.keystore
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+credentials
+credentials.*
+*credentials.json
+.cdsapirc
+.aws/
+.netrc
+
+# ---------------------------------------------------------------------------
+# Artefatos de modelo binários (pickle)
+# ---------------------------------------------------------------------------
+# O `.joblib` NÃO é versionado por duas razões: (1) carregar pickle executa
+# código, e distribuir um binário desses pelo repositório amplia a superfície
+# de ataque sem necessidade; (2) ele não é portável entre versões maiores do
+# scikit-learn, então um arquivo commitado envelheceria silenciosamente.
+# O `metadata.json` do lado dele É versionado (é o que documenta a linhagem),
+# e o binário se reconstrói com `python -m src.train_priority_model`.
+# O dashboard publicado não precisa do modelo: ele lê só os Parquet/JSON já
+# calculados.
+artifacts/models/**/*.joblib
+artifacts/models/**/*.pkl
+
+# ---------------------------------------------------------------------------
+# Saídas temporárias e de exploração local
+# ---------------------------------------------------------------------------
 preview/
 historico/
+*.tmp-escrita
+*.log
+.DS_Store
+Thumbs.db
+
+# ---------------------------------------------------------------------------
+# Configuração local de ferramenta
+# ---------------------------------------------------------------------------
 .claude/settings.local.json
+.idea/
+.vscode/
+
+# NÃO ignorados de propósito (necessários ao deploy do dashboard):
+#   dashboard/data/*.parquet, *.geojson, *.json  -> dataset publicado
+#   data/silver/clima_grade/*.parquet            -> Silver em grade versionada
+#   reports/**                                   -> relatórios e evidências

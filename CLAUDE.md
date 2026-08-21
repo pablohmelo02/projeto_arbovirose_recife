@@ -14,8 +14,14 @@ implementada).
 
 ## 2. Onde ler primeiro
 
-- `README.md` — documento canônico e extenso (28 seções). Sempre validar
-  contra ele antes de assumir algo sobre arquitetura/decisões.
+- `README.md` — **documento de produto** (público misto: problema, solução,
+  resultados, limitações). Desde 2026-08-21 não é mais o documento técnico.
+- `docs/arquitetura_e_pipeline.md` — **o antigo README** (35 seções, nada
+  removido): camadas, contratos, decisões de fonte, resultados de execução.
+  Sempre validar contra ele antes de assumir algo sobre arquitetura.
+- `reports/product/` — documentação para gestão desta etapa: visão do
+  produto, atualidade dos dados, segurança/privacidade, confiabilidade,
+  módulo experimental, runbook e o relatório de hardening (ver §19).
 - `reports/climate_source_analysis/source_analysis.md` — investigação real
   (HTTP) de APAC x INMET.
 - `reports/climate_source_analysis/apac_freshness_investigation.md` —
@@ -135,9 +141,24 @@ python -m src.analyze_gold                            # profiling + visualizaç�
 python -m src.validate_dengue_onset_ranking_evidence  # validação estatística do candidato (§18)
 python -m src.plot_evidence_validation                # figuras A-I da validação (§18)
 streamlit run tools/model_validation_app.py           # visualização técnica experimental (§18)
+
+# --- etapa de produto (§19) ---
+python -m src.update_recife_alerta                    # orquestra a atualizacao (NUNCA treina)
+python -m src.update_recife_alerta --sem-rede         # recalcula so com o que esta em disco
+python -m src.update_recife_alerta --com-datalake     # inclui a cadeia canonica no MinIO
+python -m src.build_climate_grade --destino local     # reanalise -> Silver em grade
+python -m src.enrich_gold_clima_grade --origem local  # Gold 1.0 -> 1.1 (bloco em grade)
+python -m src.generate_freshness                      # metadados de atualidade
+python -m src.train_priority_model                    # treina/congela o modelo (operacao SEPARADA)
+python -m src.generate_priority_artifacts             # backtest + status (sem treinar)
+python -m src.healthcheck                             # PASS/WARN/FAIL
+python -m src.investigate_gridded_climate             # investigacao de fonte em grade (§19.1)
+python -m src.experiment_dengue_ranking_clima         # experimento A x B de clima (§19.2)
+python scripts/verificar_deploy_dashboard.py          # aptidao para publicacao
+python scripts/testar_dashboard_navegador.py --todos-os-perfis   # 9 paginas x 3 larguras
 ```
 
-## 8. Estado do desenvolvimento (ver README §2 para detalhe por fase)
+## 8. Estado do desenvolvimento (ver `docs/arquitetura_e_pipeline.md` §2 para detalhe por fase)
 
 - Fase 1 (Arboviroses) e Fase 2 (Território): completas.
 - Fase 3 (Clima): Bronze/Profiling/Silver/DQ/análise espacial completos.
@@ -169,7 +190,7 @@ real (CKAN/INMET/APAC) e armazenamento simulado.
 
 ## 10. Estratégia de atribuição clima → bairro (Estratégia A)
 
-Decisão herdada da análise anterior (README §26): B/C/D (múltiplas estações,
+Decisão herdada da análise anterior (`docs/arquitetura_e_pipeline.md` §26): B/C/D (múltiplas estações,
 IDW, kriging) **não devem ser implementadas agora** — APAC ainda não tem
 profundidade histórica suficiente para justificá-las. Usar apenas
 **Estratégia A: estação elegível mais próxima**.
@@ -484,7 +505,32 @@ threshold, sem autorização explícita.
   `dengue_onset_ranking_candidate_v1` e reaproveitar os números da §18:
   qualquer mudança cria **nova versão** e exige nova validação.
 - Não treinar modelo nem gerar previsão futura dentro de qualquer app
-  Streamlit — a página técnica só lê artefatos de backtest já calculados.
+  Streamlit — as páginas só leem artefatos já calculados.
+- Não incorporar clima ao modelo do produto: o experimento controlado (§19.2)
+  mostrou ganho nulo em Top-5 (a faixa de claim), com IC cruzando zero nos
+  três esquemas de reamostragem e sinal negativo em 2024. O ganho em Top-10 é
+  um achado **registrado**, não um resultado — usá-lo exigiria uma versão v2
+  com o protocolo completo de validação.
+- Não descrever a reanálise em grade como "estação meteorológica do bairro":
+  são **2 células** de precipitação para os 94 bairros (§19.1). Sempre
+  "estimativa climática em grade/reanálise", com resolução declarada.
+- Não gerar `latest_priority.parquet` quando o portão de atualidade estiver
+  fechado (§19.3) — e nunca deixar um arquivo antigo sobreviver ao bloqueio.
+  O healthcheck trata essa incoerência como `FAIL`, não aviso.
+- Não publicar probabilidade do modelo em nenhum artefato ou página. Só
+  posição no ranking e `score_prioridade` (posto relativo, calculado por
+  ordenação — nunca probabilidade reescalada).
+- Não escrever data literal em texto de UI ou de relatório: toda data vem de
+  `dashboard/data/_freshness.json` (§19.3).
+- Não publicar artefato sem passar pelos portões de qualidade
+  (`src/quality_gates.py`) nem gravar sem `src/utils/io_atomico.py`.
+- Não reaproveitar os ~79% de detecção em epidemias grandes (formulação
+  binária, §15) para o módulo de ranking: sob ranking o valor real é 30,4%
+  em Top-10 — **pior** que a média.
+- Não adicionar dependência ao `dashboard/requirements.txt` (superfície
+  publicada, 5 pacotes) nem importar `boto3`/`geopandas`/`sklearn`/
+  `matplotlib`/`requests` em `dashboard/` ou `src/eda/` — o script de
+  verificação de deploy falha se isso acontecer.
 
 ## 12. Gold analítica `gold_arboviroses_clima_bairro` (sessão de 2026-08-20)
 
@@ -696,7 +742,7 @@ dos achados da EDA — **iniciado na sessão seguinte, ver §15**.
 Relatório completo em `reports/ml/dengue_early_warning_baseline.md`
 (formalização, target, features, split, baselines, modelos, métricas
 técnicas/operacionais, lead time, comparação com clima, limitações,
-decisão). Resumo operacional — ver também README §32:
+decisão). Resumo operacional — ver também `docs/arquitetura_e_pipeline.md` §32:
 
 - **DENGUE é o agravo preditivo principal a partir de agora.** Zika/
   Chikungunya seguem só para EDA/comparação.
@@ -759,7 +805,7 @@ decisão). Resumo operacional — ver também README §32:
 ## 16. Machine Learning: otimização e diagnóstico de robustez (sessão de 2026-08-20, continuação)
 
 Relatório completo em `reports/ml/dengue_early_warning_optimization.md`
-(ver também README §33). Resumo operacional:
+(ver também `docs/arquitetura_e_pipeline.md` §33). Resumo operacional:
 
 - **Diagnóstico de 2023** (pior ano da etapa anterior, PR-AUC 0,074):
   NÃO é falha de feature/target/modelo. Evidência: prevalência do target
@@ -850,7 +896,7 @@ Relatório completo em `reports/ml/dengue_early_warning_optimization.md`
 ## 17. Machine Learning: onset + ranking territorial preventivo (sessão de 2026-08-20, continuação)
 
 Relatório completo em `reports/ml/dengue_onset_ranking_analysis.md` (ver
-também README §34). Resumo operacional:
+também `docs/arquitetura_e_pipeline.md` §34). Resumo operacional:
 
 - **Reformulação**: Formulação A (`estado_alto_risco` em t+1, já
   existente, preservada sem alteração) vs **Formulação B** (`src/ml/onset.py`,
@@ -936,7 +982,7 @@ também README §34). Resumo operacional:
 ## 18. Validação estatística da evidência do ranking (sessão de 2026-08-20, continuação)
 
 Relatório completo em `reports/ml/dengue_ranking_evidence_validation.md`
-(ver também README §35). **Etapa de avaliação, não de melhoria**: nenhum
+(ver também `docs/arquitetura_e_pipeline.md` §35). **Etapa de avaliação, não de melhoria**: nenhum
 retreino exploratório, feature, algoritmo, tuning, target ou hiperparâmetro
 foi alterado. **A pesquisa de ML desta versão está encerrada aqui.**
 
@@ -1033,3 +1079,245 @@ foi alterado. **A pesquisa de ML desta versão está encerrada aqui.**
   Streamlit e preparar material para a Prefeitura, usando **apenas** os
   claims permitidos e a frase da seção 13 do relatório. Qualquer mudança
   de modelo/feature/target cria **nova versão** e exige nova validação.
+
+## 19. Etapa de produto: Recife Alerta robusto e demonstrável (sessão de 2026-08-21)
+
+Documentação para gestão em `reports/product/` (7 arquivos). Relatório de
+auditoria: `reports/product/product_hardening_report.md`. O antigo
+`README.md` (1118 linhas técnicas) virou `docs/arquitetura_e_pipeline.md`;
+o `README.md` novo é documento de produto.
+
+**Auditoria inicial** (commit `b6c7b92`, working tree limpo): a máquina
+**não tinha nenhuma dependência do projeto instalada** — nem `pytest`. Foi
+criado `.venv` e instalado `requirements.txt` antes de qualquer alteração;
+linha de base confirmada em **342/342 testes**. Suíte final: **532/532**.
+
+### 19.1 Clima em grade 2013-2025 (investigação + incorporação)
+
+Relatório: `reports/climate_source_analysis/gridded_climate_investigation.md`.
+A investigação ERA5/CHIRPS **não existia** antes desta sessão (só uma
+recomendação em §13). Quatro candidatas testadas por HTTP real:
+
+- **ERA5/ERA5-Land via Open-Meteo Archive**: escolhida. Público, sem chave,
+  2013-2025 completo, ~2 s por requisição multi-ponto.
+- **CDS/Copernicus direto**: exige credencial, indisponível aqui.
+- **CHIRPS (0,05°)**: diretório acessível, descartada por custo de ingestão
+  (GeoTIFF global diário + GDAL/rasterio).
+- **NASA POWER**: funciona, descartada por resolução (0,5° × 0,625°).
+
+**Achado de provenância medido**: o provedor **não serve precipitação para
+o modelo `era5_land`** (nulo em toda a janela). Logo precipitação vem de
+`era5` (0,25°) e temperatura/umidade de `era5_land` (0,10°) — duas grades,
+modeladas explicitamente (`grade` é parte da chave). O modelo "seamless"
+**não é usado** (misturaria as duas sob um rótulo único).
+
+**Limitação central, medida**: os centroides dos 94 bairros ocupam 0,1774°
+de latitude por 0,1080° de longitude. Resultado: **2 células ERA5** e **3
+células ERA5-Land** para os 94 bairros; **mediana de 2 valores distintos de
+precipitação por semana entre todos os bairros**; distância mediana
+centroide-para-centro-da-célula 8,06 km (máx. 17,29 km), contra 1,431 km da
+Estratégia A com estações. **A grade informa *quando* chove, não *onde*
+dentro do Recife.**
+
+**Validação contra o CEMADEN** (3.903 linhas bairro x semana com as duas
+fontes): Pearson 0,6084 · Spearman 0,5507 · MAE 17,6 mm · viés -5,68 mm ·
+razão dos totais 0,7144 (subestima ~29%) · recall de semana chuvosa
+(>=20 mm) 64,21%. Agregado da cidade: Pearson 0,7787 · Spearman 0,8626
+(n=72 semanas). Por bairro: Pearson mediano 0,7123 (mín. -0,0022, n=71).
+**Classificação: B — utilizável com limitações.**
+
+**Módulos**: `src/clients/gridded_climate_client.py`,
+`src/silver/schema_climate_grade.py`, `src/silver/climate_grade.py`,
+`src/silver/pipeline_climate_grade.py`,
+`src/ingestion/gridded_climate_ingestion.py`, `src/gold/clima_grade.py`,
+`src/build_climate_grade.py`, `src/enrich_gold_clima_grade.py`,
+`src/investigate_gridded_climate.py`, `src/eda/clima_grade.py`.
+
+**Gold 1.0 para 1.1**: 191.478 linhas (inalteradas), 31 para 46 colunas.
+Cobertura climática **6,1151% para 100%** das linhas, 2013-2025. Verificado
+programaticamente que **todas as 31 colunas pré-existentes ficaram
+idênticas valor a valor** (só `versao_schema_gold` mudou). Idempotência
+verificada: duas execuções seguidas produzem tabela idêntica, exceto os dois
+metadados de execução.
+
+**Por que o enriquecimento é uma transformação da Gold sobre a Gold, e não
+um pipeline paralelo**: a Silver anterior só existiu dentro de um `moto`
+efêmero de outra sessão. Reconstruir a cadeia hoje mudaria a janela do
+backfill CEMADEN (sempre "últimos N dias a partir de agora"), alterando as
+colunas de estação e **invalidando todos os números de ML já validados**.
+A rota canônica (Bronze/Silver/Gold no MinIO) está implementada e
+disponível com `--com-datalake` / `--destino minio`.
+
+Silver em grade versionada localmente em `data/silver/clima_grade/`
+(23.765 linhas, 5 células, 2012-12-30 a 2026-01-03, 128 KB) — é o que
+permite reconstruir a Gold sem infraestrutura.
+
+### 19.2 Experimento controlado de clima no ML (resultado negativo, publicado)
+
+Relatório: `reports/ml/dengue_ranking_clima_experiment.md`.
+`python -m src.experiment_dengue_ranking_clima`.
+
+A x B: mesmas 58.562 linhas, mesmo split, mesmo algoritmo, mesmos
+hiperparâmetros; única diferença = 8 features climáticas em grade (38 para 46).
+**Critério declarado antes de rodar**: incorporar só se Recall@5 tiver IC
+que não cruza zero E sinal positivo em todos os anos.
+
+| K | Delta B-A | IC episódio | IC cluster bairro | IC cluster bairro x ano |
+|---|---|---|---|---|
+| 5 | **-0,11 pp** | [-2,28; +2,07] | [-2,46; +2,23] | [-2,47; +2,37] |
+| 10 | +2,83 pp | [+0,43; +5,33] | [+0,21; +5,34] | [+0,40; +5,29] |
+| 15 | +3,37 pp | [+0,98; +5,87] | [+0,74; +5,92] | — |
+| 20 | +1,96 pp | [-0,11; +4,24] | [-0,44; +4,22] | — |
+
+Por ano em K=5: 2023 +1,71 · 2024 **-1,48** · 2025 +0,76 pp.
+**Decisão: NÃO incorporar** (as duas condições do critério falharam).
+
+**Verificação valiosa**: o modelo A reproduziu o candidato congelado **campo
+a campo** sobre a Gold 1.1 (delta@5 = +0,059783, ICs idênticos aos de §18) —
+prova de que o enriquecimento climático não alterou a evidência validada.
+
+**Achado secundário registrado, não usado**: em K=10 o delta B-A é positivo
+com IC acima de zero nos três esquemas e em todos os anos; e com clima o
+modelo passa a vencer o baseline também em K=10 (+5,43 pp, IC [+1,96;
++9,02]). Hipótese: a grade não diferencia bairros, mas diferencia
+**semanas**. Candidato a `..._candidate_v2`, exigiria validação completa.
+
+### 19.3 Freshness, portões, atomicidade, healthcheck, orquestração
+
+- `src/freshness.py` — metadados por conjunto (`dataset`, `fonte`,
+  `ultima_atualizacao_fonte`, `data_maxima_evento`, `semana_epi_maxima`,
+  `pipeline_executado_em`, `atraso_dias`, `status`). **Nada é `ATUAL` por
+  omissão.** Limiares: epidemiologia 120 d (a fonte declara `trimestral`),
+  território 1095 d, clima 30 d.
+- **Portão da projeção atual**: `LIMIAR_SEMANAS_PROJECAO_ATUAL = 4`
+  (horizonte 3 + 1 de folga). Estado real: `current_projection_available =
+  false`, `reason = epidemiological_data_stale`, 32 semanas de atraso.
+  `latest_priority.parquet` **não é gerado** e é **removido** se existir.
+- `src/quality_gates.py` — 14 portões críticos + severidade `AVISO`.
+  Crítico bloqueia a publicação e preserva o artefato anterior.
+  Testado que **precipitação toda nula não é erro** (`missing != 0`).
+- `src/utils/io_atomico.py` — temporário no mesmo diretório, validar,
+  `os.replace`. Cobre Parquet/JSON/CSV/texto.
+- `src/healthcheck.py` — `PASS`/`WARN`/`FAIL`, saída 1 só em `FAIL`.
+  Estado atual: **13 PASS · 1 WARN · 0 FAIL** (o WARN é o atraso da fonte).
+  Verificação-chave: `latest_priority.parquet` presente com portão fechado
+  (ou ausente com portão aberto) é **`FAIL`**.
+- `src/logging_config.py` — log estruturado (JSON com
+  `RECIFE_ALERTA_LOG_JSON=1`), `FiltroRedacao` que redige chaves sensíveis,
+  credencial em URL, CPF e CNS **na mensagem já formatada** (cobre valor
+  vindo de argumento de formatação), `registrar_resultado_fonte` e `etapa`
+  (duração). `configurar_logging` é idempotente (vários entry points no
+  mesmo processo não duplicam handler).
+- `src/update_recife_alerta.py` — orquestra ingestão, validação,
+  transformação, exportação e healthcheck. **Nunca treina.** ~23 s.
+  Flags `--sem-rede` e `--com-datalake`. Grava
+  `dashboard/data/_ultima_atualizacao.json`.
+- `src/ml/artifacts.py` — metadados obrigatórios (`model_version`,
+  `feature_schema_version`, `feature_names`, `trained_until`,
+  `target_definition`, `horizon`, `git_commit`, `created_at`,
+  `data_cutoff`, `cutoff_epi_*`, `sklearn_version`, `gold_schema_version`).
+  Carregar **valida** assinatura de features (detecta feature nova E
+  reordenação), schema da Gold e major.minor do sklearn — incompatível
+  levanta exceção. `caminho_artefato` valida contra `^[a-z0-9_]+$` **e**
+  lista permitida (defesa contra path traversal, com testes).
+- `src/train_priority_model.py` (separado) e
+  `src/generate_priority_artifacts.py` (não treina; gera backtest de
+  14.476 linhas / 154 semanas + `_priority_status.json` +
+  `_evidence_summary.json`).
+- `artifacts/models/**/*.joblib` **não versionado** (pickle executa código;
+  e não é portável entre versões maiores do sklearn). `metadata.json` é
+  versionado.
+
+### 19.4 Dashboard modernizado (9 páginas)
+
+`dashboard/app.py` com `st.navigation` em **4 grupos** ("Situação
+observada", "Apoio à decisão", "Contexto climático", "Transparência"), para
+que a natureza do conteúdo seja óbvia antes da leitura.
+
+Páginas: `1_inicio`, `2_situacao_epidemiologica`, `3_mapa_territorial`,
+`4_bairros_prioritarios`, `5_evolucao_historica`, `6_clima`,
+`7_clima_dengue`, `8_priorizacao_experimental`, `9_qualidade_limitacoes`.
+As 7 páginas antigas foram **substituídas** (não coexistem).
+
+Novos componentes: `tema.py` (CSS institucional, cartões, formatação
+pt-BR), `atualizacao.py` (faixa de freshness), `pagina.py` (preâmbulo
+comum — garante que **nenhuma página esqueça a faixa de atualização**),
+`erros.py` (fronteira de erro por seção), `graficos_produto.py` (13
+gráficos novos). Nova camada analítica: `src/eda/prioridade_observada.py`
+(volume recente, aceleração, razão contra o próprio histórico — sazonal, só
+anos anteriores) e `src/eda/clima_grade.py`.
+Validação de entrada: `dashboard/utils/validacao.py` (domínio **real** do
+dataset carregado, nunca lista fixa no código).
+
+**Decisões de UI que não devem ser revertidas**:
+
+- Sem escala verde-amarelo-vermelho em nenhum lugar — cor de semáforo
+  comunicaria categoria de risco, que a validação não sustenta. Teste
+  automatizado verifica que a paleta não tem verde de semáforo.
+- "Conclusivo x inconclusivo" no gráfico de delta é marcado por **padrão de
+  preenchimento e rótulo textual**, não só por cor (acessibilidade).
+- A página experimental publica as 4 faixas de K com a leitura correta de
+  cada uma, **inclusive a faixa em que a regra simples é melhor**.
+- O backtest mostra uma tabela dedicada de **episódios perdidos** — mostrar
+  só acertos daria leitura falsa.
+
+**Bug real encontrado pelo teste de navegador**: conflito de assinatura do
+Plotly (`title` em `LAYOUT_PADRAO` mais `title` na chamada) fazia 6
+gráficos falharem, e a fronteira de erro os transformava em mensagem
+amigável — ou seja, **o painel "funcionava" com gráficos faltando**.
+Corrigido (`title_font` no layout, `title_text` nas chamadas de
+`update_layout`, `title` nas de `plotly.express`) e coberto por
+`tests/test_dashboard_graficos.py`, que exercita **os 23 construtores de
+gráfico**.
+
+### 19.5 Segurança e verificação
+
+- Auditoria de segredos: **nada versionado, nada no histórico do Git**.
+- Corrigidos: `.env.example` com `admin`/`admin123` para placeholders;
+  `docker-compose.yml` de `${VAR:-admin}` para `${VAR:?}` (aborta sem
+  credencial); MinIO restrito a `127.0.0.1`; `.gitignore` reescrito.
+- `pip-audit`: `pytest 8.4.2` com `PYSEC-2026-1845`, elevado para
+  `>=9.0.3,<10`. **Zero vulnerabilidades** nos dois arquivos de requisitos.
+  `dashboard/requirements.txt` permanece com 5 pacotes.
+- `bandit` (18.419 linhas): 6 achados para **3**, todos LOW, todos
+  investigados. Corrigidos: B113 (timeout obrigatório no `InmetClient`),
+  B101 (`assert` para `raise`), B607 (`shutil.which` + caminho absoluto).
+  Remanescentes documentados como falso positivo / aceitos.
+- `scripts/verificar_deploy_dashboard.py` reescrito: sintaxe, **imports
+  proibidos em runtime**, caminhos absolutos, segredos, artefatos,
+  tamanho, `.gitignore` e **privacidade de todos os artefatos publicados**
+  (19 nomes de coluna). Resultado: **APTO**, 0 bloqueios, 3,72 MB.
+- `scripts/testar_dashboard_navegador.py` (Selenium; `selenium` **não** vai
+  para `requirements.txt`): 9 páginas x 3 larguras = 27 cargas, 0 exceções,
+  0 seções degradadas, 0 overflow horizontal. Carregamento inicial ~285 ms /
+  11 KB; troca de página 0,93 a 3,82 s.
+
+### 19.6 Respostas explícitas
+
+- **Há dados de 2026?** **NÃO.** CKAN consultado ao vivo: 49 recursos, os
+  mais recentes de casos são de 2025. `SEM_NOT` vai até `202553`;
+  `metadata_modified` = 2026-05-20; periodicidade declarada `trimestral`.
+  Nenhuma ingestão foi feita porque não há nada novo. Achado extra:
+  `SEM_PRI` tem valores impossíveis em 2025 (`195002`, `196834`) — o
+  projeto usa `SEM_NOT`, não afetado; e há **revisão retroativa**
+  (chikungunya 2021 alterado depois de criado).
+- **Há dado atual suficiente para priorização do período atual?** **NÃO**
+  (32 semanas de atraso contra o limite de 4). Só backtest.
+- **Clima histórico 2013-2025 defensável?** **PARCIAL** — reanálise
+  ERA5/ERA5-Land, 100% de cobertura temporal, mas quase nenhuma resolução
+  espacial (2 células) e subestimação de ~29%.
+- **Dashboard tecnicamente apto a deploy público?** **SIM**. **Deploy
+  realizado?** **NÃO** — falta conta do Streamlit Community Cloud e
+  repositório GitHub (pendência humana).
+- **Classificação: produto B** (demonstrável com pendências pequenas, ambas
+  externas ao código) · **módulo ML A** (experimental demonstrável).
+
+### 19.7 Próximos passos (decisão do usuário, nada iniciado)
+
+1. Publicar no Streamlit Community Cloud (credencial/repositório pendentes).
+2. Investigar a disparidade da RPA 6 / IPSEP (limitação quantificada, causa
+   não investigada).
+3. Considerar `dengue_onset_ranking_candidate_v2` com clima em Top-10 —
+   **só** com o protocolo completo de validação.
+4. CHIRPS (0,05°, ~11 células) se houver infraestrutura para ingestão raster.
+5. Reexecutar `pip-audit` periodicamente.

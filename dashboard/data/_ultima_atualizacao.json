@@ -1,0 +1,50 @@
+{
+  "concluido": true,
+  "interrompido_em": null,
+  "duracao_total_s": 23.58,
+  "n_etapas": 5,
+  "n_falhas": 0,
+  "n_avisos": 0,
+  "etapas": [
+    {
+      "etapa": "ingestao/Silver: clima em grade (reanalise)",
+      "ok": true,
+      "duracao_s": 7.79,
+      "codigo_saida": 0,
+      "erro": null,
+      "tolerante": false
+    },
+    {
+      "etapa": "transformacao: Gold += clima em grade",
+      "ok": true,
+      "duracao_s": 0.89,
+      "codigo_saida": 0,
+      "erro": null,
+      "tolerante": false
+    },
+    {
+      "etapa": "metadados: freshness",
+      "ok": true,
+      "duracao_s": 3.0,
+      "codigo_saida": 0,
+      "erro": null,
+      "tolerante": false
+    },
+    {
+      "etapa": "artefatos: priorizacao experimental (sem treinar)",
+      "ok": true,
+      "duracao_s": 11.64,
+      "codigo_saida": 0,
+      "erro": null,
+      "tolerante": true
+    },
+    {
+      "etapa": "healthcheck",
+      "ok": true,
+      "duracao_s": 0.26,
+      "codigo_saida": 0,
+      "erro": null,
+      "tolerante": true
+    }
+  ]
+}

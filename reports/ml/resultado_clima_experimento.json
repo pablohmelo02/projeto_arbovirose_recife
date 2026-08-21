@@ -1,0 +1,530 @@
+{
+  "experimento": "clima_em_grade_no_ranking_de_onset_dengue",
+  "seed": 42,
+  "n_reamostragens": 2000,
+  "hiperparametros": {
+    "max_depth": 4,
+    "learning_rate": 0.1,
+    "max_iter": 150
+  },
+  "horizonte_onset": 3,
+  "features_clima_grade": [
+    "precipitacao_semana_grade_mm",
+    "precipitacao_2s_grade_mm",
+    "precipitacao_3s_grade_mm",
+    "precipitacao_4s_grade_mm",
+    "temperatura_media_grade_c",
+    "temperatura_minima_grade_c",
+    "temperatura_maxima_grade_c",
+    "umidade_relativa_media_grade_pct"
+  ],
+  "estabilidade_top10_A": {
+    "k": 10,
+    "n_pares_consecutivos": 153,
+    "jaccard_medio": 0.2943604590997294,
+    "jaccard_mediano": 0.25
+  },
+  "estabilidade_top10_B": {
+    "k": 10,
+    "n_pares_consecutivos": 153,
+    "jaccard_medio": 0.26114642005797223,
+    "jaccard_mediano": 0.25
+  },
+  "mesmas_linhas_em_A_e_B": true,
+  "recall_ic": [
+    {
+      "k": 5,
+      "metodo": "A_sem_clima",
+      "observado": 0.2576086956521739,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.22934782608695653,
+      "ic_alto": 0.2858967391304347
+    },
+    {
+      "k": 5,
+      "metodo": "B_com_clima_grade",
+      "observado": 0.2565217391304348,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.22826086956521738,
+      "ic_alto": 0.2847826086956522
+    },
+    {
+      "k": 5,
+      "metodo": "casos_atuais",
+      "observado": 0.11413043478260869,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.09456521739130434,
+      "ic_alto": 0.1348097826086955
+    },
+    {
+      "k": 5,
+      "metodo": "crescimento_recente",
+      "observado": 0.18369565217391304,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.15978260869565217,
+      "ic_alto": 0.20978260869565218
+    },
+    {
+      "k": 5,
+      "metodo": "razao_historica_local",
+      "observado": 0.19782608695652174,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.17282608695652174,
+      "ic_alto": 0.22391304347826088
+    },
+    {
+      "k": 10,
+      "metodo": "A_sem_clima",
+      "observado": 0.38369565217391305,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.3521739130434783,
+      "ic_alto": 0.4152173913043478
+    },
+    {
+      "k": 10,
+      "metodo": "B_com_clima_grade",
+      "observado": 0.41195652173913044,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.3804076086956522,
+      "ic_alto": 0.44350543478260857
+    },
+    {
+      "k": 10,
+      "metodo": "casos_atuais",
+      "observado": 0.20434782608695654,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.1793478260869565,
+      "ic_alto": 0.2315489130434781
+    },
+    {
+      "k": 10,
+      "metodo": "crescimento_recente",
+      "observado": 0.3467391304347826,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.31521739130434784,
+      "ic_alto": 0.3782608695652174
+    },
+    {
+      "k": 10,
+      "metodo": "razao_historica_local",
+      "observado": 0.3576086956521739,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.32717391304347826,
+      "ic_alto": 0.38913043478260867
+    },
+    {
+      "k": 15,
+      "metodo": "A_sem_clima",
+      "observado": 0.4815217391304348,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.4489130434782609,
+      "ic_alto": 0.5152173913043478
+    },
+    {
+      "k": 15,
+      "metodo": "B_com_clima_grade",
+      "observado": 0.5152173913043478,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.4826086956521739,
+      "ic_alto": 0.5467663043478259
+    },
+    {
+      "k": 15,
+      "metodo": "casos_atuais",
+      "observado": 0.29782608695652174,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.2673913043478261,
+      "ic_alto": 0.32717391304347826
+    },
+    {
+      "k": 15,
+      "metodo": "crescimento_recente",
+      "observado": 0.4880434782608696,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.45543478260869563,
+      "ic_alto": 0.5217391304347826
+    },
+    {
+      "k": 15,
+      "metodo": "razao_historica_local",
+      "observado": 0.48695652173913045,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.45543478260869563,
+      "ic_alto": 0.5195652173913043
+    },
+    {
+      "k": 20,
+      "metodo": "A_sem_clima",
+      "observado": 0.5760869565217391,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.5423913043478261,
+      "ic_alto": 0.6086956521739131
+    },
+    {
+      "k": 20,
+      "metodo": "B_com_clima_grade",
+      "observado": 0.5956521739130435,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.5641304347826087,
+      "ic_alto": 0.6260869565217392
+    },
+    {
+      "k": 20,
+      "metodo": "casos_atuais",
+      "observado": 0.37717391304347825,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.345625,
+      "ic_alto": 0.40869565217391307
+    },
+    {
+      "k": 20,
+      "metodo": "crescimento_recente",
+      "observado": 0.6315217391304347,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.6,
+      "ic_alto": 0.6630434782608695
+    },
+    {
+      "k": 20,
+      "metodo": "razao_historica_local",
+      "observado": 0.5793478260869566,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.5478260869565217,
+      "ic_alto": 0.6108695652173913
+    }
+  ],
+  "delta": [
+    {
+      "k": 5,
+      "melhor_baseline": "razao_historica_local",
+      "delta_B_menos_A": -0.0010869565217391242,
+      "ic_baixo_B_menos_A": -0.02282608695652172,
+      "ic_alto_B_menos_A": 0.02065217391304347,
+      "ic_baixo_B_menos_A_cluster_bairro": -0.02464225612432369,
+      "ic_alto_B_menos_A_cluster_bairro": 0.022298731852871945,
+      "ic_baixo_B_menos_A_cluster_bairro_ano": -0.024709175168042902,
+      "ic_alto_B_menos_A_cluster_bairro_ano": 0.02370744447691409,
+      "delta_A_vs_baseline": 0.05978260869565219,
+      "ic_baixo_A_vs_baseline": 0.028260869565217395,
+      "ic_alto_A_vs_baseline": 0.09130434782608696,
+      "ic_baixo_A_vs_baseline_cluster_bairro": 0.018887841832963766,
+      "ic_alto_A_vs_baseline_cluster_bairro": 0.10169858787667332,
+      "ic_baixo_A_vs_baseline_cluster_bairro_ano": 0.024040449037776208,
+      "ic_alto_A_vs_baseline_cluster_bairro_ano": 0.09601003460985255,
+      "delta_B_vs_baseline": 0.058695652173913065,
+      "ic_baixo_B_vs_baseline": 0.02717391304347827,
+      "ic_alto_B_vs_baseline": 0.08804347826086958,
+      "ic_baixo_B_vs_baseline_cluster_bairro": 0.021411053191923993,
+      "ic_alto_B_vs_baseline_cluster_bairro": 0.09750876334238617,
+      "ic_baixo_B_vs_baseline_cluster_bairro_ano": 0.02421589880768886,
+      "ic_alto_B_vs_baseline_cluster_bairro_ano": 0.09287501897807357
+    },
+    {
+      "k": 10,
+      "melhor_baseline": "razao_historica_local",
+      "delta_B_menos_A": 0.028260869565217395,
+      "ic_baixo_B_menos_A": 0.004347826086956497,
+      "ic_alto_B_menos_A": 0.05326086956521736,
+      "ic_baixo_B_menos_A_cluster_bairro": 0.0020972947338830763,
+      "ic_alto_B_menos_A_cluster_bairro": 0.05335086047220149,
+      "ic_baixo_B_menos_A_cluster_bairro_ano": 0.0040331975079163866,
+      "ic_alto_B_menos_A_cluster_bairro_ano": 0.0529226644959419,
+      "delta_A_vs_baseline": 0.026086956521739146,
+      "ic_baixo_A_vs_baseline": -0.007608695652173871,
+      "ic_alto_A_vs_baseline": 0.05978260869565216,
+      "ic_baixo_A_vs_baseline_cluster_bairro": -0.018160873709118078,
+      "ic_alto_A_vs_baseline_cluster_bairro": 0.06851144002604649,
+      "ic_baixo_A_vs_baseline_cluster_bairro_ano": -0.011376888211650726,
+      "ic_alto_A_vs_baseline_cluster_bairro_ano": 0.06500717973786316,
+      "delta_B_vs_baseline": 0.05434782608695654,
+      "ic_baixo_B_vs_baseline": 0.019565217391304346,
+      "ic_alto_B_vs_baseline": 0.09024456521739119,
+      "ic_baixo_B_vs_baseline_cluster_bairro": 0.008740339894247284,
+      "ic_alto_B_vs_baseline_cluster_bairro": 0.10069759915982801,
+      "ic_baixo_B_vs_baseline_cluster_bairro_ano": 0.013441971537795574,
+      "ic_alto_B_vs_baseline_cluster_bairro_ano": 0.09705615684256776
+    },
+    {
+      "k": 15,
+      "melhor_baseline": "crescimento_recente",
+      "delta_B_menos_A": 0.03369565217391307,
+      "ic_baixo_B_menos_A": 0.009782608695652173,
+      "ic_alto_B_menos_A": 0.05869565217391298,
+      "ic_baixo_B_menos_A_cluster_bairro": 0.0073757976463132025,
+      "ic_alto_B_menos_A_cluster_bairro": 0.05921309354291035,
+      "ic_baixo_B_menos_A_cluster_bairro_ano": 0.009056736369519437,
+      "ic_alto_B_menos_A_cluster_bairro_ano": 0.05876558956916104,
+      "delta_A_vs_baseline": -0.0065217391304348005,
+      "ic_baixo_A_vs_baseline": -0.05217391304347829,
+      "ic_alto_A_vs_baseline": 0.03913043478260869,
+      "ic_baixo_A_vs_baseline_cluster_bairro": -0.06540985687300745,
+      "ic_alto_A_vs_baseline_cluster_bairro": 0.04946819996074064,
+      "ic_baixo_A_vs_baseline_cluster_bairro_ano": -0.059843431546883964,
+      "ic_alto_A_vs_baseline_cluster_bairro_ano": 0.0467873533911269,
+      "delta_B_vs_baseline": 0.02717391304347827,
+      "ic_baixo_B_vs_baseline": -0.018478260869565166,
+      "ic_alto_B_vs_baseline": 0.07176630434782597,
+      "ic_baixo_B_vs_baseline_cluster_bairro": -0.0370904548088065,
+      "ic_alto_B_vs_baseline_cluster_bairro": 0.08873919457162001,
+      "ic_baixo_B_vs_baseline_cluster_bairro_ano": -0.031696595484613184,
+      "ic_alto_B_vs_baseline_cluster_bairro_ano": 0.08485797209530117
+    },
+    {
+      "k": 20,
+      "melhor_baseline": "crescimento_recente",
+      "delta_B_menos_A": 0.019565217391304346,
+      "ic_baixo_B_menos_A": -0.0010869565217391797,
+      "ic_alto_B_menos_A": 0.04239130434782612,
+      "ic_baixo_B_menos_A_cluster_bairro": -0.004431422816333996,
+      "ic_alto_B_menos_A_cluster_bairro": 0.04222598049568566,
+      "ic_baixo_B_menos_A_cluster_bairro_ano": -0.003326592674255924,
+      "ic_alto_B_menos_A_cluster_bairro_ano": 0.042345730792834615,
+      "delta_A_vs_baseline": -0.05543478260869561,
+      "ic_baixo_A_vs_baseline": -0.10108695652173905,
+      "ic_alto_A_vs_baseline": -0.013043478260869597,
+      "ic_baixo_A_vs_baseline_cluster_bairro": -0.1070309408610435,
+      "ic_alto_A_vs_baseline_cluster_bairro": -0.0031772984617575283,
+      "ic_baixo_A_vs_baseline_cluster_bairro_ano": -0.10573042080876803,
+      "ic_alto_A_vs_baseline_cluster_bairro_ano": -0.00525762355415349,
+      "delta_B_vs_baseline": -0.035869565217391264,
+      "ic_baixo_B_vs_baseline": -0.07934782608695656,
+      "ic_alto_B_vs_baseline": 0.006521739130434856,
+      "ic_baixo_B_vs_baseline_cluster_bairro": -0.09305438251396186,
+      "ic_alto_B_vs_baseline_cluster_bairro": 0.0186921353227305,
+      "ic_baixo_B_vs_baseline_cluster_bairro_ano": -0.09006954740204513,
+      "ic_alto_B_vs_baseline_cluster_bairro_ano": 0.016522110585859128
+    }
+  ],
+  "por_ano": [
+    {
+      "inicio_ano": 2023,
+      "n_episodios": 117,
+      "detectado_A_sem_clima_k5": 0.3076923076923077,
+      "detectado_B_com_clima_grade_k5": 0.3247863247863248,
+      "detectado_A_sem_clima_k10": 0.42735042735042733,
+      "detectado_B_com_clima_grade_k10": 0.46153846153846156
+    },
+    {
+      "inicio_ano": 2024,
+      "n_episodios": 406,
+      "detectado_A_sem_clima_k5": 0.25862068965517243,
+      "detectado_B_com_clima_grade_k5": 0.2438423645320197,
+      "detectado_A_sem_clima_k10": 0.37192118226600984,
+      "detectado_B_com_clima_grade_k10": 0.41133004926108374
+    },
+    {
+      "inicio_ano": 2025,
+      "n_episodios": 397,
+      "detectado_A_sem_clima_k5": 0.24181360201511334,
+      "detectado_B_com_clima_grade_k5": 0.24937027707808565,
+      "detectado_A_sem_clima_k10": 0.38287153652392947,
+      "detectado_B_com_clima_grade_k10": 0.3979848866498741
+    }
+  ],
+  "recortes": {
+    "genuino": {
+      "n": 762,
+      "recall5_A_sem_clima": {
+        "observado": 0.2099737532808399,
+        "n": 762,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.18110236220472442,
+        "ic_alto": 0.24015748031496062
+      },
+      "recall10_A_sem_clima": {
+        "observado": 0.3346456692913386,
+        "n": 762,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.30183727034120733,
+        "ic_alto": 0.3661745406824145
+      },
+      "recall5_B_com_clima_grade": {
+        "observado": 0.2152230971128609,
+        "n": 762,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.18635170603674542,
+        "ic_alto": 0.24540682414698162
+      },
+      "recall10_B_com_clima_grade": {
+        "observado": 0.36220472440944884,
+        "n": 762,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.32808398950131235,
+        "ic_alto": 0.3963254593175853
+      },
+      "delta_B_menos_A_k5": {
+        "observado": 0.005249343832020997,
+        "n": 762,
+        "n_reamostragens": 2000,
+        "ic_baixo": -0.017060367454068248,
+        "ic_alto": 0.027559055118110243
+      },
+      "delta_B_menos_A_k10": {
+        "observado": 0.027559055118110243,
+        "n": 762,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.0,
+        "ic_alto": 0.05515091863517044
+      }
+    },
+    "recaida": {
+      "n": 158,
+      "recall5_A_sem_clima": {
+        "observado": 0.4873417721518987,
+        "n": 158,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.41139240506329117,
+        "ic_alto": 0.5632911392405063
+      },
+      "recall10_A_sem_clima": {
+        "observado": 0.620253164556962,
+        "n": 158,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.5443037974683544,
+        "ic_alto": 0.6962025316455697
+      },
+      "recall5_B_com_clima_grade": {
+        "observado": 0.45569620253164556,
+        "n": 158,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.379746835443038,
+        "ic_alto": 0.5254746835443029
+      },
+      "recall10_B_com_clima_grade": {
+        "observado": 0.6518987341772152,
+        "n": 158,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.5822784810126582,
+        "ic_alto": 0.7278481012658228
+      },
+      "delta_B_menos_A_k5": {
+        "observado": -0.03164556962025317,
+        "n": 158,
+        "n_reamostragens": 2000,
+        "ic_baixo": -0.08860759493670889,
+        "ic_alto": 0.025316455696202556
+      },
+      "delta_B_menos_A_k10": {
+        "observado": 0.03164556962025322,
+        "n": 158,
+        "n_reamostragens": 2000,
+        "ic_baixo": -0.025316455696202556,
+        "ic_alto": 0.08860759493670889
+      }
+    },
+    "grandes_episodios": {
+      "n": 92,
+      "recall5_A_sem_clima": {
+        "observado": 0.18478260869565216,
+        "n": 92,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.10869565217391304,
+        "ic_alto": 0.2717391304347826
+      },
+      "recall10_A_sem_clima": {
+        "observado": 0.30434782608695654,
+        "n": 92,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.20652173913043478,
+        "ic_alto": 0.40217391304347827
+      },
+      "recall5_B_com_clima_grade": {
+        "observado": 0.22826086956521738,
+        "n": 92,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.14130434782608695,
+        "ic_alto": 0.31521739130434784
+      },
+      "recall10_B_com_clima_grade": {
+        "observado": 0.3804347826086957,
+        "n": 92,
+        "n_reamostragens": 2000,
+        "ic_baixo": 0.2826086956521739,
+        "ic_alto": 0.4782608695652174
+      },
+      "delta_B_menos_A_k5": {
+        "observado": 0.043478260869565216,
+        "n": 92,
+        "n_reamostragens": 2000,
+        "ic_baixo": -0.03260869565217389,
+        "ic_alto": 0.11956521739130435
+      },
+      "delta_B_menos_A_k10": {
+        "observado": 0.07608695652173914,
+        "n": 92,
+        "n_reamostragens": 2000,
+        "ic_baixo": -0.010869565217391297,
+        "ic_alto": 0.16304347826086957
+      }
+    }
+  },
+  "metricas_dataset": {
+    "A_sem_clima": {
+      "n_features": 38,
+      "linhas_finais": 58562,
+      "n_treino": 29328,
+      "n_teste": 14476,
+      "proporcao_positiva": 0.14762132440831938
+    },
+    "B_com_clima_grade": {
+      "n_features": 46,
+      "linhas_finais": 58562,
+      "n_treino": 29328,
+      "n_teste": 14476,
+      "proporcao_positiva": 0.14762132440831938
+    }
+  },
+  "conclusao": {
+    "criterio": "incorporar o clima ao modelo do produto só se o delta B-A em Recall@5 (a faixa em que o candidato congelado tem ganho defensável) tiver IC que não cruza zero E sinal positivo em todos os anos do teste",
+    "delta5_observado": -0.0010869565217391242,
+    "delta5_ic": [
+      -0.02282608695652172,
+      0.02065217391304347
+    ],
+    "delta5_ic_cruza_zero": true,
+    "delta5_positivo_em_todos_os_anos": false,
+    "incorporar_clima_ao_modelo": false,
+    "achado_secundario_k10": {
+      "delta10_B_menos_A": 0.028260869565217395,
+      "delta10_ic": [
+        0.004347826086956497,
+        0.05326086956521736
+      ],
+      "delta10_ic_cluster_bairro": [
+        0.0020972947338830763,
+        0.05335086047220149
+      ],
+      "delta10_ic_cluster_bairro_ano": [
+        0.0040331975079163866,
+        0.0529226644959419
+      ],
+      "delta10_positivo_em_todos_os_anos": true,
+      "B_vs_baseline_k10": 0.05434782608695654,
+      "B_vs_baseline_k10_ic": [
+        0.019565217391304346,
+        0.09024456521739119
+      ],
+      "observacao": "K=10 nao e a faixa de claim do produto e esta variante nao passou pelo protocolo completo de validacao (leave-one-year-out, analise territorial). Fica registrada como candidata a uma versao futura, que exigiria validacao propria."
+    }
+  }
+}

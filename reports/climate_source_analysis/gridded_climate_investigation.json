@@ -1,0 +1,192 @@
+{
+  "janela_epidemiologica": {
+    "inicio": "2012-12-30",
+    "fim": "2026-01-03"
+  },
+  "n_bairros": 94,
+  "extensao_graus": {
+    "latitude": 0.1774,
+    "longitude": 0.108
+  },
+  "candidatas": {
+    "era5_open_meteo": "testada e escolhida",
+    "cds_copernicus_direto": "nao testavel (exige credencial, ausente neste ambiente)",
+    "chirps_0_05_graus": "acessivel, descartada por custo de ingestao (GeoTIFF diario global + GDAL)",
+    "nasa_power": "acessivel, descartada por resolucao (0,5 x 0,625 graus)"
+  },
+  "celulas": {
+    "ERA5": {
+      "resolucao_graus": 0.25,
+      "n_celulas_para_94_bairros": 2,
+      "celulas": [
+        "-8.0000_-35.0000",
+        "-8.2500_-35.0000"
+      ]
+    },
+    "ERA5-LAND": {
+      "resolucao_graus": 0.1,
+      "n_celulas_para_94_bairros": 3,
+      "celulas": [
+        "-8.0000_-34.9000",
+        "-8.0000_-35.0000",
+        "-8.1000_-35.0000"
+      ]
+    }
+  },
+  "silver_diaria": {
+    "linhas_antes": 23765,
+    "linhas_validas": 23765,
+    "duplicatas_removidas": 0,
+    "motivos_rejeicao": {},
+    "celulas_distintas": 5,
+    "data_minima": "2012-12-30",
+    "data_maxima": "2026-01-03"
+  },
+  "mapeamento_bairro_celula": {
+    "linhas": 188,
+    "distancia_centroide_celula_km_mediana": 8.06,
+    "distancia_centroide_celula_km_maxima": 17.292
+  },
+  "features_grao_gold": {
+    "linhas_com_precipitacao_grade": 63826,
+    "linhas_com_temperatura_grade": 63826,
+    "percentual_linhas_com_clima_grade": 100.0,
+    "celulas_precipitacao_distintas": 2,
+    "celulas_temperatura_distintas": 3
+  },
+  "cobertura_por_ano": [
+    {
+      "ano_epidemiologico": 2013,
+      "linhas": 4888,
+      "bairro_semana_com_grade": 4888,
+      "bairro_semana_com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2014,
+      "linhas": 4982,
+      "bairro_semana_com_grade": 4982,
+      "bairro_semana_com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2015,
+      "linhas": 4888,
+      "bairro_semana_com_grade": 4888,
+      "bairro_semana_com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2016,
+      "linhas": 4888,
+      "bairro_semana_com_grade": 4888,
+      "bairro_semana_com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2017,
+      "linhas": 4888,
+      "bairro_semana_com_grade": 4888,
+      "bairro_semana_com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2018,
+      "linhas": 4888,
+      "bairro_semana_com_grade": 4888,
+      "bairro_semana_com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2019,
+      "linhas": 4888,
+      "bairro_semana_com_grade": 4888,
+      "bairro_semana_com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2020,
+      "linhas": 4982,
+      "bairro_semana_com_grade": 4982,
+      "bairro_semana_com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2021,
+      "linhas": 4888,
+      "bairro_semana_com_grade": 4888,
+      "bairro_semana_com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2022,
+      "linhas": 4888,
+      "bairro_semana_com_grade": 4888,
+      "bairro_semana_com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2023,
+      "linhas": 4888,
+      "bairro_semana_com_grade": 4888,
+      "bairro_semana_com_estacao": 0,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 0.0
+    },
+    {
+      "ano_epidemiologico": 2024,
+      "linhas": 4888,
+      "bairro_semana_com_grade": 4888,
+      "bairro_semana_com_estacao": 1305,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 26.7
+    },
+    {
+      "ano_epidemiologico": 2025,
+      "linhas": 4982,
+      "bairro_semana_com_grade": 4982,
+      "bairro_semana_com_estacao": 2598,
+      "pct_com_grade": 100.0,
+      "pct_com_estacao": 52.15
+    }
+  ],
+  "validacao_vs_cemaden": {
+    "n_bairro_semana": 3903,
+    "pearson": 0.6084,
+    "spearman": 0.5507,
+    "mae_mm": 17.614,
+    "rmse_mm": 35.504,
+    "vies_medio_mm": -5.684,
+    "media_grade_mm": 14.218,
+    "media_estacao_mm": 19.901,
+    "razao_total_grade_sobre_estacao": 0.7144,
+    "limiar_semana_chuvosa_mm": 20.0,
+    "concordancia_semana_chuvosa_pct": 83.58,
+    "recall_semana_chuvosa_pct": 64.21
+  },
+  "validacao_vs_cemaden_agregado_cidade": {
+    "n_semanas": 72,
+    "pearson": 0.7787,
+    "spearman": 0.8626
+  },
+  "validacao_vs_cemaden_por_bairro": {
+    "n_bairros_avaliados": 71,
+    "pearson_mediano": 0.7123,
+    "pearson_minimo": -0.0022,
+    "pearson_maximo": 0.7915
+  },
+  "valores_distintos_por_semana_entre_94_bairros": {
+    "mediana": 2.0,
+    "maximo": 2
+  }
+}

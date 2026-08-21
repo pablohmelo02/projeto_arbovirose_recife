@@ -1,0 +1,122 @@
+{
+  "gerado_em": "2026-08-21T10:48:15.273030+00:00",
+  "datasets": {
+    "epidemiologia": {
+      "dataset": "epidemiologia",
+      "fonte": "Portal de Dados Abertos do Recife (CKAN) — SINAN",
+      "ultima_atualizacao_fonte": "2026-05-20T10:28:07.454655",
+      "data_maxima_evento": "2026-01-03",
+      "semana_epi_maxima": "2025-53",
+      "pipeline_executado_em": "2026-08-20T13:23:47.043268+00:00",
+      "atraso_dias": 230,
+      "status": "ATRASADO",
+      "limiar_atraso_dias": 120,
+      "observacao": "A disponibilidade do painel reflete o último período publicado pela fonte oficial.",
+      "detalhe": {
+        "ano_epidemiologico_minimo": 2013,
+        "ano_epidemiologico_maximo": 2025,
+        "semanas_distintas": 679,
+        "bairros": 94,
+        "agravos": [
+          "CHIKUNGUNYA",
+          "DENGUE",
+          "ZIKA"
+        ],
+        "periodicidade_declarada_pela_fonte": "trimestral"
+      }
+    },
+    "territorio": {
+      "dataset": "territorio",
+      "fonte": "Portal de Dados Abertos do Recife (CKAN) — limites de bairros",
+      "ultima_atualizacao_fonte": "2026-03-02T15:27:38.301130",
+      "data_maxima_evento": "2026-03-02T15:27:38.301130",
+      "semana_epi_maxima": null,
+      "pipeline_executado_em": null,
+      "atraso_dias": 172,
+      "status": "ATUAL",
+      "limiar_atraso_dias": 1095,
+      "observacao": null,
+      "detalhe": {
+        "bairros": 94
+      }
+    },
+    "clima_estacao": {
+      "dataset": "clima_estacao",
+      "fonte": "CEMADEN — rede de pluviômetros (estação física)",
+      "ultima_atualizacao_fonte": null,
+      "data_maxima_evento": "2026-01-03",
+      "semana_epi_maxima": "2025-53",
+      "pipeline_executado_em": null,
+      "atraso_dias": 230,
+      "status": "ATRASADO",
+      "limiar_atraso_dias": 30,
+      "observacao": null,
+      "detalhe": {
+        "linhas_com_leitura_real": 11709,
+        "percentual_linhas": 6.1151,
+        "bairros_cobertos": 90,
+        "anos_cobertos": [
+          2024,
+          2025
+        ]
+      }
+    },
+    "clima_grade": {
+      "dataset": "clima_grade",
+      "fonte": "ERA5 / ERA5-Land — reanálise em grade (0,25° precipitação · 0,10° temperatura)",
+      "ultima_atualizacao_fonte": null,
+      "data_maxima_evento": "2026-01-03",
+      "semana_epi_maxima": "2025-53",
+      "pipeline_executado_em": null,
+      "atraso_dias": 230,
+      "status": "ATRASADO",
+      "limiar_atraso_dias": 30,
+      "observacao": "Estimativa climática espacial derivada de reanálise em grade — não é leitura de estação meteorológica de bairro.",
+      "detalhe": {
+        "percentual_linhas": 100.0,
+        "celulas_precipitacao": 2,
+        "celulas_temperatura": 3,
+        "resolucao_graus": {
+          "ERA5": 0.25,
+          "ERA5-LAND": 0.1
+        }
+      }
+    },
+    "modelo": {
+      "dataset": "modelo",
+      "fonte": "modelo experimental de priorização territorial (dengue)",
+      "ultima_atualizacao_fonte": "2026-08-21T03:26:20.536401+00:00",
+      "data_maxima_evento": "2019-12-28",
+      "semana_epi_maxima": "2019-52",
+      "pipeline_executado_em": "2026-08-21T03:26:20.536401+00:00",
+      "atraso_dias": null,
+      "status": "ATUAL",
+      "limiar_atraso_dias": null,
+      "observacao": null,
+      "detalhe": {
+        "model_version": "dengue_onset_ranking_candidate_v1",
+        "trained_until": 2019,
+        "target_definition": "onset: existe inicio de novo episodio de risco elevado de dengue no bairro em alguma das semanas t+1..t+3 (percentil 90 historico-sazonal local)",
+        "horizon": 3,
+        "feature_schema_version": "38-c963ad29a875"
+      }
+    }
+  },
+  "projecao_atual": {
+    "current_projection_available": false,
+    "reason": "epidemiological_data_stale",
+    "detalhe": "o último período epidemiológico publicado (2025-53) está 32 semanas atrás do presente, acima do limite de 4 semanas para uma priorização referente ao período atual",
+    "semanas_de_atraso": 32,
+    "semanas_limite": 4,
+    "semana_epi_maxima": "2025-53",
+    "data_maxima_evento": "2026-01-03"
+  },
+  "resumo_status": {
+    "epidemiologia": "ATRASADO",
+    "territorio": "ATUAL",
+    "clima_estacao": "ATRASADO",
+    "clima_grade": "ATRASADO",
+    "modelo": "ATUAL"
+  },
+  "consulta_a_fonte": "realizada"
+}

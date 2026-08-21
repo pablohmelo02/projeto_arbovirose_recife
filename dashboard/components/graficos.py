@@ -15,12 +15,27 @@ import plotly.graph_objects as go
 
 TEMA_COR_SEQUENCIAL = "Blues"
 TEMA_COR_DIVERGENTE = "RdBu_r"
-CORES_AGRAVOS = {"DENGUE": "#c0392b", "ZIKA": "#8e44ad", "CHIKUNGUNYA": "#d68910", "TOTAL_ARBOVIROSES": "#2c3e50"}
+
+# Paleta institucional (ver dashboard/components/tema.py): azul para
+# estrutura, vermelho contido reservado à dengue, âmbar só para atenção.
+COR_INSTITUCIONAL = "#1f4e79"
+COR_INSTITUCIONAL_CLARA = "#2e6da4"
+COR_ATENCAO = "#b9770e"
+COR_NEUTRA = "#8fa3b5"
+CORES_AGRAVOS = {
+    "DENGUE": "#a93226",
+    "ZIKA": "#6c5b8f",
+    "CHIKUNGUNYA": "#b9770e",
+    "TOTAL_ARBOVIROSES": "#1f4e79",
+}
 
 LAYOUT_PADRAO = dict(
     template="plotly_white",
-    margin=dict(l=10, r=10, t=50, b=10),
+    margin=dict(l=10, r=10, t=54, b=10),
+    font=dict(family="system-ui, -apple-system, Segoe UI, sans-serif", size=13, color="#1b2631"),
+    title_font=dict(size=15),
     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    hoverlabel=dict(font_size=13),
 )
 
 
@@ -48,7 +63,7 @@ def grafico_sazonalidade(sazonalidade: pd.DataFrame, titulo: str) -> go.Figure:
     fig = px.bar(
         sazonalidade, x="semana_epidemiologica", y="casos_media_por_ano",
         hover_data={"anos_observados": True, "casos_totais": True},
-        title=titulo, color_discrete_sequence=["#2980b9"],
+        title=titulo, color_discrete_sequence=[COR_INSTITUCIONAL_CLARA],
     )
     fig.update_layout(**LAYOUT_PADRAO, xaxis_title="Semana epidemiológica", yaxis_title="Casos (média entre os anos observados)")
     return fig
@@ -73,7 +88,7 @@ def grafico_ranking_bairros(ranking: pd.DataFrame, metrica: str, titulo: str) ->
     ordenado = ranking.sort_values(metrica, ascending=True)
     fig = px.bar(
         ordenado, x=metrica, y="nome_bairro", orientation="h", title=titulo,
-        color_discrete_sequence=["#2980b9"],
+        color_discrete_sequence=[COR_INSTITUCIONAL_CLARA],
     )
     fig.update_layout(**LAYOUT_PADRAO, yaxis_title="", xaxis_title=metrica.capitalize())
     return fig
@@ -125,7 +140,7 @@ def grafico_cobertura_por_ano(tabela: pd.DataFrame) -> go.Figure:
     fig = px.bar(
         tabela, x="ano_epidemiologico", y="percentual_bairros_com_clima_real",
         title="Bairros com clima real, por ano epidemiológico",
-        color_discrete_sequence=["#27ae60"],
+        color_discrete_sequence=[COR_INSTITUCIONAL_CLARA],
     )
     fig.update_layout(**LAYOUT_PADRAO, xaxis_title="Ano epidemiológico", yaxis_title="% dos 94 bairros")
     fig.update_yaxes(range=[0, 100])
@@ -137,7 +152,7 @@ def grafico_precipitacao(serie: pd.DataFrame) -> go.Figure:
     df["data"] = pd.to_datetime(df["semana_epi_data_inicio"])
     fig = px.bar(
         df, x="data", y="precipitacao_media_mm",
-        hover_data={"bairros_considerados": True}, color_discrete_sequence=["#2471a3"],
+        hover_data={"bairros_considerados": True}, color_discrete_sequence=[COR_INSTITUCIONAL],
         title="Precipitação semanal real (média entre bairros com clima real na semana)",
     )
     fig.update_layout(**LAYOUT_PADRAO, xaxis_title="Semana", yaxis_title="Precipitação média (mm)")
@@ -149,7 +164,7 @@ def grafico_dispersao_lag(dispersao: pd.DataFrame, janela_dias: int, agravo: str
         dispersao, x="precipitacao_mm", y="casos", trendline="ols",
         hover_data=["nome_bairro", "ano_epidemiologico", "semana_epidemiologica"],
         title=f"Precipitação acumulada em {janela_dias} dias × casos de {agravo} (n={len(dispersao)})",
-        color_discrete_sequence=["#c0392b"],
+        color_discrete_sequence=[CORES_AGRAVOS["DENGUE"]],
     )
     fig.update_layout(**LAYOUT_PADRAO, xaxis_title=f"Chuva acumulada {janela_dias}d (mm)", yaxis_title="Casos")
     return fig
@@ -159,7 +174,7 @@ def grafico_lag_correlacoes(tabela: pd.DataFrame, agravo: str) -> go.Figure:
     fig = px.bar(
         tabela, x="janela_dias", y="correlacao_pearson", color="confiavel",
         hover_data=["n_observacoes"],
-        color_discrete_map={True: "#27ae60", False: "#e67e22"},
+        color_discrete_map={True: COR_INSTITUCIONAL_CLARA, False: COR_ATENCAO},
         title=f"Correlação (Pearson) casos × chuva acumulada, por janela de lag — {agravo}",
     )
     fig.update_layout(**LAYOUT_PADRAO, xaxis_title="Janela de lag (dias)", yaxis_title="Correlação de Pearson")
@@ -185,7 +200,7 @@ def grafico_antes_depois(percentual_antes: float, percentual_depois: float) -> g
     )
     fig = px.bar(
         df, x="momento", y="percentual", color="momento",
-        color_discrete_sequence=["#c0392b", "#27ae60"],
+        color_discrete_sequence=[COR_NEUTRA, COR_INSTITUCIONAL],
         title="% da Gold com clima real — antes × depois do backfill",
         text="percentual",
     )

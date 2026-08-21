@@ -131,6 +131,21 @@ def agregar_semanal_agravo(df_gold: pd.DataFrame, agravo: str) -> pd.DataFrame:
         "chuva_28d_mm",
         "dias_com_dado_valido_7d",
         "dias_com_dado_valido_28d",
+        # Bloco climático em GRADE (Gold >= 1.1). Filtrado por
+        # `c in df_gold.columns` logo abaixo, então uma Gold 1.0 (só
+        # estação) continua funcionando sem mudança — a ausência do bloco
+        # não é erro, é uma versão anterior da Gold.
+        "precipitacao_semana_grade_mm",
+        "precipitacao_2s_grade_mm",
+        "precipitacao_3s_grade_mm",
+        "precipitacao_4s_grade_mm",
+        "temperatura_media_grade_c",
+        "temperatura_minima_grade_c",
+        "temperatura_maxima_grade_c",
+        "umidade_relativa_media_grade_pct",
+        "dias_validos_precipitacao_grade_semana",
+        "dias_validos_temperatura_grade_semana",
+        "cobertura_grade_semana",
     ]
     colunas_existentes = [c for c in colunas if c in df_gold.columns]
     df = df_gold.loc[df_gold["agravo"] == agravo, colunas_existentes].copy()

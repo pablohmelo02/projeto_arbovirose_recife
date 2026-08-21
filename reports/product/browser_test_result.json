@@ -1,0 +1,428 @@
+{
+  "desktop": {
+    "carregamento_inicial": {
+      "dom_content_loaded_ms": 278,
+      "load_ms": 279,
+      "transferido_kb": 11
+    },
+    "paginas": [
+      {
+        "pagina": "Início",
+        "caracteres_texto": 3412,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 1,
+        "tabelas": 1,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.18
+      },
+      {
+        "pagina": "Situação epidemiológica",
+        "caracteres_texto": 3384,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 4,
+        "tabelas": 0,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.82
+      },
+      {
+        "pagina": "Mapa territorial",
+        "caracteres_texto": 2108,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 1,
+        "tabelas": 1,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.43
+      },
+      {
+        "pagina": "Evolução histórica",
+        "caracteres_texto": 3417,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 4,
+        "tabelas": 2,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.79
+      },
+      {
+        "pagina": "Bairros prioritários",
+        "caracteres_texto": 3323,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 2,
+        "tabelas": 1,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 1.99
+      },
+      {
+        "pagina": "Priorização experimental",
+        "caracteres_texto": 4145,
+        "excecoes_streamlit": 0,
+        "alertas": 4,
+        "graficos_plotly": 4,
+        "tabelas": 7,
+        "marcadores_de_falha": [],
+        "textos_alerta": [
+          "🧪\nMódulo experimental. Resultados retrospectivos e sinais de priorização não substituem avaliação epidemiológica nem representam previsão oficial da Prefeitura ",
+          "ℹ️\nTop-5 — faixa com ganho robusto. É a única faixa em que a vantagem do modelo sobre regras simples tem intervalo de confiança que não cruza zero, e o sinal se",
+          "",
+          ""
+        ],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.55
+      },
+      {
+        "pagina": "Clima",
+        "caracteres_texto": 4408,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 5,
+        "tabelas": 0,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 3.32
+      },
+      {
+        "pagina": "Clima × Dengue",
+        "caracteres_texto": 4008,
+        "excecoes_streamlit": 0,
+        "alertas": 1,
+        "graficos_plotly": 3,
+        "tabelas": 1,
+        "marcadores_de_falha": [],
+        "textos_alerta": [
+          "⚠️\nAssociação não é causalidade. Uma correlação positiva entre chuva acumulada e casos não significa que a chuva cause o aumento de casos, nem permite prever ca"
+        ],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 3.64
+      },
+      {
+        "pagina": "Qualidade e limitações",
+        "caracteres_texto": 8291,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 2,
+        "tabelas": 3,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.61
+      }
+    ]
+  },
+  "tablet": {
+    "carregamento_inicial": {
+      "dom_content_loaded_ms": 252,
+      "load_ms": 252,
+      "transferido_kb": 11
+    },
+    "paginas": [
+      {
+        "pagina": "Início",
+        "caracteres_texto": 3397,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 1,
+        "tabelas": 1,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 1.64
+      },
+      {
+        "pagina": "Situação epidemiológica",
+        "caracteres_texto": 3339,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 4,
+        "tabelas": 0,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.42
+      },
+      {
+        "pagina": "Mapa territorial",
+        "caracteres_texto": 2108,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 1,
+        "tabelas": 1,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 1.37
+      },
+      {
+        "pagina": "Evolução histórica",
+        "caracteres_texto": 3363,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 4,
+        "tabelas": 2,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 1.83
+      },
+      {
+        "pagina": "Bairros prioritários",
+        "caracteres_texto": 3323,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 2,
+        "tabelas": 1,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 1.91
+      },
+      {
+        "pagina": "Priorização experimental",
+        "caracteres_texto": 4145,
+        "excecoes_streamlit": 0,
+        "alertas": 4,
+        "graficos_plotly": 4,
+        "tabelas": 7,
+        "marcadores_de_falha": [],
+        "textos_alerta": [
+          "🧪\nMódulo experimental. Resultados retrospectivos e sinais de priorização não substituem avaliação epidemiológica nem representam previsão oficial da Prefeitura ",
+          "ℹ️\nTop-5 — faixa com ganho robusto. É a única faixa em que a vantagem do modelo sobre regras simples tem intervalo de confiança que não cruza zero, e o sinal se",
+          "",
+          ""
+        ],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.09
+      },
+      {
+        "pagina": "Clima",
+        "caracteres_texto": 4348,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 5,
+        "tabelas": 0,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.34
+      },
+      {
+        "pagina": "Clima × Dengue",
+        "caracteres_texto": 3974,
+        "excecoes_streamlit": 0,
+        "alertas": 1,
+        "graficos_plotly": 3,
+        "tabelas": 1,
+        "marcadores_de_falha": [],
+        "textos_alerta": [
+          "⚠️\nAssociação não é causalidade. Uma correlação positiva entre chuva acumulada e casos não significa que a chuva cause o aumento de casos, nem permite prever ca"
+        ],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.26
+      },
+      {
+        "pagina": "Qualidade e limitações",
+        "caracteres_texto": 8291,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 2,
+        "tabelas": 3,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.01
+      }
+    ]
+  },
+  "mobile": {
+    "carregamento_inicial": {
+      "dom_content_loaded_ms": 268,
+      "load_ms": 269,
+      "transferido_kb": 11
+    },
+    "paginas": [
+      {
+        "pagina": "Início",
+        "caracteres_texto": 3424,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 1,
+        "tabelas": 1,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 1.66
+      },
+      {
+        "pagina": "Situação epidemiológica",
+        "caracteres_texto": 3396,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 4,
+        "tabelas": 0,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.4
+      },
+      {
+        "pagina": "Mapa territorial",
+        "caracteres_texto": 2135,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 1,
+        "tabelas": 1,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 1.89
+      },
+      {
+        "pagina": "Evolução histórica",
+        "caracteres_texto": 3429,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 4,
+        "tabelas": 2,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.26
+      },
+      {
+        "pagina": "Bairros prioritários",
+        "caracteres_texto": 3350,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 2,
+        "tabelas": 1,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 1.94
+      },
+      {
+        "pagina": "Priorização experimental",
+        "caracteres_texto": 4172,
+        "excecoes_streamlit": 0,
+        "alertas": 4,
+        "graficos_plotly": 4,
+        "tabelas": 7,
+        "marcadores_de_falha": [],
+        "textos_alerta": [
+          "🧪\nMódulo experimental. Resultados retrospectivos e sinais de priorização não substituem avaliação epidemiológica nem representam previsão oficial da Prefeitura ",
+          "ℹ️\nTop-5 — faixa com ganho robusto. É a única faixa em que a vantagem do modelo sobre regras simples tem intervalo de confiança que não cruza zero, e o sinal se",
+          "",
+          ""
+        ],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.04
+      },
+      {
+        "pagina": "Clima",
+        "caracteres_texto": 4375,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 5,
+        "tabelas": 0,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.3
+      },
+      {
+        "pagina": "Clima × Dengue",
+        "caracteres_texto": 4001,
+        "excecoes_streamlit": 0,
+        "alertas": 1,
+        "graficos_plotly": 3,
+        "tabelas": 1,
+        "marcadores_de_falha": [],
+        "textos_alerta": [
+          "⚠️\nAssociação não é causalidade. Uma correlação positiva entre chuva acumulada e casos não significa que a chuva cause o aumento de casos, nem permite prever ca"
+        ],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.27
+      },
+      {
+        "pagina": "Qualidade e limitações",
+        "caracteres_texto": 8318,
+        "excecoes_streamlit": 0,
+        "alertas": 0,
+        "graficos_plotly": 2,
+        "tabelas": 3,
+        "marcadores_de_falha": [],
+        "textos_alerta": [],
+        "secoes_degradadas": [],
+        "overflow_horizontal": false,
+        "ok": true,
+        "tempo_troca_de_pagina_s": 2.01
+      }
+    ]
+  }
+}

@@ -1,13 +1,26 @@
+# MinIO local para a cadeia canônica Bronze/Silver/Gold.
+#
+# O dashboard publicado NÃO depende disto: ele lê apenas os artefatos
+# estáticos de `dashboard/data/`. Este serviço só é necessário para rodar a
+# ingestão e as transformações a partir das fontes.
+#
+# Segurança: as credenciais são obrigatórias e vêm do `.env` (ignorado pelo
+# Git). Não há default como "admin/admin123" — um default previsível num
+# serviço que escuta em 0.0.0.0:9000 é exatamente o tipo de configuração que
+# vaza dado sem ninguém perceber. Sem as variáveis definidas, o Compose
+# aborta com mensagem explícita.
 services:
   minio:
     image: minio/minio:latest
-    container_name: alerta-dengue-minio
+    container_name: recife-alerta-minio
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      # Restrito ao loopback: o Data Lake de desenvolvimento não precisa
+      # estar acessível na rede local.
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
     environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-admin}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-admin123}
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?defina MINIO_ACCESS_KEY no .env}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?defina MINIO_SECRET_KEY no .env}
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data

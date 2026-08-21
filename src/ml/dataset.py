@@ -147,6 +147,7 @@ def montar_dataset_onset(
     incluir_historico_local: bool = True,
     incluir_momentum: bool = True,
     incluir_clima: bool = False,
+    incluir_clima_grade: bool = False,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, dict[str, Any]]:
     """Formulação B desta etapa (`src/ml/onset.py`): "um novo episódio de
     risco começará entre `t+1` e `t+horizonte`?" — diferente de
@@ -183,6 +184,7 @@ def montar_dataset_onset(
         incluir_historico_local=incluir_historico_local,
         incluir_momentum=incluir_momentum,
         incluir_clima=incluir_clima,
+        incluir_clima_grade=incluir_clima_grade,
     )
     y = df_feat[coluna_target]
 
@@ -198,6 +200,7 @@ def montar_dataset_onset(
         "formulacao": "onset",
         "horizonte_semanas": horizonte,
         "incluir_clima": incluir_clima,
+        "incluir_clima_grade": incluir_clima_grade,
         "incluir_sazonal": incluir_sazonal,
         "incluir_territorio": incluir_territorio,
         "incluir_historico_local": incluir_historico_local,

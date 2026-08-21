@@ -1,0 +1,1444 @@
+{
+  "id_candidato": "dengue_onset_ranking_candidate_v1",
+  "configuracao": {
+    "target": "onset (inicio de novo episodio)",
+    "horizonte_semanas": 3,
+    "n_features": 38,
+    "hiperparametros_arvore": {
+      "max_depth": 4,
+      "learning_rate": 0.1,
+      "max_iter": 150
+    },
+    "split_treino_ate": 2019,
+    "split_validacao_ate": 2022,
+    "n_treino": 29328,
+    "n_teste": 14476,
+    "n_episodios_teste": 920,
+    "janela_lead_time_semanas": 4
+  },
+  "seed": 42,
+  "n_reamostragens": 2000,
+  "recall_ic": [
+    {
+      "k": 5,
+      "metodo": "modelo",
+      "observado": 0.2576086956521739,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.22934782608695653,
+      "ic_alto": 0.2858967391304347
+    },
+    {
+      "k": 5,
+      "metodo": "casos_atuais",
+      "observado": 0.11413043478260869,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.09456521739130434,
+      "ic_alto": 0.1348097826086955
+    },
+    {
+      "k": 5,
+      "metodo": "crescimento_recente",
+      "observado": 0.18369565217391304,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.15978260869565217,
+      "ic_alto": 0.20978260869565218
+    },
+    {
+      "k": 5,
+      "metodo": "razao_historica_local",
+      "observado": 0.19782608695652174,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.17282608695652174,
+      "ic_alto": 0.22391304347826088
+    },
+    {
+      "k": 10,
+      "metodo": "modelo",
+      "observado": 0.38369565217391305,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.3521739130434783,
+      "ic_alto": 0.4152173913043478
+    },
+    {
+      "k": 10,
+      "metodo": "casos_atuais",
+      "observado": 0.20434782608695654,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.1793478260869565,
+      "ic_alto": 0.2315489130434781
+    },
+    {
+      "k": 10,
+      "metodo": "crescimento_recente",
+      "observado": 0.3467391304347826,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.31521739130434784,
+      "ic_alto": 0.3782608695652174
+    },
+    {
+      "k": 10,
+      "metodo": "razao_historica_local",
+      "observado": 0.3576086956521739,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.32717391304347826,
+      "ic_alto": 0.38913043478260867
+    },
+    {
+      "k": 15,
+      "metodo": "modelo",
+      "observado": 0.4815217391304348,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.4489130434782609,
+      "ic_alto": 0.5152173913043478
+    },
+    {
+      "k": 15,
+      "metodo": "casos_atuais",
+      "observado": 0.29782608695652174,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.2673913043478261,
+      "ic_alto": 0.32717391304347826
+    },
+    {
+      "k": 15,
+      "metodo": "crescimento_recente",
+      "observado": 0.4880434782608696,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.45543478260869563,
+      "ic_alto": 0.5217391304347826
+    },
+    {
+      "k": 15,
+      "metodo": "razao_historica_local",
+      "observado": 0.48695652173913045,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.45543478260869563,
+      "ic_alto": 0.5195652173913043
+    },
+    {
+      "k": 20,
+      "metodo": "modelo",
+      "observado": 0.5760869565217391,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.5423913043478261,
+      "ic_alto": 0.6086956521739131
+    },
+    {
+      "k": 20,
+      "metodo": "casos_atuais",
+      "observado": 0.37717391304347825,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.345625,
+      "ic_alto": 0.40869565217391307
+    },
+    {
+      "k": 20,
+      "metodo": "crescimento_recente",
+      "observado": 0.6315217391304347,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.6,
+      "ic_alto": 0.6630434782608695
+    },
+    {
+      "k": 20,
+      "metodo": "razao_historica_local",
+      "observado": 0.5793478260869566,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.5478260869565217,
+      "ic_alto": 0.6108695652173913
+    }
+  ],
+  "delta_vs_melhor_baseline": [
+    {
+      "k": 5,
+      "melhor_baseline": "razao_historica_local",
+      "observado": 0.05978260869565219,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.028260869565217395,
+      "ic_alto": 0.09130434782608696,
+      "ic_baixo_cluster_bairro": 0.018887841832963766,
+      "ic_alto_cluster_bairro": 0.10169858787667332,
+      "ic_baixo_cluster_bairro_ano": 0.024040449037776208,
+      "ic_alto_cluster_bairro_ano": 0.09601003460985255
+    },
+    {
+      "k": 10,
+      "melhor_baseline": "razao_historica_local",
+      "observado": 0.026086956521739146,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": -0.007608695652173871,
+      "ic_alto": 0.05978260869565216,
+      "ic_baixo_cluster_bairro": -0.018160873709118078,
+      "ic_alto_cluster_bairro": 0.06851144002604649,
+      "ic_baixo_cluster_bairro_ano": -0.011376888211650726,
+      "ic_alto_cluster_bairro_ano": 0.06500717973786316
+    },
+    {
+      "k": 15,
+      "melhor_baseline": "crescimento_recente",
+      "observado": -0.0065217391304348005,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": -0.05217391304347829,
+      "ic_alto": 0.03913043478260869,
+      "ic_baixo_cluster_bairro": -0.06540985687300745,
+      "ic_alto_cluster_bairro": 0.04946819996074064,
+      "ic_baixo_cluster_bairro_ano": -0.059843431546883964,
+      "ic_alto_cluster_bairro_ano": 0.0467873533911269
+    },
+    {
+      "k": 20,
+      "melhor_baseline": "crescimento_recente",
+      "observado": -0.05543478260869561,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": -0.10108695652173905,
+      "ic_alto": -0.013043478260869597,
+      "ic_baixo_cluster_bairro": -0.1070309408610435,
+      "ic_alto_cluster_bairro": -0.0031772984617575283,
+      "ic_baixo_cluster_bairro_ano": -0.10573042080876803,
+      "ic_alto_cluster_bairro_ano": -0.00525762355415349
+    }
+  ],
+  "por_ano": [
+    {
+      "inicio_ano": 2023,
+      "n_episodios": 117,
+      "recall5_modelo": 0.3076923076923077,
+      "recall10_modelo": 0.42735042735042733,
+      "recall5_melhor_baseline": 0.2905982905982906,
+      "recall10_melhor_baseline": 0.4700854700854701,
+      "delta5": 0.01709401709401709,
+      "delta10": -0.04273504273504275,
+      "lead_time_mediano": 3.0
+    },
+    {
+      "inicio_ano": 2024,
+      "n_episodios": 406,
+      "recall5_modelo": 0.25862068965517243,
+      "recall10_modelo": 0.37192118226600984,
+      "recall5_melhor_baseline": 0.2019704433497537,
+      "recall10_melhor_baseline": 0.3817733990147783,
+      "delta5": 0.05665024630541873,
+      "delta10": -0.009852216748768461,
+      "lead_time_mediano": 2.0
+    },
+    {
+      "inicio_ano": 2025,
+      "n_episodios": 397,
+      "recall5_modelo": 0.24181360201511334,
+      "recall10_modelo": 0.38287153652392947,
+      "recall5_melhor_baseline": 0.16624685138539042,
+      "recall10_melhor_baseline": 0.29974811083123426,
+      "delta5": 0.07556675062972293,
+      "delta10": 0.08312342569269521,
+      "lead_time_mediano": 2.0
+    }
+  ],
+  "leave_one_year_out": [
+    {
+      "ano_excluido": 2023,
+      "n_episodios": 803,
+      "recall5_modelo": 0.2503113325031133,
+      "recall5_melhor_baseline": 0.1843088418430884,
+      "recall10_modelo": 0.37733499377334995,
+      "recall10_melhor_baseline": 0.3412204234122042
+    },
+    {
+      "ano_excluido": 2024,
+      "n_episodios": 514,
+      "recall5_modelo": 0.25680933852140075,
+      "recall5_melhor_baseline": 0.19455252918287938,
+      "recall10_modelo": 0.39299610894941633,
+      "recall10_melhor_baseline": 0.33852140077821014
+    },
+    {
+      "ano_excluido": 2025,
+      "n_episodios": 523,
+      "recall5_modelo": 0.2695984703632887,
+      "recall5_melhor_baseline": 0.22179732313575526,
+      "recall10_modelo": 0.384321223709369,
+      "recall10_melhor_baseline": 0.40152963671128106
+    }
+  ],
+  "por_rpa": [
+    {
+      "codigo_rpa": "1",
+      "n_episodios": 129,
+      "recall5_modelo": 0.20155038759689922,
+      "recall10_modelo": 0.31007751937984496,
+      "recall20_modelo": 0.5038759689922481
+    },
+    {
+      "codigo_rpa": "2",
+      "n_episodios": 146,
+      "recall5_modelo": 0.22602739726027396,
+      "recall10_modelo": 0.3972602739726027,
+      "recall20_modelo": 0.636986301369863
+    },
+    {
+      "codigo_rpa": "3",
+      "n_episodios": 277,
+      "recall5_modelo": 0.21660649819494585,
+      "recall10_modelo": 0.3140794223826715,
+      "recall20_modelo": 0.5379061371841155
+    },
+    {
+      "codigo_rpa": "4",
+      "n_episodios": 97,
+      "recall5_modelo": 0.25773195876288657,
+      "recall10_modelo": 0.35051546391752575,
+      "recall20_modelo": 0.5360824742268041
+    },
+    {
+      "codigo_rpa": "5",
+      "n_episodios": 197,
+      "recall5_modelo": 0.41624365482233505,
+      "recall10_modelo": 0.5939086294416244,
+      "recall20_modelo": 0.7411167512690355
+    },
+    {
+      "codigo_rpa": "6",
+      "n_episodios": 74,
+      "recall5_modelo": 0.14864864864864866,
+      "recall10_modelo": 0.22972972972972974,
+      "recall20_modelo": 0.33783783783783783
+    }
+  ],
+  "grandes_episodios": {
+    "n": 92,
+    "recall5_grandes": {
+      "observado": 0.18478260869565216,
+      "n": 92,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.10869565217391304,
+      "ic_alto": 0.2717391304347826
+    },
+    "recall5_todos": {
+      "observado": 0.2576086956521739,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.22934782608695653,
+      "ic_alto": 0.2858967391304347
+    },
+    "recall10_grandes": {
+      "observado": 0.30434782608695654,
+      "n": 92,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.20652173913043478,
+      "ic_alto": 0.40217391304347827
+    },
+    "recall10_todos": {
+      "observado": 0.38369565217391305,
+      "n": 920,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.3521739130434783,
+      "ic_alto": 0.4152173913043478
+    },
+    "lead_time_mediano": 2.0
+  },
+  "genuino_vs_recaida": {
+    "n_genuinos": 762,
+    "n_recaidas": 158,
+    "recall5_genuino": {
+      "observado": 0.2099737532808399,
+      "n": 762,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.18110236220472442,
+      "ic_alto": 0.24015748031496062
+    },
+    "recall5_recaida": {
+      "observado": 0.4873417721518987,
+      "n": 158,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.41139240506329117,
+      "ic_alto": 0.5632911392405063
+    },
+    "recall10_genuino": {
+      "observado": 0.3346456692913386,
+      "n": 762,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.30183727034120733,
+      "ic_alto": 0.3661745406824145
+    },
+    "recall10_recaida": {
+      "observado": 0.620253164556962,
+      "n": 158,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.5443037974683544,
+      "ic_alto": 0.6962025316455697
+    },
+    "recall20_genuino": {
+      "observado": 0.5380577427821522,
+      "n": 762,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.5013123359580053,
+      "ic_alto": 0.5708661417322834
+    },
+    "recall20_recaida": {
+      "observado": 0.759493670886076,
+      "n": 158,
+      "n_reamostragens": 2000,
+      "ic_baixo": 0.689873417721519,
+      "ic_alto": 0.8227848101265823
+    }
+  },
+  "lead_time_k10": {
+    "n": 353,
+    "media": 2.3909348441926346,
+    "p25": 1.0,
+    "mediana_ic": {
+      "observado": 2.0,
+      "n": 353,
+      "n_reamostragens": 2000,
+      "ic_baixo": 2.0,
+      "ic_alto": 3.0
+    },
+    "p75": 3.0,
+    "minimo": 1.0,
+    "maximo": 4.0,
+    "pct_>=1_semana": 100.0,
+    "pct_>=2_semanas": 69.12181303116147,
+    "pct_>=3_semanas": 45.609065155807365
+  },
+  "estabilidade_top10": {
+    "k": 10,
+    "n_pares_consecutivos": 153,
+    "jaccard_medio": 0.2943604590997294,
+    "jaccard_mediano": 0.25
+  },
+  "carga_operacional": [
+    {
+      "k": 5,
+      "bairros_priorizados_por_semana": 5,
+      "episodios_antecipados": 237,
+      "episodios_perdidos": 683,
+      "taxa_antecipacao": 0.2576086956521739,
+      "n_semanas_avaliadas": 154,
+      "priorizacoes_total": 770,
+      "bairros_priorizados_por_semana_medio": 5.0,
+      "priorizacoes_com_episodio_futuro": 266,
+      "priorizacoes_sem_episodio_futuro": 504,
+      "priorizacoes_alvo_indefinido": 0,
+      "pct_priorizacoes_sem_episodio_futuro": 65.45454545454545
+    },
+    {
+      "k": 10,
+      "bairros_priorizados_por_semana": 10,
+      "episodios_antecipados": 353,
+      "episodios_perdidos": 567,
+      "taxa_antecipacao": 0.38369565217391305,
+      "n_semanas_avaliadas": 154,
+      "priorizacoes_total": 1540,
+      "bairros_priorizados_por_semana_medio": 10.0,
+      "priorizacoes_com_episodio_futuro": 460,
+      "priorizacoes_sem_episodio_futuro": 1080,
+      "priorizacoes_alvo_indefinido": 0,
+      "pct_priorizacoes_sem_episodio_futuro": 70.12987012987013
+    },
+    {
+      "k": 15,
+      "bairros_priorizados_por_semana": 15,
+      "episodios_antecipados": 443,
+      "episodios_perdidos": 477,
+      "taxa_antecipacao": 0.4815217391304348,
+      "n_semanas_avaliadas": 154,
+      "priorizacoes_total": 2310,
+      "bairros_priorizados_por_semana_medio": 15.0,
+      "priorizacoes_com_episodio_futuro": 649,
+      "priorizacoes_sem_episodio_futuro": 1661,
+      "priorizacoes_alvo_indefinido": 0,
+      "pct_priorizacoes_sem_episodio_futuro": 71.9047619047619
+    },
+    {
+      "k": 20,
+      "bairros_priorizados_por_semana": 20,
+      "episodios_antecipados": 530,
+      "episodios_perdidos": 390,
+      "taxa_antecipacao": 0.5760869565217391,
+      "n_semanas_avaliadas": 154,
+      "priorizacoes_total": 3080,
+      "bairros_priorizados_por_semana_medio": 20.0,
+      "priorizacoes_com_episodio_futuro": 819,
+      "priorizacoes_sem_episodio_futuro": 2261,
+      "priorizacoes_alvo_indefinido": 0,
+      "pct_priorizacoes_sem_episodio_futuro": 73.4090909090909
+    }
+  ],
+  "bairros_criticos": {
+    "muitos_episodios_baixa_deteccao": [
+      {
+        "codigo_bairro": "469",
+        "nome_bairro": "PARNAMIRIM",
+        "n_episodios": 14,
+        "recall10_modelo": 0.21428571428571427,
+        "recall20_modelo": 0.2857142857142857
+      },
+      {
+        "codigo_bairro": "736",
+        "nome_bairro": "VARZEA",
+        "n_episodios": 12,
+        "recall10_modelo": 0.16666666666666666,
+        "recall20_modelo": 0.25
+      },
+      {
+        "codigo_bairro": "159",
+        "nome_bairro": "JAQUEIRA",
+        "n_episodios": 10,
+        "recall10_modelo": 0.1,
+        "recall20_modelo": 0.2
+      },
+      {
+        "codigo_bairro": "302",
+        "nome_bairro": "HIPODROMO",
+        "n_episodios": 10,
+        "recall10_modelo": 0.0,
+        "recall20_modelo": 0.1
+      },
+      {
+        "codigo_bairro": "760",
+        "nome_bairro": "ILHA DO RETIRO",
+        "n_episodios": 9,
+        "recall10_modelo": 0.0,
+        "recall20_modelo": 0.1111111111111111
+      },
+      {
+        "codigo_bairro": "590",
+        "nome_bairro": "DOIS IRMAOS",
+        "n_episodios": 9,
+        "recall10_modelo": 0.2222222222222222,
+        "recall20_modelo": 0.2222222222222222
+      },
+      {
+        "codigo_bairro": "221",
+        "nome_bairro": "JORDAO",
+        "n_episodios": 9,
+        "recall10_modelo": 0.1111111111111111,
+        "recall20_modelo": 0.1111111111111111
+      },
+      {
+        "codigo_bairro": "477",
+        "nome_bairro": "POCO",
+        "n_episodios": 8,
+        "recall10_modelo": 0.0,
+        "recall20_modelo": 0.0
+      },
+      {
+        "codigo_bairro": "434",
+        "nome_bairro": "CASA AMARELA",
+        "n_episodios": 7,
+        "recall10_modelo": 0.14285714285714285,
+        "recall20_modelo": 0.2857142857142857
+      },
+      {
+        "codigo_bairro": "19",
+        "nome_bairro": "RECIFE",
+        "n_episodios": 7,
+        "recall10_modelo": 0.0,
+        "recall20_modelo": 0.2857142857142857
+      },
+      {
+        "codigo_bairro": "728",
+        "nome_bairro": "CIDADE UNIVERSITARIA",
+        "n_episodios": 7,
+        "recall10_modelo": 0.0,
+        "recall20_modelo": 0.14285714285714285
+      },
+      {
+        "codigo_bairro": "132",
+        "nome_bairro": "AFLITOS",
+        "n_episodios": 6,
+        "recall10_modelo": 0.0,
+        "recall20_modelo": 0.16666666666666666
+      },
+      {
+        "codigo_bairro": "213",
+        "nome_bairro": "IPSEP",
+        "n_episodios": 6,
+        "recall10_modelo": 0.0,
+        "recall20_modelo": 0.16666666666666666
+      },
+      {
+        "codigo_bairro": "175",
+        "nome_bairro": "ENCRUZILHADA",
+        "n_episodios": 6,
+        "recall10_modelo": 0.0,
+        "recall20_modelo": 0.16666666666666666
+      },
+      {
+        "codigo_bairro": "230",
+        "nome_bairro": "IBURA",
+        "n_episodios": 6,
+        "recall10_modelo": 0.0,
+        "recall20_modelo": 0.16666666666666666
+      },
+      {
+        "codigo_bairro": "884",
+        "nome_bairro": "COHAB",
+        "n_episodios": 5,
+        "recall10_modelo": 0.2,
+        "recall20_modelo": 0.2
+      }
+    ],
+    "poucos_episodios_percentual_extremo": []
+  },
+  "ipsep": [
+    {
+      "codigo_bairro": "213",
+      "nome_bairro": "IPSEP",
+      "n_episodios": 6,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.16666666666666666
+    }
+  ],
+  "por_bairro": [
+    {
+      "codigo_bairro": 27,
+      "nome_bairro": "SANTO ANTONIO",
+      "n_episodios": 22,
+      "recall10_modelo": 0.3636363636363636,
+      "recall20_modelo": 0.5
+    },
+    {
+      "codigo_bairro": 752,
+      "nome_bairro": "CURADO",
+      "n_episodios": 21,
+      "recall10_modelo": 0.8095238095238095,
+      "recall20_modelo": 0.8571428571428571
+    },
+    {
+      "codigo_bairro": 744,
+      "nome_bairro": "CAXANGA",
+      "n_episodios": 18,
+      "recall10_modelo": 0.6111111111111112,
+      "recall20_modelo": 0.8333333333333334
+    },
+    {
+      "codigo_bairro": 906,
+      "nome_bairro": "SANCHO",
+      "n_episodios": 18,
+      "recall10_modelo": 0.6666666666666666,
+      "recall20_modelo": 0.8888888888888888
+    },
+    {
+      "codigo_bairro": 892,
+      "nome_bairro": "TEJIPIO",
+      "n_episodios": 17,
+      "recall10_modelo": 0.5882352941176471,
+      "recall20_modelo": 0.7647058823529411
+    },
+    {
+      "codigo_bairro": 116,
+      "nome_bairro": "SOLEDADE",
+      "n_episodios": 16,
+      "recall10_modelo": 0.25,
+      "recall20_modelo": 0.375
+    },
+    {
+      "codigo_bairro": 841,
+      "nome_bairro": "CACOTE",
+      "n_episodios": 15,
+      "recall10_modelo": 0.4666666666666667,
+      "recall20_modelo": 0.8666666666666667
+    },
+    {
+      "codigo_bairro": 949,
+      "nome_bairro": "ALTO SANTA TEREZINHA",
+      "n_episodios": 15,
+      "recall10_modelo": 0.6666666666666666,
+      "recall20_modelo": 0.9333333333333332
+    },
+    {
+      "codigo_bairro": 400,
+      "nome_bairro": "PASSARINHO",
+      "n_episodios": 15,
+      "recall10_modelo": 0.6666666666666666,
+      "recall20_modelo": 0.8
+    },
+    {
+      "codigo_bairro": 94,
+      "nome_bairro": "PAISSANDU",
+      "n_episodios": 15,
+      "recall10_modelo": 0.4666666666666667,
+      "recall20_modelo": 0.5333333333333333
+    },
+    {
+      "codigo_bairro": 922,
+      "nome_bairro": "COQUEIRAL",
+      "n_episodios": 15,
+      "recall10_modelo": 0.8666666666666667,
+      "recall20_modelo": 0.9333333333333332
+    },
+    {
+      "codigo_bairro": 256,
+      "nome_bairro": "BRASILIA TEIMOSA",
+      "n_episodios": 14,
+      "recall10_modelo": 0.3571428571428571,
+      "recall20_modelo": 0.4285714285714285
+    },
+    {
+      "codigo_bairro": 205,
+      "nome_bairro": "BOA VIAGEM",
+      "n_episodios": 14,
+      "recall10_modelo": 0.2142857142857142,
+      "recall20_modelo": 0.3571428571428571
+    },
+    {
+      "codigo_bairro": 825,
+      "nome_bairro": "JIQUIA",
+      "n_episodios": 14,
+      "recall10_modelo": 0.4285714285714285,
+      "recall20_modelo": 0.7142857142857143
+    },
+    {
+      "codigo_bairro": 876,
+      "nome_bairro": "BARRO",
+      "n_episodios": 14,
+      "recall10_modelo": 0.7142857142857143,
+      "recall20_modelo": 0.7857142857142857
+    },
+    {
+      "codigo_bairro": 86,
+      "nome_bairro": "BOA VISTA",
+      "n_episodios": 14,
+      "recall10_modelo": 0.5,
+      "recall20_modelo": 0.6428571428571429
+    },
+    {
+      "codigo_bairro": 582,
+      "nome_bairro": "MACAXEIRA",
+      "n_episodios": 14,
+      "recall10_modelo": 0.4285714285714285,
+      "recall20_modelo": 0.7857142857142857
+    },
+    {
+      "codigo_bairro": 604,
+      "nome_bairro": "SITIO DOS PINTOS",
+      "n_episodios": 14,
+      "recall10_modelo": 0.6428571428571429,
+      "recall20_modelo": 0.7142857142857143
+    },
+    {
+      "codigo_bairro": 469,
+      "nome_bairro": "PARNAMIRIM",
+      "n_episodios": 14,
+      "recall10_modelo": 0.2142857142857142,
+      "recall20_modelo": 0.2857142857142857
+    },
+    {
+      "codigo_bairro": 43,
+      "nome_bairro": "ILHA JOANA BEZERRA",
+      "n_episodios": 14,
+      "recall10_modelo": 0.6428571428571429,
+      "recall20_modelo": 0.7142857142857143
+    },
+    {
+      "codigo_bairro": 167,
+      "nome_bairro": "GRACAS",
+      "n_episodios": 14,
+      "recall10_modelo": 0.2857142857142857,
+      "recall20_modelo": 0.5
+    },
+    {
+      "codigo_bairro": 140,
+      "nome_bairro": "DERBY",
+      "n_episodios": 13,
+      "recall10_modelo": 0.0769230769230769,
+      "recall20_modelo": 0.4615384615384615
+    },
+    {
+      "codigo_bairro": 124,
+      "nome_bairro": "ESPINHEIRO",
+      "n_episodios": 13,
+      "recall10_modelo": 0.4615384615384615,
+      "recall20_modelo": 0.6153846153846154
+    },
+    {
+      "codigo_bairro": 485,
+      "nome_bairro": "MONTEIRO",
+      "n_episodios": 12,
+      "recall10_modelo": 0.1666666666666666,
+      "recall20_modelo": 0.4166666666666667
+    },
+    {
+      "codigo_bairro": 612,
+      "nome_bairro": "BREJO DA GUABIRABA",
+      "n_episodios": 12,
+      "recall10_modelo": 0.3333333333333333,
+      "recall20_modelo": 0.8333333333333334
+    },
+    {
+      "codigo_bairro": 868,
+      "nome_bairro": "JARDIM SAO PAULO",
+      "n_episodios": 12,
+      "recall10_modelo": 0.5833333333333334,
+      "recall20_modelo": 0.6666666666666666
+    },
+    {
+      "codigo_bairro": 817,
+      "nome_bairro": "SAN MARTIN",
+      "n_episodios": 12,
+      "recall10_modelo": 0.5,
+      "recall20_modelo": 0.6666666666666666
+    },
+    {
+      "codigo_bairro": 574,
+      "nome_bairro": "BREJO DE BEBERIBE",
+      "n_episodios": 12,
+      "recall10_modelo": 0.5,
+      "recall20_modelo": 0.75
+    },
+    {
+      "codigo_bairro": 736,
+      "nome_bairro": "VARZEA",
+      "n_episodios": 12,
+      "recall10_modelo": 0.1666666666666666,
+      "recall20_modelo": 0.25
+    },
+    {
+      "codigo_bairro": 418,
+      "nome_bairro": "GUABIRABA",
+      "n_episodios": 11,
+      "recall10_modelo": 0.3636363636363636,
+      "recall20_modelo": 0.5454545454545454
+    },
+    {
+      "codigo_bairro": 493,
+      "nome_bairro": "ALTO DO MANDU",
+      "n_episodios": 11,
+      "recall10_modelo": 0.4545454545454545,
+      "recall20_modelo": 0.7272727272727273
+    },
+    {
+      "codigo_bairro": 566,
+      "nome_bairro": "NOVA DESCOBERTA",
+      "n_episodios": 11,
+      "recall10_modelo": 0.2727272727272727,
+      "recall20_modelo": 0.5454545454545454
+    },
+    {
+      "codigo_bairro": 78,
+      "nome_bairro": "ILHA DO LEITE",
+      "n_episodios": 11,
+      "recall10_modelo": 0.0909090909090909,
+      "recall20_modelo": 0.3636363636363636
+    },
+    {
+      "codigo_bairro": 779,
+      "nome_bairro": "AFOGADOS",
+      "n_episodios": 11,
+      "recall10_modelo": 0.4545454545454545,
+      "recall20_modelo": 0.4545454545454545
+    },
+    {
+      "codigo_bairro": 248,
+      "nome_bairro": "PINA",
+      "n_episodios": 11,
+      "recall10_modelo": 0.4545454545454545,
+      "recall20_modelo": 0.4545454545454545
+    },
+    {
+      "codigo_bairro": 159,
+      "nome_bairro": "JAQUEIRA",
+      "n_episodios": 10,
+      "recall10_modelo": 0.1,
+      "recall20_modelo": 0.2
+    },
+    {
+      "codigo_bairro": 302,
+      "nome_bairro": "HIPODROMO",
+      "n_episodios": 10,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.1
+    },
+    {
+      "codigo_bairro": 850,
+      "nome_bairro": "AREIAS",
+      "n_episodios": 10,
+      "recall10_modelo": 0.6,
+      "recall20_modelo": 0.7
+    },
+    {
+      "codigo_bairro": 396,
+      "nome_bairro": "DOIS UNIDOS",
+      "n_episodios": 10,
+      "recall10_modelo": 0.7,
+      "recall20_modelo": 0.8
+    },
+    {
+      "codigo_bairro": 426,
+      "nome_bairro": "BOMBA DO HEMETERIO",
+      "n_episodios": 10,
+      "recall10_modelo": 0.4,
+      "recall20_modelo": 0.8
+    },
+    {
+      "codigo_bairro": 51,
+      "nome_bairro": "CABANGA",
+      "n_episodios": 10,
+      "recall10_modelo": 0.2,
+      "recall20_modelo": 0.4
+    },
+    {
+      "codigo_bairro": 507,
+      "nome_bairro": "APIPUCOS",
+      "n_episodios": 10,
+      "recall10_modelo": 0.3,
+      "recall20_modelo": 0.6
+    },
+    {
+      "codigo_bairro": 809,
+      "nome_bairro": "BONGI",
+      "n_episodios": 10,
+      "recall10_modelo": 0.3,
+      "recall20_modelo": 0.4
+    },
+    {
+      "codigo_bairro": 671,
+      "nome_bairro": "ZUMBI",
+      "n_episodios": 9,
+      "recall10_modelo": 0.3333333333333333,
+      "recall20_modelo": 0.4444444444444444
+    },
+    {
+      "codigo_bairro": 450,
+      "nome_bairro": "SANTANA",
+      "n_episodios": 9,
+      "recall10_modelo": 0.1111111111111111,
+      "recall20_modelo": 0.3333333333333333
+    },
+    {
+      "codigo_bairro": 272,
+      "nome_bairro": "TORREAO",
+      "n_episodios": 9,
+      "recall10_modelo": 0.3333333333333333,
+      "recall20_modelo": 0.3333333333333333
+    },
+    {
+      "codigo_bairro": 183,
+      "nome_bairro": "ROSARINHO",
+      "n_episodios": 9,
+      "recall10_modelo": 0.2222222222222222,
+      "recall20_modelo": 0.5555555555555556
+    },
+    {
+      "codigo_bairro": 108,
+      "nome_bairro": "SANTO AMARO",
+      "n_episodios": 9,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.4444444444444444
+    },
+    {
+      "codigo_bairro": 701,
+      "nome_bairro": "TORROES",
+      "n_episodios": 9,
+      "recall10_modelo": 0.6666666666666666,
+      "recall20_modelo": 0.7777777777777778
+    },
+    {
+      "codigo_bairro": 760,
+      "nome_bairro": "ILHA DO RETIRO",
+      "n_episodios": 9,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.1111111111111111
+    },
+    {
+      "codigo_bairro": 540,
+      "nome_bairro": "ALTO JOSE BONIFACIO",
+      "n_episodios": 9,
+      "recall10_modelo": 0.5555555555555556,
+      "recall20_modelo": 0.6666666666666666
+    },
+    {
+      "codigo_bairro": 590,
+      "nome_bairro": "DOIS IRMAOS",
+      "n_episodios": 9,
+      "recall10_modelo": 0.2222222222222222,
+      "recall20_modelo": 0.2222222222222222
+    },
+    {
+      "codigo_bairro": 531,
+      "nome_bairro": "MORRO DA CONCEICAO",
+      "n_episodios": 9,
+      "recall10_modelo": 0.2222222222222222,
+      "recall20_modelo": 0.5555555555555556
+    },
+    {
+      "codigo_bairro": 523,
+      "nome_bairro": "ALTO JOSE DO PINHO",
+      "n_episodios": 9,
+      "recall10_modelo": 0.6666666666666666,
+      "recall20_modelo": 0.7777777777777778
+    },
+    {
+      "codigo_bairro": 370,
+      "nome_bairro": "BEBERIBE",
+      "n_episodios": 9,
+      "recall10_modelo": 0.4444444444444444,
+      "recall20_modelo": 0.5555555555555556
+    },
+    {
+      "codigo_bairro": 264,
+      "nome_bairro": "IMBIRIBEIRA",
+      "n_episodios": 9,
+      "recall10_modelo": 0.2222222222222222,
+      "recall20_modelo": 0.5555555555555556
+    },
+    {
+      "codigo_bairro": 299,
+      "nome_bairro": "PEIXINHOS",
+      "n_episodios": 9,
+      "recall10_modelo": 0.4444444444444444,
+      "recall20_modelo": 0.7777777777777778
+    },
+    {
+      "codigo_bairro": 221,
+      "nome_bairro": "JORDAO",
+      "n_episodios": 9,
+      "recall10_modelo": 0.1111111111111111,
+      "recall20_modelo": 0.1111111111111111
+    },
+    {
+      "codigo_bairro": 310,
+      "nome_bairro": "CAMPINA DO BARRETO",
+      "n_episodios": 9,
+      "recall10_modelo": 0.5555555555555556,
+      "recall20_modelo": 0.6666666666666666
+    },
+    {
+      "codigo_bairro": 329,
+      "nome_bairro": "ARRUDA",
+      "n_episodios": 9,
+      "recall10_modelo": 0.4444444444444444,
+      "recall20_modelo": 0.7777777777777778
+    },
+    {
+      "codigo_bairro": 35,
+      "nome_bairro": "SAO JOSE",
+      "n_episodios": 9,
+      "recall10_modelo": 0.2222222222222222,
+      "recall20_modelo": 0.6666666666666666
+    },
+    {
+      "codigo_bairro": 345,
+      "nome_bairro": "FUNDAO",
+      "n_episodios": 8,
+      "recall10_modelo": 0.25,
+      "recall20_modelo": 0.625
+    },
+    {
+      "codigo_bairro": 353,
+      "nome_bairro": "CAJUEIRO",
+      "n_episodios": 8,
+      "recall10_modelo": 0.375,
+      "recall20_modelo": 0.75
+    },
+    {
+      "codigo_bairro": 477,
+      "nome_bairro": "POCO",
+      "n_episodios": 8,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.0
+    },
+    {
+      "codigo_bairro": 787,
+      "nome_bairro": "MUSTARDINHA",
+      "n_episodios": 8,
+      "recall10_modelo": 0.25,
+      "recall20_modelo": 0.375
+    },
+    {
+      "codigo_bairro": 434,
+      "nome_bairro": "CASA AMARELA",
+      "n_episodios": 7,
+      "recall10_modelo": 0.1428571428571428,
+      "recall20_modelo": 0.2857142857142857
+    },
+    {
+      "codigo_bairro": 361,
+      "nome_bairro": "PORTO DA MADEIRA",
+      "n_episodios": 7,
+      "recall10_modelo": 1.0,
+      "recall20_modelo": 1.0
+    },
+    {
+      "codigo_bairro": 710,
+      "nome_bairro": "ENGENHO DO MEIO",
+      "n_episodios": 7,
+      "recall10_modelo": 0.1428571428571428,
+      "recall20_modelo": 0.4285714285714285
+    },
+    {
+      "codigo_bairro": 19,
+      "nome_bairro": "RECIFE",
+      "n_episodios": 7,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.2857142857142857
+    },
+    {
+      "codigo_bairro": 833,
+      "nome_bairro": "ESTANCIA",
+      "n_episodios": 7,
+      "recall10_modelo": 0.4285714285714285,
+      "recall20_modelo": 0.5714285714285714
+    },
+    {
+      "codigo_bairro": 914,
+      "nome_bairro": "TOTO",
+      "n_episodios": 7,
+      "recall10_modelo": 0.5714285714285714,
+      "recall20_modelo": 0.8571428571428571
+    },
+    {
+      "codigo_bairro": 728,
+      "nome_bairro": "CIDADE UNIVERSITARIA",
+      "n_episodios": 7,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.1428571428571428
+    },
+    {
+      "codigo_bairro": 698,
+      "nome_bairro": "IPUTINGA",
+      "n_episodios": 7,
+      "recall10_modelo": 0.7142857142857143,
+      "recall20_modelo": 1.0
+    },
+    {
+      "codigo_bairro": 655,
+      "nome_bairro": "TORRE",
+      "n_episodios": 7,
+      "recall10_modelo": 0.2857142857142857,
+      "recall20_modelo": 0.7142857142857143
+    },
+    {
+      "codigo_bairro": 132,
+      "nome_bairro": "AFLITOS",
+      "n_episodios": 6,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.1666666666666666
+    },
+    {
+      "codigo_bairro": 213,
+      "nome_bairro": "IPSEP",
+      "n_episodios": 6,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.1666666666666666
+    },
+    {
+      "codigo_bairro": 175,
+      "nome_bairro": "ENCRUZILHADA",
+      "n_episodios": 6,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.1666666666666666
+    },
+    {
+      "codigo_bairro": 515,
+      "nome_bairro": "MANGABEIRA",
+      "n_episodios": 6,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.5
+    },
+    {
+      "codigo_bairro": 558,
+      "nome_bairro": "VASCO DA GAMA",
+      "n_episodios": 6,
+      "recall10_modelo": 0.1666666666666666,
+      "recall20_modelo": 0.6666666666666666
+    },
+    {
+      "codigo_bairro": 795,
+      "nome_bairro": "MANGUEIRA",
+      "n_episodios": 6,
+      "recall10_modelo": 1.0,
+      "recall20_modelo": 1.0
+    },
+    {
+      "codigo_bairro": 230,
+      "nome_bairro": "IBURA",
+      "n_episodios": 6,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.1666666666666666
+    },
+    {
+      "codigo_bairro": 337,
+      "nome_bairro": "AGUA FRIA",
+      "n_episodios": 5,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.8
+    },
+    {
+      "codigo_bairro": 280,
+      "nome_bairro": "CAMPO GRANDE",
+      "n_episodios": 5,
+      "recall10_modelo": 0.2,
+      "recall20_modelo": 0.8
+    },
+    {
+      "codigo_bairro": 191,
+      "nome_bairro": "TAMARINEIRA",
+      "n_episodios": 5,
+      "recall10_modelo": 0.4,
+      "recall20_modelo": 0.4
+    },
+    {
+      "codigo_bairro": 388,
+      "nome_bairro": "LINHA DO TIRO",
+      "n_episodios": 5,
+      "recall10_modelo": 0.4,
+      "recall20_modelo": 0.4
+    },
+    {
+      "codigo_bairro": 884,
+      "nome_bairro": "COHAB",
+      "n_episodios": 5,
+      "recall10_modelo": 0.2,
+      "recall20_modelo": 0.2
+    },
+    {
+      "codigo_bairro": 680,
+      "nome_bairro": "CORDEIRO",
+      "n_episodios": 5,
+      "recall10_modelo": 0.2,
+      "recall20_modelo": 0.4
+    },
+    {
+      "codigo_bairro": 620,
+      "nome_bairro": "CORREGO DO JENIPAPO",
+      "n_episodios": 4,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.25
+    },
+    {
+      "codigo_bairro": 442,
+      "nome_bairro": "CASA FORTE",
+      "n_episodios": 4,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.75
+    },
+    {
+      "codigo_bairro": 663,
+      "nome_bairro": "PRADO",
+      "n_episodios": 4,
+      "recall10_modelo": 0.5,
+      "recall20_modelo": 0.75
+    },
+    {
+      "codigo_bairro": 647,
+      "nome_bairro": "MADALENA",
+      "n_episodios": 3,
+      "recall10_modelo": 0.3333333333333333,
+      "recall20_modelo": 0.3333333333333333
+    },
+    {
+      "codigo_bairro": 930,
+      "nome_bairro": "PONTO DE PARADA",
+      "n_episodios": 3,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.0
+    },
+    {
+      "codigo_bairro": 60,
+      "nome_bairro": "COELHOS",
+      "n_episodios": 2,
+      "recall10_modelo": 0.0,
+      "recall20_modelo": 0.5
+    }
+  ],
+  "experimento_clima": {
+    "conclusao": {
+      "criterio": "incorporar o clima ao modelo do produto só se o delta B-A em Recall@5 (a faixa em que o candidato congelado tem ganho defensável) tiver IC que não cruza zero E sinal positivo em todos os anos do teste",
+      "delta5_observado": -0.0010869565217391242,
+      "delta5_ic": [
+        -0.02282608695652172,
+        0.02065217391304347
+      ],
+      "delta5_ic_cruza_zero": true,
+      "delta5_positivo_em_todos_os_anos": false,
+      "incorporar_clima_ao_modelo": false,
+      "achado_secundario_k10": {
+        "delta10_B_menos_A": 0.028260869565217395,
+        "delta10_ic": [
+          0.004347826086956497,
+          0.05326086956521736
+        ],
+        "delta10_ic_cluster_bairro": [
+          0.0020972947338830763,
+          0.05335086047220149
+        ],
+        "delta10_ic_cluster_bairro_ano": [
+          0.0040331975079163866,
+          0.0529226644959419
+        ],
+        "delta10_positivo_em_todos_os_anos": true,
+        "B_vs_baseline_k10": 0.05434782608695654,
+        "B_vs_baseline_k10_ic": [
+          0.019565217391304346,
+          0.09024456521739119
+        ],
+        "observacao": "K=10 nao e a faixa de claim do produto e esta variante nao passou pelo protocolo completo de validacao (leave-one-year-out, analise territorial). Fica registrada como candidata a uma versao futura, que exigiria validacao propria."
+      }
+    },
+    "delta": [
+      {
+        "k": 5,
+        "melhor_baseline": "razao_historica_local",
+        "delta_B_menos_A": -0.0010869565217391242,
+        "ic_baixo_B_menos_A": -0.02282608695652172,
+        "ic_alto_B_menos_A": 0.02065217391304347,
+        "ic_baixo_B_menos_A_cluster_bairro": -0.02464225612432369,
+        "ic_alto_B_menos_A_cluster_bairro": 0.022298731852871945,
+        "ic_baixo_B_menos_A_cluster_bairro_ano": -0.024709175168042902,
+        "ic_alto_B_menos_A_cluster_bairro_ano": 0.02370744447691409,
+        "delta_A_vs_baseline": 0.05978260869565219,
+        "ic_baixo_A_vs_baseline": 0.028260869565217395,
+        "ic_alto_A_vs_baseline": 0.09130434782608696,
+        "ic_baixo_A_vs_baseline_cluster_bairro": 0.018887841832963766,
+        "ic_alto_A_vs_baseline_cluster_bairro": 0.10169858787667332,
+        "ic_baixo_A_vs_baseline_cluster_bairro_ano": 0.024040449037776208,
+        "ic_alto_A_vs_baseline_cluster_bairro_ano": 0.09601003460985255,
+        "delta_B_vs_baseline": 0.058695652173913065,
+        "ic_baixo_B_vs_baseline": 0.02717391304347827,
+        "ic_alto_B_vs_baseline": 0.08804347826086958,
+        "ic_baixo_B_vs_baseline_cluster_bairro": 0.021411053191923993,
+        "ic_alto_B_vs_baseline_cluster_bairro": 0.09750876334238617,
+        "ic_baixo_B_vs_baseline_cluster_bairro_ano": 0.02421589880768886,
+        "ic_alto_B_vs_baseline_cluster_bairro_ano": 0.09287501897807357
+      },
+      {
+        "k": 10,
+        "melhor_baseline": "razao_historica_local",
+        "delta_B_menos_A": 0.028260869565217395,
+        "ic_baixo_B_menos_A": 0.004347826086956497,
+        "ic_alto_B_menos_A": 0.05326086956521736,
+        "ic_baixo_B_menos_A_cluster_bairro": 0.0020972947338830763,
+        "ic_alto_B_menos_A_cluster_bairro": 0.05335086047220149,
+        "ic_baixo_B_menos_A_cluster_bairro_ano": 0.0040331975079163866,
+        "ic_alto_B_menos_A_cluster_bairro_ano": 0.0529226644959419,
+        "delta_A_vs_baseline": 0.026086956521739146,
+        "ic_baixo_A_vs_baseline": -0.007608695652173871,
+        "ic_alto_A_vs_baseline": 0.05978260869565216,
+        "ic_baixo_A_vs_baseline_cluster_bairro": -0.018160873709118078,
+        "ic_alto_A_vs_baseline_cluster_bairro": 0.06851144002604649,
+        "ic_baixo_A_vs_baseline_cluster_bairro_ano": -0.011376888211650726,
+        "ic_alto_A_vs_baseline_cluster_bairro_ano": 0.06500717973786316,
+        "delta_B_vs_baseline": 0.05434782608695654,
+        "ic_baixo_B_vs_baseline": 0.019565217391304346,
+        "ic_alto_B_vs_baseline": 0.09024456521739119,
+        "ic_baixo_B_vs_baseline_cluster_bairro": 0.008740339894247284,
+        "ic_alto_B_vs_baseline_cluster_bairro": 0.10069759915982801,
+        "ic_baixo_B_vs_baseline_cluster_bairro_ano": 0.013441971537795574,
+        "ic_alto_B_vs_baseline_cluster_bairro_ano": 0.09705615684256776
+      },
+      {
+        "k": 15,
+        "melhor_baseline": "crescimento_recente",
+        "delta_B_menos_A": 0.03369565217391307,
+        "ic_baixo_B_menos_A": 0.009782608695652173,
+        "ic_alto_B_menos_A": 0.05869565217391298,
+        "ic_baixo_B_menos_A_cluster_bairro": 0.0073757976463132025,
+        "ic_alto_B_menos_A_cluster_bairro": 0.05921309354291035,
+        "ic_baixo_B_menos_A_cluster_bairro_ano": 0.009056736369519437,
+        "ic_alto_B_menos_A_cluster_bairro_ano": 0.05876558956916104,
+        "delta_A_vs_baseline": -0.0065217391304348005,
+        "ic_baixo_A_vs_baseline": -0.05217391304347829,
+        "ic_alto_A_vs_baseline": 0.03913043478260869,
+        "ic_baixo_A_vs_baseline_cluster_bairro": -0.06540985687300745,
+        "ic_alto_A_vs_baseline_cluster_bairro": 0.04946819996074064,
+        "ic_baixo_A_vs_baseline_cluster_bairro_ano": -0.059843431546883964,
+        "ic_alto_A_vs_baseline_cluster_bairro_ano": 0.0467873533911269,
+        "delta_B_vs_baseline": 0.02717391304347827,
+        "ic_baixo_B_vs_baseline": -0.018478260869565166,
+        "ic_alto_B_vs_baseline": 0.07176630434782597,
+        "ic_baixo_B_vs_baseline_cluster_bairro": -0.0370904548088065,
+        "ic_alto_B_vs_baseline_cluster_bairro": 0.08873919457162001,
+        "ic_baixo_B_vs_baseline_cluster_bairro_ano": -0.031696595484613184,
+        "ic_alto_B_vs_baseline_cluster_bairro_ano": 0.08485797209530117
+      },
+      {
+        "k": 20,
+        "melhor_baseline": "crescimento_recente",
+        "delta_B_menos_A": 0.019565217391304346,
+        "ic_baixo_B_menos_A": -0.0010869565217391797,
+        "ic_alto_B_menos_A": 0.04239130434782612,
+        "ic_baixo_B_menos_A_cluster_bairro": -0.004431422816333996,
+        "ic_alto_B_menos_A_cluster_bairro": 0.04222598049568566,
+        "ic_baixo_B_menos_A_cluster_bairro_ano": -0.003326592674255924,
+        "ic_alto_B_menos_A_cluster_bairro_ano": 0.042345730792834615,
+        "delta_A_vs_baseline": -0.05543478260869561,
+        "ic_baixo_A_vs_baseline": -0.10108695652173905,
+        "ic_alto_A_vs_baseline": -0.013043478260869597,
+        "ic_baixo_A_vs_baseline_cluster_bairro": -0.1070309408610435,
+        "ic_alto_A_vs_baseline_cluster_bairro": -0.0031772984617575283,
+        "ic_baixo_A_vs_baseline_cluster_bairro_ano": -0.10573042080876803,
+        "ic_alto_A_vs_baseline_cluster_bairro_ano": -0.00525762355415349,
+        "delta_B_vs_baseline": -0.035869565217391264,
+        "ic_baixo_B_vs_baseline": -0.07934782608695656,
+        "ic_alto_B_vs_baseline": 0.006521739130434856,
+        "ic_baixo_B_vs_baseline_cluster_bairro": -0.09305438251396186,
+        "ic_alto_B_vs_baseline_cluster_bairro": 0.0186921353227305,
+        "ic_baixo_B_vs_baseline_cluster_bairro_ano": -0.09006954740204513,
+        "ic_alto_B_vs_baseline_cluster_bairro_ano": 0.016522110585859128
+      }
+    ],
+    "por_ano": [
+      {
+        "inicio_ano": 2023,
+        "n_episodios": 117,
+        "detectado_A_sem_clima_k5": 0.3076923076923077,
+        "detectado_B_com_clima_grade_k5": 0.3247863247863248,
+        "detectado_A_sem_clima_k10": 0.42735042735042733,
+        "detectado_B_com_clima_grade_k10": 0.46153846153846156
+      },
+      {
+        "inicio_ano": 2024,
+        "n_episodios": 406,
+        "detectado_A_sem_clima_k5": 0.25862068965517243,
+        "detectado_B_com_clima_grade_k5": 0.2438423645320197,
+        "detectado_A_sem_clima_k10": 0.37192118226600984,
+        "detectado_B_com_clima_grade_k10": 0.41133004926108374
+      },
+      {
+        "inicio_ano": 2025,
+        "n_episodios": 397,
+        "detectado_A_sem_clima_k5": 0.24181360201511334,
+        "detectado_B_com_clima_grade_k5": 0.24937027707808565,
+        "detectado_A_sem_clima_k10": 0.38287153652392947,
+        "detectado_B_com_clima_grade_k10": 0.3979848866498741
+      }
+    ],
+    "metricas_dataset": {
+      "A_sem_clima": {
+        "n_features": 38,
+        "linhas_finais": 58562,
+        "n_treino": 29328,
+        "n_teste": 14476,
+        "proporcao_positiva": 0.14762132440831938
+      },
+      "B_com_clima_grade": {
+        "n_features": 46,
+        "linhas_finais": 58562,
+        "n_treino": 29328,
+        "n_teste": 14476,
+        "proporcao_positiva": 0.14762132440831938
+      }
+    }
+  }
+}

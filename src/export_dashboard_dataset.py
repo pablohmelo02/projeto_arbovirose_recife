@@ -9,7 +9,7 @@ Lê `gold_arboviroses_clima_bairro` (Silver/Gold já processadas, ver
 em `dashboard/data/` — o dashboard (Streamlit) lê só esses arquivos, nunca
 o MinIO/Data Lake diretamente (ver `dashboard/utils/data_loader.py`), para
 funcionar também no Streamlit Community Cloud, onde o Data Lake local não
-está disponível (ver README.md, seção "Dashboard").
+está disponível (ver `docs/arquitetura_e_pipeline.md`, seção "Dashboard").
 
 ## Por que é seguro publicar este dataset
 
@@ -36,6 +36,13 @@ import pandas as pd
 
 from src.clients.minio_client import MinioClient
 from src.config import load_config
+from src.logging_config import configurar_logging
+from src.quality_gates import (
+    QualityGateError,
+    exigir_aprovacao,
+    validar_dataset_publicavel,
+    validar_gold,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -50,30 +57,19 @@ ARQUIVO_PROFILING = "_profiling_export.json"
 
 # Colunas que, se um dia aparecessem na Gold, indicariam vazamento de dado
 # individual -- checagem defensiva, não uma lista do que a Gold tem hoje.
+# Mesma lista usada por `scripts/verificar_deploy_dashboard.py`, para que a
+# barreira da exportação e a da verificação de deploy não divirjam.
 COLUNAS_PROIBIDAS = (
-    "id_notificacao", "nome", "cpf", "data_nascimento", "endereco", "cns",
+    "id_notificacao", "nu_notific", "nome", "nome_paciente", "cpf", "cns",
+    "data_nascimento", "dt_nasc", "endereco", "logradouro", "numero_casa",
+    "telefone", "email", "prontuario", "latitude_paciente", "longitude_paciente",
 )
-
-
-def _configurar_logging() -> None:
-    logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s", stream=sys.stdout)
-
-
-def _checar_ausencia_de_dado_individual(df_gold: pd.DataFrame) -> None:
-    colunas_normalizadas = {c.lower() for c in df_gold.columns}
-    encontradas = colunas_normalizadas.intersection(COLUNAS_PROIBIDAS)
-    if encontradas:
-        raise ValueError(
-            f"Dataset de publicação contém coluna(s) potencialmente identificável(is): {encontradas} — "
-            "abortando exportação. A Gold deve conter só dado agregado por bairro/semana/agravo."
-        )
 
 
 def exportar_dataset_dashboard(minio_client: MinioClient, pasta_saida: Path = PASTA_DASHBOARD_DATA) -> dict[str, Any]:
     pasta_saida.mkdir(parents=True, exist_ok=True)
 
     df_gold = pd.read_parquet(io.BytesIO(minio_client.download_bytes(CHAVE_GOLD)))
-    _checar_ausencia_de_dado_individual(df_gold)
 
     gdf_bairros = gpd.read_parquet(io.BytesIO(minio_client.download_bytes(CHAVE_BAIRRO_GEO)))
     colunas_geo = [
@@ -81,6 +77,17 @@ def exportar_dataset_dashboard(minio_client: MinioClient, pasta_saida: Path = PA
         if c in gdf_bairros.columns
     ]
     gdf_bairros_publicavel = gdf_bairros[colunas_geo]
+
+    # Portões antes de publicar: privacidade primeiro (bloqueia por si só),
+    # depois a integridade da Gold contra os códigos de bairro do território.
+    # Se qualquer crítico falhar, nada é escrito e o artefato anterior
+    # permanece intacto.
+    achados = validar_dataset_publicavel(df_gold, COLUNAS_PROIBIDAS)
+    achados += validar_gold(
+        df_gold,
+        codigos_bairro_territorio=gdf_bairros_publicavel["codigo_bairro"].astype(str).tolist(),
+    )
+    avisos = exigir_aprovacao(achados, contexto="exportacao_dashboard")
 
     caminho_gold = pasta_saida / ARQUIVO_GOLD
     df_gold.to_parquet(caminho_gold, engine="pyarrow", index=False)
@@ -98,6 +105,7 @@ def exportar_dataset_dashboard(minio_client: MinioClient, pasta_saida: Path = PA
             df_gold.duplicated(subset=["codigo_bairro", "agravo", "ano_epidemiologico", "semana_epidemiologica"]).sum()
         ),
         "colunas_proibidas_encontradas": [],
+        "avisos_qualidade": [a.mensagem for a in avisos],
     }
     (pasta_saida / ARQUIVO_PROFILING).write_text(
         json.dumps(profiling, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -112,7 +120,7 @@ def exportar_dataset_dashboard(minio_client: MinioClient, pasta_saida: Path = PA
 
 
 def main() -> int:
-    _configurar_logging()
+    configurar_logging()
     try:
         config = load_config()
     except RuntimeError as exc:
@@ -125,7 +133,11 @@ def main() -> int:
         secret_key=config.minio_secret_key,
         bucket=config.minio_bucket,
     )
-    exportar_dataset_dashboard(minio_client)
+    try:
+        exportar_dataset_dashboard(minio_client)
+    except QualityGateError as exc:
+        logger.error("Exportação abortada pelos portões de qualidade: %s", exc)
+        return 1
     return 0
 
 
