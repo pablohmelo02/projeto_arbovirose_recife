@@ -19,9 +19,10 @@ from src.eda.filtros import aplicar_filtros, total_arboviroses
 from src.eda.prioridade_observada import JANELA_RECENTE_SEMANAS, prioridade_observada
 from src.eda.schema_eda import INCIDENCIA_DISPONIVEL
 
-#: Métricas oferecidas no mapa. Cada uma é uma quantidade observada ou uma
-#: razão contra o próprio histórico — nenhuma é "risco" ou "score de
-#: modelo" (o score experimental vive na página experimental, marcada).
+#: Métricas oferecidas no mapa. Cada uma é uma quantidade observada, uma
+#: taxa por população ou uma razão contra o próprio histórico — nenhuma é
+#: "risco" ou "score de modelo" (o score experimental vive na página
+#: experimental, marcada).
 METRICAS = {
     "Casos acumulados no período": {
         "coluna": "casos_acumulados",
@@ -32,6 +33,23 @@ METRICAS = {
         "coluna": "casos_janela_recente",
         "rotulo": "Casos recentes",
         "ajuda": "Casos nas últimas semanas disponíveis dentro do recorte.",
+    },
+    "Incidência / 100 mil habitantes": {
+        "coluna": "incidencia_100k",
+        "rotulo": "Incidência /100k",
+        "ajuda": (
+            "Casos da própria semana de referência divididos pela população do bairro naquele "
+            "ano, × 100.000. Ver **Tipo pop.** no detalhe: alguns anos usam população reconstruída, "
+            "não Censo."
+        ),
+    },
+    f"Incidência móvel {JANELA_RECENTE_SEMANAS} semanas / 100 mil habitantes": {
+        "coluna": "incidencia_4s_100k",
+        "rotulo": "Incidência 4 sem. /100k",
+        "ajuda": (
+            f"Soma dos casos das últimas {JANELA_RECENTE_SEMANAS} semanas dividida pela população do "
+            "bairro, × 100.000 — nunca a soma de taxas semanais já calculadas."
+        ),
     },
     "Crescimento recente (%)": {
         "coluna": "variacao_pct",
@@ -45,6 +63,11 @@ METRICAS = {
             "Casos recentes divididos pela média da mesma época do ano em anos anteriores. "
             "Acima de 1,00 = acima do padrão histórico daquele bairro."
         ),
+    },
+    "Densidade populacional": {
+        "coluna": "densidade_populacional_hab_km2",
+        "rotulo": "Hab./km²",
+        "ajuda": "População do bairro no ano de referência dividida pela área do bairro em km².",
     },
 }
 
@@ -85,6 +108,17 @@ if "codigo_rpa" not in base.columns:
     base = base.merge(
         gold[["codigo_bairro", "codigo_rpa"]].drop_duplicates(), on="codigo_bairro", how="left"
     )
+if "populacao_bairro_ano" not in base.columns:
+    # população/densidade não dependem do agravo -- seguros para repor depois
+    # de `total_arboviroses` colapsar as colunas não-chave. Incidência é
+    # recalculada dentro de `prioridade_observada`, nunca repassada pronta.
+    base = base.merge(
+        gold[
+            ["codigo_bairro", "ano_epidemiologico", "populacao_bairro_ano",
+             "tipo_populacao", "densidade_populacional_hab_km2"]
+        ].drop_duplicates(["codigo_bairro", "ano_epidemiologico"]),
+        on=["codigo_bairro", "ano_epidemiologico"], how="left",
+    )
 
 acumulado = (
     base.groupby(["codigo_bairro", "nome_bairro"], observed=True)["casos"]
@@ -104,11 +138,13 @@ rotulo_metrica = validar_escolha(rotulo_metrica, list(METRICAS), "Métrica", per
 config = METRICAS[rotulo_metrica]
 st.caption(config["ajuda"])
 
-if not INCIDENCIA_DISPONIVEL:
+if INCIDENCIA_DISPONIVEL and config["coluna"] in ("incidencia_100k", "incidencia_4s_100k", "densidade_populacional_hab_km2"):
+    tipos_no_recorte = sorted(tabela["tipo_populacao"].dropna().unique().tolist())
     st.caption(
-        "Incidência por 100 mil habitantes não é oferecida — sem dado de população por bairro, "
-        "qualquer valor seria inventado. A **razão contra o histórico do bairro** é a alternativa "
-        "que permite comparar bairros de tamanhos diferentes sem denominador populacional."
+        f"População usada nesta visão: {', '.join(tipos_no_recorte) if tipos_no_recorte else 'indisponível'}. "
+        "Anos de Censo (2010, 2022) usam população observada; os demais usam estimativa "
+        "intercensitária ou projeção pós-Censo reconstruída por este projeto — ver "
+        "`reports/population/population_incidence_integration.md` para o método e a margem de erro."
     )
 
 with secao_protegida("Mapa coroplético"):
@@ -125,7 +161,10 @@ with secao_protegida("Mapa coroplético"):
                     coluna_valor=config["coluna"],
                     rotulo_valor=config["rotulo"],
                     titulo=f"{rotulo_metrica} — {descrever_recorte(filtros, gold)}",
-                    hover_extra=["codigo_rpa", "tendencia", "casos_janela_recente"],
+                    hover_extra=[
+                        "codigo_rpa", "tendencia", "casos_janela_recente",
+                        "populacao_bairro_ano", "tipo_populacao", "incidencia_4s_100k",
+                    ],
                 ),
                 use_container_width=True,
             )
@@ -145,16 +184,34 @@ exibicao = exibicao.assign(
     **{
         "Casos no período": exibicao["casos_acumulados"].astype("Int64"),
         f"Casos ({JANELA_RECENTE_SEMANAS} sem.)": exibicao["casos_janela_recente"].astype("Int64"),
+        "População usada": exibicao["populacao_bairro_ano"].map(
+            lambda v: "—" if pd.isna(v) else f"{int(v):,}".replace(",", ".")
+        ),
+        "Tipo pop.": exibicao["tipo_populacao"].fillna("—"),
+        f"Incidência ({JANELA_RECENTE_SEMANAS} sem.)/100k": exibicao["incidencia_4s_100k"].map(
+            lambda v: "—" if pd.isna(v) else f"{v:.1f}"
+        ),
+        "Densidade (hab./km²)": exibicao["densidade_populacional_hab_km2"].map(
+            lambda v: "—" if pd.isna(v) else f"{v:,.0f}".replace(",", ".")
+        ),
         "Tendência": exibicao["tendencia"],
         "Razão vs. histórico": exibicao["razao_historico"].map(
             lambda v: "—" if pd.isna(v) else f"{v:.2f}×"
         ),
     },
 )[
-    ["Bairro", "RPA", "Casos no período", f"Casos ({JANELA_RECENTE_SEMANAS} sem.)", "Tendência",
-     "Razão vs. histórico"]
+    ["Bairro", "RPA", "Casos no período", f"Casos ({JANELA_RECENTE_SEMANAS} sem.)",
+     "População usada", "Tipo pop.", f"Incidência ({JANELA_RECENTE_SEMANAS} sem.)/100k",
+     "Densidade (hab./km²)", "Tendência", "Razão vs. histórico"]
 ]
 st.dataframe(exibicao, use_container_width=True, hide_index=True, height=420)
 st.caption(
     f"{numero(len(exibicao))} bairros no recorte. Tabela rolável horizontalmente em telas estreitas."
 )
+if config["coluna"] in ("incidencia_100k", "incidencia_4s_100k"):
+    st.warning(
+        "Taxas de curto prazo podem variar fortemente em bairros de menor população: um único caso "
+        "a mais ou a menos muda a incidência de forma desproporcional. Os valores não são ocultados "
+        "para nenhum bairro.",
+        icon="⚠️",
+    )

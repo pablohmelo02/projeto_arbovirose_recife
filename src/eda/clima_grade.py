@@ -116,7 +116,7 @@ def serie_climatica_grade(df_gold: pd.DataFrame) -> pd.DataFrame:
     entre os bairros com valor em grade naquela semana."""
     colunas = [
         "ano_epidemiologico", "semana_epidemiologica", "semana_epi_data_inicio",
-        "precipitacao_mm", "temperatura_media_c", "temperatura_maxima_c",
+        "precipitacao_mm", "temperatura_media_c", "temperatura_minima_c", "temperatura_maxima_c",
         "umidade_relativa_media_pct", "bairros_considerados",
     ]
     com_grade = linhas_com_grade(df_gold)
@@ -134,6 +134,7 @@ def serie_climatica_grade(df_gold: pd.DataFrame) -> pd.DataFrame:
         .agg(
             precipitacao_mm=("precipitacao_semana_grade_mm", "mean"),
             temperatura_media_c=("temperatura_media_grade_c", "mean"),
+            temperatura_minima_c=("temperatura_minima_grade_c", "mean"),
             temperatura_maxima_c=("temperatura_maxima_grade_c", "mean"),
             umidade_relativa_media_pct=(COLUNA_GRADE_UMIDADE, "mean"),
             bairros_considerados=("codigo_bairro", "nunique"),

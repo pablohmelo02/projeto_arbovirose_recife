@@ -74,6 +74,7 @@ if gold is None:
     st.stop()
 
 st.warning(AVISO_EXPERIMENTAL, icon="🧪")
+st.info("Priorização experimental atualmente validada apenas para dengue.", icon="🦟")
 
 status = load_priority_status()
 if status is None:

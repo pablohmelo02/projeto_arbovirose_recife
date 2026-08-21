@@ -14,15 +14,16 @@ from dashboard.components.erros import exigir_dados, secao_protegida
 from dashboard.components.filtros_sidebar import renderizar_filtros, tratar_entrada_invalida
 from dashboard.components.graficos import grafico_sazonalidade
 from dashboard.components.graficos_produto import (
-    grafico_casos_por_ano,
     grafico_comparacao_sazonal,
+    grafico_metrica_por_ano,
     grafico_serie_com_media_movel,
 )
 from dashboard.components.pagina import iniciar_pagina
 from dashboard.components.tema import linha_de_cartoes, numero
-from dashboard.utils.validacao import EntradaInvalidaError
+from dashboard.utils.validacao import EntradaInvalidaError, validar_escolha
 from src.eda import epidemiologia
 from src.eda.filtros import aplicar_filtros, total_arboviroses
+from src.gold.populacao import incidencia_100k
 
 #: Um ano é destacado como "de alta" quando fica pelo menos este tanto acima
 #: da mediana anual do período. Critério objetivo e declarado — não uma
@@ -57,12 +58,32 @@ if not exigir_dados(not df.empty, "Nenhum registro para o recorte selecionado.")
     st.stop()
 
 base = df if filtros["agravo"] else total_arboviroses(df)
+if "populacao_bairro_ano" not in base.columns:
+    base = base.merge(
+        gold[["codigo_bairro", "ano_epidemiologico", "populacao_bairro_ano", "tipo_populacao"]]
+        .drop_duplicates(["codigo_bairro", "ano_epidemiologico"]),
+        on=["codigo_bairro", "ano_epidemiologico"], how="left",
+    )
 resumo = epidemiologia.resumo_epidemiologico(df)
 
 # ---------------------------------------------------------------------------
 # Fatos derivados
 # ---------------------------------------------------------------------------
 por_ano = base.groupby("ano_epidemiologico", observed=True)["casos"].sum().reset_index()
+
+# População/incidência anual do RECORTE ativo (respeita o filtro de bairro/RPA
+# já aplicado acima) -- soma de casos do ano / soma de população do ano dos
+# bairros do recorte, nunca a população de um único ano (ex.: 2022) usada
+# como denominador fixo para todos os anos (regra explícita do produto).
+populacao_por_ano = (
+    base.drop_duplicates(["codigo_bairro", "ano_epidemiologico"])
+    .groupby("ano_epidemiologico", observed=True)["populacao_bairro_ano"]
+    .sum()
+    .reset_index(name="populacao_total")
+)
+por_ano = por_ano.merge(populacao_por_ano, on="ano_epidemiologico", how="left")
+por_ano["incidencia_100k"] = incidencia_100k(por_ano["casos"], por_ano["populacao_total"]).round(1)
+
 ano_maior = int(por_ano.loc[por_ano["casos"].idxmax(), "ano_epidemiologico"])
 casos_maior = int(por_ano["casos"].max())
 mediana_anual = float(por_ano["casos"].median())
@@ -127,13 +148,39 @@ with secao_protegida("Série histórica"):
         use_container_width=True,
     )
 
+#: Métricas anuais oferecidas (seção "Histórico" do produto) -- casos,
+#: incidência e população, sempre com a população do PRÓPRIO ano de cada
+#: barra, nunca um ano fixo usado para todos.
+METRICAS_ANUAIS = {
+    "Casos": ("casos", "Casos notificados"),
+    "Incidência / 100 mil hab.": ("incidencia_100k", "Incidência /100k"),
+    "População": ("populacao_total", "População (soma do recorte)"),
+}
+
 col1, col2 = st.columns(2, gap="large")
 with col1:
     st.markdown("### Totais por ano")
+    metrica_anual = st.radio(
+        "Métrica anual", options=list(METRICAS_ANUAIS), horizontal=True, key="historico_metrica_anual",
+    )
+    metrica_anual = validar_escolha(metrica_anual, list(METRICAS_ANUAIS), "Métrica anual", permitir_nulo=False)
+    coluna_anual, rotulo_eixo_anual = METRICAS_ANUAIS[metrica_anual]
     with secao_protegida("Totais por ano"):
-        st.plotly_chart(
-            grafico_casos_por_ano(por_ano, "Casos por ano epidemiológico"), use_container_width=True
-        )
+        dados_anuais = por_ano.dropna(subset=[coluna_anual])
+        if exigir_dados(not dados_anuais.empty, "Sem valor calculável para esta métrica no recorte."):
+            st.plotly_chart(
+                grafico_metrica_por_ano(
+                    dados_anuais, coluna_anual, rotulo_eixo_anual,
+                    f"{metrica_anual} por ano epidemiológico",
+                ),
+                use_container_width=True,
+            )
+        if metrica_anual != "Casos":
+            st.caption(
+                "População/incidência somadas sobre os bairros do recorte ativo (filtro de bairro/RPA "
+                "na barra lateral), usando a população do próprio ano de cada barra — nunca um único "
+                "ano como denominador fixo para toda a série."
+            )
 with col2:
     st.markdown("### Sazonalidade média")
     with secao_protegida("Sazonalidade"):
@@ -217,7 +264,7 @@ with col_bairro:
             use_container_width=True, hide_index=True,
         )
         st.caption(
-            "Contagem absoluta acumulada no recorte. Sem população por bairro, um bairro grande "
-            "aparece à frente de um pequeno mesmo com risco individual menor — por isso a página "
-            "**Bairros prioritários** oferece também a razão contra o próprio histórico."
+            "Contagem absoluta acumulada no recorte: um bairro grande aparece à frente de um pequeno "
+            "mesmo com intensidade proporcional menor — a página **Bairros prioritários** oferece "
+            "também o ranking por incidência e pela razão contra o próprio histórico."
         )

@@ -38,10 +38,12 @@ PAGINAS = [
     "Situação epidemiológica",
     "Mapa territorial",
     "Evolução histórica",
+    "Da informação à ação",
     "Bairros prioritários",
+    "Projeção 2026",
     "Priorização experimental",
     "Clima",
-    "Clima × Dengue",
+    "Clima × Arboviroses",
     "Qualidade e limitações",
 ]
 

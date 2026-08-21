@@ -19,8 +19,12 @@ Quem decide onde atuar enfrenta três dificuldades práticas:
    e atualidade diferentes.
 2. **Volume absoluto engana.** Um bairro grande sempre aparece no topo de
    qualquer lista de contagem, mesmo quando não está pior que o seu próprio
-   normal. E não existe população por bairro nas fontes públicas usadas, então
-   não há como calcular incidência.
+   normal. A incidência por 100 mil habitantes resolve isso, mas exige
+   população por bairro — que nenhuma fonte pública oferece pronta ano a ano.
+   Este projeto reconstrói essa série (Censos 2010/2022 observados,
+   checkpoint institucional 2011-2017, reconstrução própria 2018-2021,
+   projeção pós-Censo 2023-2025 — ver "População e incidência" abaixo) em vez
+   de desistir da incidência.
 3. **Agir depois do pico é agir tarde.** A pergunta operacional não é "onde
    há mais casos", é "onde algo está começando".
 
@@ -31,8 +35,8 @@ Uma aplicação web que reúne as três fontes numa tabela analítica única
 por natureza do conteúdo:
 
 - **o que aconteceu** — série completa, sazonalidade, mapa, ranking
-  observado por três critérios complementares (volume, aceleração, desvio do
-  próprio histórico);
+  observado por quatro critérios complementares (volume, incidência por 100
+  mil habitantes, aceleração, desvio do próprio histórico);
 - **o que um modelo sinaliza** — um módulo **experimental** que ordena os
   bairros por prioridade de atenção preventiva, com todo o desempenho
   medido e publicado, inclusive onde ele não funciona.
@@ -81,6 +85,7 @@ de banco de dados, credencial, Docker ou acesso à internet** para funcionar.
 | Casos notificados | 156.504 |
 | Linhas da tabela analítica | 191.478 |
 | Cobertura climática | **100 %** das linhas (reanálise em grade, 2013–2025) |
+| Cobertura populacional | **100 %** das linhas · 94/94 bairros · 2010–2025 (ver "População e incidência") |
 | Última semana publicada pela fonte | **SE 53 / 2025** — a fonte declara periodicidade trimestral |
 
 A cobertura climática passou de **6,1 % para 100 %** nesta etapa, com a
@@ -88,12 +93,41 @@ incorporação de uma fonte de reanálise em grade, depois de uma investigação
 controlada de quatro candidatas
 ([relatório](reports/climate_source_analysis/gridded_climate_investigation.md)).
 
+### População e incidência
+
+Série de população por bairro reconstruída para os 94 bairros, 2010-2025,
+a partir dos checkpoints oficiais/institucionais realmente disponíveis —
+nunca inventada, nunca apresentada como Censo quando é estimativa:
+
+| período | fonte | tipo |
+|---|---|---|
+| 2010 | IBGE Censo 2010 (via Secretaria de Saúde do Recife/CIEVS) | Censo observado |
+| 2011-2017 | CIEVS/Sesau Recife (partilha proporcional do Censo 2010 sobre projeções do IBGE) | estimativa institucional |
+| 2018-2021 | reconstrução própria (CAGR por bairro entre 2017 e 2022, reconciliado ao total municipal oficial do IBGE) | estimativa intercensitária |
+| 2022 | IBGE Censo 2022 ("Agregados por Bairro") | Censo observado |
+| 2023-2025 | projeção pós-Censo (participação de 2022 escalada pelo total municipal oficial) | projeção |
+
+Validação cruzada (reconstruir 2010→2022 sem usar o checkpoint de 2017 e
+comparar com o valor real): **MAE ≈ 886 pessoas, MAPE ≈ 10,8 %** — um erro
+real, documentado, não escondido. Ver
+[relatório completo](reports/population/population_incidence_integration.md)
+e o [inventário de fontes](reports/population/population_source_inventory.md).
+
+Com população disponível, `incidencia_100k` (própria semana) e janelas
+móveis de 4/8/12/52 semanas entram na Gold como colunas aditivas — **nenhum
+dado epidemiológico existente foi alterado** (verificado campo a campo
+contra a versão anterior da Gold e contra os números já validados do
+candidato de ML congelado).
+
 ### O que a série mostra
 
 - Ano de maior volume no período: **2015**.
 - Pico sazonal médio em torno da **semana epidemiológica 11** (fevereiro/março).
-- Maior carga acumulada: **COHAB, IBURA, VÁRZEA, ÁGUA FRIA** — contagem
-  absoluta, não incidência.
+- Maior carga acumulada (contagem absoluta): **COHAB, IBURA, VÁRZEA, ÁGUA
+  FRIA**. Por **incidência** (proporcional à população), o ranking muda —
+  ver a página **Bairros prioritários** e a seção 13 do relatório de
+  população/incidência para os bairros que mais mudam de posição entre os
+  dois critérios.
 
 ### Sinal antecipado (módulo experimental)
 
@@ -254,6 +288,8 @@ Roteiro operacional completo, incluindo publicação e solução de problemas:
 | Pesquisa de ML (4 etapas + validação) | [`reports/ml/`](reports/ml/) |
 | Análise exploratória | [`reports/eda/`](reports/eda/) |
 | Análise da camada Gold | [`reports/gold_analysis/`](reports/gold_analysis/) |
+| População e incidência (fontes, método, validação) | [`reports/population/population_incidence_integration.md`](reports/population/population_incidence_integration.md) |
+| Camada de exportação para Power BI | [`powerbi/README.md`](powerbi/README.md) |
 | Notas operacionais de desenvolvimento | [`CLAUDE.md`](CLAUDE.md) |
 
 ---
@@ -266,9 +302,14 @@ próxima versão, são propriedades do que os dados disponíveis permitem.
 1. **Subnotificação.** Casos que não chegam ao SINAN não existem para
    nenhuma análise aqui. Um bairro com menor acesso a serviços de saúde pode
    aparecer com menos casos por esse motivo, não por menor transmissão.
-2. **Sem incidência.** Nenhuma fonte pública usada traz população por
-   bairro. Todos os números são contagem absoluta; a comparação entre
-   bairros de tamanhos diferentes usa o histórico de cada um como referência.
+2. **Incidência depende de população reconstruída, não só de Censo.**
+   Population por bairro tem checkpoint oficial só em 2010, 2017 (estimativa
+   institucional) e 2022 — os anos entre 2018 e 2021 são reconstrução deste
+   projeto (erro medido por validação cruzada: MAPE ≈ 10,8 %) e 2023-2025 são
+   projeção pós-Censo. `tipo_populacao` marca isso em toda linha da Gold e em
+   toda tabela do dashboard que mostra incidência — nunca tratado como Censo
+   silenciosamente. A contagem absoluta continua disponível ao lado da
+   incidência em toda página, nunca substituída por ela.
 3. **Atraso da fonte.** A publicação oficial é trimestral e o último período
    disponível está 230 dias atrás. O painel declara isso em toda página e
    desabilita a priorização do período atual.

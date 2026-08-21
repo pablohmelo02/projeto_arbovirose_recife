@@ -1,0 +1,6 @@
+dataset,fonte,ultima_atualizacao_fonte,data_maxima_evento,semana_epi_maxima,pipeline_executado_em,atraso_dias,status,limiar_atraso_dias,observacao,gerado_em
+epidemiologia,Portal de Dados Abertos do Recife (CKAN) — SINAN,2026-05-20T10:28:07.454655,2026-01-03,2025-53,2026-08-20T13:23:47.043268+00:00,230.0,ATRASADO,120.0,A disponibilidade do painel reflete o último período publicado pela fonte oficial.,2026-08-21T10:48:15.273030+00:00
+territorio,Portal de Dados Abertos do Recife (CKAN) — limites de bairros,2026-03-02T15:27:38.301130,2026-03-02T15:27:38.301130,,,172.0,ATUAL,1095.0,,2026-08-21T10:48:15.273030+00:00
+clima_estacao,CEMADEN — rede de pluviômetros (estação física),,2026-01-03,2025-53,,230.0,ATRASADO,30.0,,2026-08-21T10:48:15.273030+00:00
+clima_grade,"ERA5 / ERA5-Land — reanálise em grade (0,25° precipitação · 0,10° temperatura)",,2026-01-03,2025-53,,230.0,ATRASADO,30.0,Estimativa climática espacial derivada de reanálise em grade — não é leitura de estação meteorológica de bairro.,2026-08-21T10:48:15.273030+00:00
+modelo,modelo experimental de priorização territorial (dengue),2026-08-21T03:26:20.536401+00:00,2019-12-28,2019-52,2026-08-21T03:26:20.536401+00:00,,ATUAL,,,2026-08-21T10:48:15.273030+00:00

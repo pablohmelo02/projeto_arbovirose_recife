@@ -71,8 +71,12 @@ st.markdown(
 - **Nenhum dado individual** existe na tabela publicada: não há identificador de notificação,
   nome, documento, endereço, data de nascimento nem coordenada de paciente. A menor unidade é
   o bairro.
-- **Incidência por 100 mil habitantes não é calculada** em nenhuma página: nenhuma fonte pública
-  usada traz população por bairro, e um denominador inventado produziria um indicador falso.
+- **Incidência por 100 mil habitantes é calculada** a partir da Gold 1.2 (população por bairro/ano
+  reconstruída 2010-2025: Censos 2010/2022 observados, estimativa institucional 2011-2017,
+  reconstrução própria 2018-2021 e projeção pós-Censo 2023-2025 — ver
+  `reports/population/population_incidence_integration.md` para o método e a margem de erro,
+  MAPE ≈ 10,8% nos anos reconstruídos). Cada página que mostra incidência também mostra
+  `tipo_populacao`, para nunca confundir ano observado com ano reconstruído/projetado.
 """
 )
 
@@ -226,10 +230,17 @@ st.dataframe(
 
 profiling = load_export_profiling()
 if profiling:
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Linhas exportadas", numero(profiling.get("linhas_gold", 0)))
-    col2.metric("Chaves duplicadas", str(profiling.get("chave_gold_duplicadas", "—")))
-    col3.metric("Colunas identificáveis encontradas", str(len(profiling.get("colunas_proibidas_encontradas", []))))
+    linha_de_cartoes(
+        [
+            ("Linhas exportadas", numero(profiling.get("linhas_gold", 0)), ""),
+            ("Chaves duplicadas", str(profiling.get("chave_gold_duplicadas", "—")), ""),
+            (
+                "Colunas identificáveis encontradas",
+                str(len(profiling.get("colunas_proibidas_encontradas", []))),
+                "",
+            ),
+        ]
+    )
     st.caption(
         "A exportação verifica, a cada execução, que nenhuma coluna potencialmente identificável "
         "chega ao dataset publicado — e aborta se encontrar alguma."
@@ -278,6 +289,10 @@ st.markdown(
 | Reduz a incidência de dengue | **Não** | Não foi medido e não poderia ser, com os dados disponíveis |
 | Reduz internações | **Não** | O projeto não tem dado de internação |
 | Os dados são de tempo real | **Não** | A fonte publica em periodicidade trimestral; o painel mostra o último período publicado |
+| Existe associação histórica entre clima e casos | **Sim, com ressalva** | Correlação por defasagem real, bruta e ajustada por sazonalidade — nunca causalidade |
+| O clima antecipa/causa casos | **Não** | Associação histórica só; sazonalidade compartilhada não é relação causal |
+| Projeta a trajetória sazonal esperada de 2026 | **Sim, com ressalva** | Baselines + ETS, escolhidos por backtest 2023-2025, com intervalo de previsão |
+| Há caso observado de 2026 | **Não** | Nenhuma fonte oficial verificada tem dado de 2026; a página de projeção nunca mistura as duas coisas |
 """
 )
 
@@ -297,7 +312,9 @@ st.markdown(
 - **Capacidade operacional.** Priorizar 5 bairros e priorizar 20 são decisões diferentes com
   desempenho diferente — e o painel mostra as duas faixas, inclusive aquela em que o modelo
   não ajuda.
-- **Ausência de população por bairro.** Sem denominador, não há incidência; a comparação entre
-  bairros de tamanhos diferentes usa o histórico de cada um como referência.
+- **População reconstruída, não sempre observada.** Fora dos anos de Censo (2010, 2022), a
+  população por bairro usada para calcular incidência é estimada/projetada — a página mostra
+  `tipo_populacao` sempre que exibe incidência, e a margem de erro conhecida (MAPE ≈ 10,8%) está
+  documentada em `reports/population/population_incidence_integration.md`.
 """
 )

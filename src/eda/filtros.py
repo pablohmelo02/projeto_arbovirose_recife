@@ -7,11 +7,12 @@ consome dado` (ver CLAUDE.md).
 """
 from __future__ import annotations
 
-from typing import Optional
+from typing import Any, Optional
 
 import pandas as pd
 
 from src.eda.schema_eda import AGRAVOS
+from src.gold.populacao import incidencia_100k
 
 
 def aplicar_filtros(
@@ -46,20 +47,39 @@ def aplicar_filtros(
 def total_arboviroses(df_gold: pd.DataFrame) -> pd.DataFrame:
     """Agregado explícito "Total de arboviroses" (soma dos 3 agravos) —
     só deve ser chamado quando a UI identifica claramente que o número é
-    a soma das três doenças, nunca como um quarto "agravo" silencioso."""
-    grupo_cols = [c for c in df_gold.columns if c not in ("agravo", "casos") and not c.startswith("_")]
+    a soma das três doenças, nunca como um quarto "agravo" silencioso.
+
+    Quando `populacao_bairro_ano` está presente (Gold >= 1.2), a coluna
+    `incidencia_100k_combinada` também é calculada — **nunca** como soma das
+    três incidências já publicadas (isso infla o resultado sem significado
+    epidemiológico, ver docstring de `src/gold/populacao.py`), sempre como
+    `casos_totais / populacao * 100000` numa única divisão. A população não
+    varia por agravo dentro do mesmo bairro/ano, então usar o primeiro valor
+    não-nulo do grupo é seguro."""
     # soma casos por todo o resto da chave (bairro/semana/etc.), colapsando agravo
     colunas_chave = [
         "codigo_bairro", "nome_bairro", "ano_epidemiologico", "semana_epidemiologica",
         "semana_epi_data_inicio", "semana_epi_data_fim",
     ]
     colunas_chave = [c for c in colunas_chave if c in df_gold.columns]
-    return (
-        df_gold.groupby(colunas_chave, observed=True)["casos"]
-        .sum()
+
+    agregacoes: dict[str, Any] = {"casos": "sum"}
+    if "populacao_bairro_ano" in df_gold.columns:
+        agregacoes["populacao_bairro_ano"] = "first"
+    if "tipo_populacao" in df_gold.columns:
+        agregacoes["tipo_populacao"] = "first"
+
+    resultado = (
+        df_gold.groupby(colunas_chave, observed=True)
+        .agg(agregacoes)
         .reset_index()
         .assign(agravo="TOTAL_ARBOVIROSES")
     )
+    if "populacao_bairro_ano" in resultado.columns:
+        resultado["incidencia_100k_combinada"] = incidencia_100k(
+            resultado["casos"], resultado["populacao_bairro_ano"]
+        )
+    return resultado
 
 
 def linhas_com_clima_real(df_gold: pd.DataFrame) -> pd.DataFrame:

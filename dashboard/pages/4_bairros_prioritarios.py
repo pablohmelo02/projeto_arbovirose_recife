@@ -25,24 +25,36 @@ from dashboard.utils.validacao import EntradaInvalidaError, validar_escolha, val
 from src.eda.filtros import aplicar_filtros, total_arboviroses
 from src.eda.prioridade_observada import (
     JANELA_RECENTE_SEMANAS,
+    ROTULO_RANKING_CRESCIMENTO,
+    ROTULO_RANKING_DESVIO,
+    ROTULO_RANKING_INCIDENCIA,
+    ROTULO_RANKING_VOLUME,
     prioridade_observada,
     resumo_situacao,
     semanas_disponiveis,
 )
 
+#: Os 4 rankings distintos do produto (nunca combinados num único ranking
+#: misto) -- ver `src/eda/prioridade_observada.py::RANKINGS_OBSERVADOS`.
 ORDENACOES = {
-    f"Casos nas últimas {JANELA_RECENTE_SEMANAS} semanas": "casos_janela_recente",
-    "Crescimento recente (%)": "variacao_pct",
-    "Razão contra o histórico do bairro": "razao_historico",
+    ROTULO_RANKING_VOLUME: "casos_janela_recente",
+    ROTULO_RANKING_INCIDENCIA: "incidencia_4s_100k",
+    ROTULO_RANKING_CRESCIMENTO: "variacao_pct",
+    ROTULO_RANKING_DESVIO: "razao_historico",
 }
+
+#: População abaixo da qual uma incidência de 4 semanas é considerada
+#: instável demais para leitura isolada (poucos casos alteram muito a taxa).
+LIMITE_POPULACAO_INCIDENCIA_INSTAVEL = 5000
 
 TAMANHOS_LISTA = (5, 10, 15, 20, 94)
 
 gold, freshness = iniciar_pagina(
     "Bairros prioritários",
-    "Onde devemos olhar primeiro, segundo o que os dados já registram. Três critérios "
-    "complementares — volume recente, aceleração e desvio do próprio histórico — porque eles "
-    "respondem a perguntas diferentes e frequentemente apontam bairros diferentes.",
+    "Onde devemos olhar primeiro, segundo o que os dados já registram. Quatro critérios "
+    "complementares — volume recente, incidência por 100 mil habitantes, aceleração e desvio do "
+    "próprio histórico — porque eles respondem a perguntas diferentes e frequentemente apontam "
+    "bairros diferentes.",
     etiqueta="observado",
 )
 if gold is None:
@@ -64,6 +76,17 @@ base = df if filtros["agravo"] else total_arboviroses(df)
 if "codigo_rpa" not in base.columns:
     base = base.merge(
         gold[["codigo_bairro", "codigo_rpa"]].drop_duplicates(), on="codigo_bairro", how="left"
+    )
+if "populacao_bairro_ano" not in base.columns:
+    # população/densidade não dependem do agravo -- seguros para repor depois
+    # de `total_arboviroses` colapsar as colunas não-chave. Incidência é
+    # recalculada dentro de `prioridade_observada`, nunca repassada pronta.
+    base = base.merge(
+        gold[
+            ["codigo_bairro", "ano_epidemiologico", "populacao_bairro_ano",
+             "tipo_populacao", "densidade_populacional_hab_km2"]
+        ].drop_duplicates(["codigo_bairro", "ano_epidemiologico"]),
+        on=["codigo_bairro", "ano_epidemiologico"], how="left",
     )
 
 # ---------------------------------------------------------------------------
@@ -145,6 +168,13 @@ exibicao_formatada = pd.DataFrame(
         "RPA": exibicao["codigo_rpa"],
         "Casos na semana": exibicao["casos_semana"].astype("Int64"),
         f"Casos ({JANELA_RECENTE_SEMANAS} sem.)": exibicao["casos_janela_recente"].astype("Int64"),
+        f"Incidência ({JANELA_RECENTE_SEMANAS} sem.)/100k": exibicao["incidencia_4s_100k"].map(
+            lambda v: "—" if pd.isna(v) else f"{v:.1f}"
+        ),
+        "População usada": exibicao["populacao_bairro_ano"].map(
+            lambda v: "—" if pd.isna(v) else f"{int(v):,}".replace(",", ".")
+        ),
+        "Tipo pop.": exibicao["tipo_populacao"].fillna("—"),
         "Variação": exibicao["variacao_pct"].map(variacao_com_sinal),
         "Tendência": exibicao["tendencia"],
         "Razão vs. histórico": exibicao["razao_historico"].map(
@@ -157,8 +187,18 @@ st.dataframe(exibicao_formatada, use_container_width=True, hide_index=True, heig
 st.caption(
     "**Prioridade** é apenas a posição segundo o critério escolhido acima — não é uma classificação "
     "de risco validada. **Base histórica (n)** é o número de observações de anos anteriores usadas na "
-    "comparação sazonal: um `n` pequeno torna a razão instável, e por isso é exibido."
+    "comparação sazonal: um `n` pequeno torna a razão instável, e por isso é exibido. **Tipo pop.** "
+    "indica se a população usada naquele ano é Censo observado, estimativa intercensitária ou projeção "
+    "pós-Censo — ver a página de Qualidade e limitações."
 )
+if rotulo_ordem == ROTULO_RANKING_INCIDENCIA:
+    st.warning(
+        "Taxas de curto prazo (incidência de 4 semanas) podem variar fortemente em bairros de menor "
+        "população: um único caso a mais ou a menos muda a taxa de forma desproporcional. Os valores "
+        "não são ocultados, mas devem ser lidos com essa ressalva — compare também com a incidência "
+        "anual (janela mais longa) na página de Evolução histórica.",
+        icon="⚠️",
+    )
 
 st.divider()
 

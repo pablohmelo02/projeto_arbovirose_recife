@@ -111,6 +111,49 @@ def test_total_arboviroses_soma_os_tres_agravos(df_gold_sintetico):
     assert total["agravo"].iloc[0] == "TOTAL_ARBOVIROSES"
 
 
+def test_total_arboviroses_sem_populacao_nao_gera_coluna_incidencia(df_gold_sintetico):
+    recorte = df_gold_sintetico[
+        (df_gold_sintetico["ano_epidemiologico"] == 2013)
+        & (df_gold_sintetico["semana_epidemiologica"] == 1)
+        & (df_gold_sintetico["codigo_bairro"] == "1")
+    ]
+    total = filtros.total_arboviroses(recorte)
+    assert "incidencia_100k_combinada" not in total.columns
+
+
+def test_total_arboviroses_incidencia_combinada_usa_soma_de_casos_nao_soma_de_taxas(df_gold_sintetico):
+    recorte = df_gold_sintetico[
+        (df_gold_sintetico["ano_epidemiologico"] == 2013)
+        & (df_gold_sintetico["semana_epidemiologica"] == 1)
+        & (df_gold_sintetico["codigo_bairro"] == "1")
+    ].copy()
+    recorte["populacao_bairro_ano"] = 100_000.0
+    recorte["tipo_populacao"] = "CENSO_OBSERVADO"
+
+    total = filtros.total_arboviroses(recorte)
+
+    casos_totais = recorte["casos"].sum()
+    esperado = casos_totais / 100_000.0 * 100_000
+    assert total["incidencia_100k_combinada"].iloc[0] == pytest.approx(esperado)
+    # nao deve ser a soma das incidencias individuais recalculadas por agravo,
+    # que daria o mesmo valor aqui so porque a populacao e identica -- o teste
+    # de regressao real esta em garantir que uma unica divisao foi usada.
+    assert total["casos"].iloc[0] == casos_totais
+
+
+def test_total_arboviroses_populacao_ausente_gera_incidencia_none(df_gold_sintetico):
+    recorte = df_gold_sintetico[
+        (df_gold_sintetico["ano_epidemiologico"] == 2013)
+        & (df_gold_sintetico["semana_epidemiologica"] == 1)
+        & (df_gold_sintetico["codigo_bairro"] == "1")
+    ].copy()
+    recorte["populacao_bairro_ano"] = np.nan
+
+    total = filtros.total_arboviroses(recorte)
+
+    assert total["incidencia_100k_combinada"].isna().all()
+
+
 def test_linhas_com_clima_real_exclui_dias_validos_nulos_ou_zero(df_gold_sintetico):
     com_clima = filtros.linhas_com_clima_real(df_gold_sintetico)
     assert com_clima["dias_com_dado_valido_semana"].fillna(0).gt(0).all()

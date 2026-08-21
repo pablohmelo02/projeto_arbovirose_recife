@@ -14,14 +14,20 @@ número de observações que sustenta cada uma. A priorização preditiva
 (experimental, com modelo) vive em `src/ml/` e é exibida em página separada
 e claramente marcada.
 
-## Por que "razão contra o próprio histórico" e não incidência
+## Incidência e "razão contra o próprio histórico" coexistem, nunca se misturam
 
-Nenhuma fonte do projeto tem população por bairro
-(`INCIDENCIA_DISPONIVEL = False`, ver `schema_eda.py`), então incidência por
-100 mil habitantes **não existe** e não é aproximada. O normalizador
-disponível é o próprio histórico do bairro na mesma época do ano — o mesmo
-princípio do "canal endêmico" usado na vigilância brasileira. Isso permite
-comparar um bairro grande com um pequeno sem inventar denominador.
+Desde a Gold 1.2 (`INCIDENCIA_DISPONIVEL = True`, ver `schema_eda.py`),
+`incidencia_4s_100k` já vem calculada na própria Gold (`src/gold/populacao.py`
+— janela móvel de 4 semanas, igual a `JANELA_RECENTE_SEMANAS` aqui) e é só
+lida/repassada por esta função, nunca recalculada. "Razão contra o próprio
+histórico" continua existindo como uma métrica **diferente e complementar**:
+ela normaliza pela sazonalidade do próprio bairro (útil mesmo quando a
+população de um ano é reconstruída/projetada, não observada), enquanto
+incidência normaliza pelo tamanho da população (útil para comparar bairros
+entre si). `ranking_maior_volume`, `ranking_maior_incidencia`,
+`ranking_maior_crescimento` e `ranking_maior_desvio_historico` (abaixo)
+existem como rankings **distintos** — nunca um ranking único misturando as
+quatro métricas sem justificativa.
 
 ## Sem leakage acidental na comparação histórica
 
@@ -35,6 +41,8 @@ from __future__ import annotations
 from typing import Any, Optional
 
 import pandas as pd
+
+from src.gold.populacao import incidencia_100k
 
 #: Janela usada para "casos recentes" e para a comparação de crescimento.
 #: 4 semanas ≈ um mês epidemiológico: curto o bastante para refletir
@@ -152,6 +160,8 @@ def prioridade_observada(
         "codigo_bairro", "nome_bairro", "codigo_rpa", "casos_semana", "casos_janela_recente",
         "casos_janela_anterior", "variacao_pct", "tendencia", "media_historica",
         "razao_historico", "n_observacoes_historicas",
+        "populacao_bairro_ano", "tipo_populacao", "densidade_populacional_hab_km2",
+        "incidencia_100k", "incidencia_4s_100k",
     ]
     if df_agravo.empty:
         return pd.DataFrame(columns=colunas)
@@ -191,6 +201,27 @@ def prioridade_observada(
         media_historica_sazonal(df_agravo, ano_referencia, semana_referencia),
         on="codigo_bairro", how="left",
     )
+    # Só o que é invariante por agravo (população/densidade) vem por merge
+    # direto -- incidência é sempre RECALCULADA a partir de `casos_semana`/
+    # `casos_janela_recente` já totalizados aqui, nunca repassada pronta da
+    # Gold: se `df_agravo` for o agregado "TOTAL_ARBOVIROSES"
+    # (`src/eda/filtros.py::total_arboviroses`), a incidência de um único
+    # agravo estaria errada.
+    colunas_populacao = ["codigo_bairro", "populacao_bairro_ano", "tipo_populacao", "densidade_populacional_hab_km2"]
+    colunas_populacao_presentes = [c for c in colunas_populacao if c in alvo.columns]
+    if len(colunas_populacao_presentes) > 1:
+        base = base.merge(
+            alvo[colunas_populacao_presentes].drop_duplicates("codigo_bairro"),
+            on="codigo_bairro", how="left",
+        )
+    else:
+        for coluna in colunas_populacao[1:]:
+            base[coluna] = None
+
+    base["incidencia_100k"] = incidencia_100k(base["casos_semana"], base["populacao_bairro_ano"])
+    base["incidencia_4s_100k"] = incidencia_100k(
+        base["casos_janela_recente"].fillna(0), base["populacao_bairro_ano"]
+    )
 
     tem_anterior = base["casos_janela_anterior"].notna()
     base["variacao_pct"] = pd.Series(
@@ -218,7 +249,14 @@ def prioridade_observada(
 
 def resumo_situacao(df_agravo: pd.DataFrame, tabela_prioridade: pd.DataFrame) -> dict[str, Any]:
     """KPIs da semana de referência para a página inicial — sempre com o
-    número de bairros que sustenta cada afirmação."""
+    número de bairros que sustenta cada afirmação.
+
+    `incidencia_janela_recente_100k_cidade`: incidência da cidade inteira na
+    mesma janela de `casos_janela_recente_cidade`, calculada como
+    `casos_totais_da_janela / populacao_total_da_cidade * 100000` — uma
+    única divisão sobre os agregados, nunca a soma das incidências por
+    bairro já calculadas (ver docstring do módulo). `None` se a população
+    não estiver disponível para o ano de referência."""
     if tabela_prioridade.empty:
         return {
             "casos_semana_cidade": 0,
@@ -229,11 +267,21 @@ def resumo_situacao(df_agravo: pd.DataFrame, tabela_prioridade: pd.DataFrame) ->
             "bairros_em_alta": 0,
             "bairros_acima_do_historico": 0,
             "total_bairros": int(df_agravo["codigo_bairro"].nunique()) if len(df_agravo) else 0,
+            "incidencia_janela_recente_100k_cidade": None,
         }
 
     recente = float(tabela_prioridade["casos_janela_recente"].fillna(0).sum())
     anterior = float(tabela_prioridade["casos_janela_anterior"].fillna(0).sum())
     variacao = round(100.0 * (recente - anterior) / anterior, 1) if anterior > 0 else None
+
+    incidencia_cidade = None
+    if "populacao_bairro_ano" in tabela_prioridade.columns:
+        populacao_total = float(tabela_prioridade["populacao_bairro_ano"].fillna(0).sum())
+        if populacao_total > 0:
+            incidencia_cidade = float(
+                incidencia_100k(pd.Series([recente]), pd.Series([populacao_total])).iloc[0]
+            )
+
     return {
         "casos_semana_cidade": int(tabela_prioridade["casos_semana"].fillna(0).sum()),
         "casos_janela_recente_cidade": int(recente),
@@ -244,7 +292,56 @@ def resumo_situacao(df_agravo: pd.DataFrame, tabela_prioridade: pd.DataFrame) ->
         "bairros_em_alta": int((tabela_prioridade["tendencia"] == ROTULO_TENDENCIA_ALTA).sum()),
         "bairros_acima_do_historico": int((tabela_prioridade["razao_historico"] > 1.0).sum()),
         "total_bairros": int(len(tabela_prioridade)),
+        "incidencia_janela_recente_100k_cidade": incidencia_cidade,
     }
+
+
+#: Rótulos dos 4 rankings distintos (seção "Ranking observado" do produto).
+#: Nunca combinados num único ranking misto sem justificativa.
+ROTULO_RANKING_VOLUME = "Maior volume de casos"
+ROTULO_RANKING_INCIDENCIA = "Maior incidência"
+ROTULO_RANKING_CRESCIMENTO = "Maior crescimento recente"
+ROTULO_RANKING_DESVIO = "Maior desvio do histórico local"
+
+
+def ranking_maior_volume(tabela_prioridade: pd.DataFrame) -> pd.DataFrame:
+    """Ordena por `casos_janela_recente` — carga/volume absoluto."""
+    return tabela_prioridade.sort_values("casos_janela_recente", ascending=False).reset_index(drop=True)
+
+
+def ranking_maior_incidencia(tabela_prioridade: pd.DataFrame) -> pd.DataFrame:
+    """Ordena por `incidencia_4s_100k` — intensidade proporcional à
+    população. Bairros sem população calculável (não deveria ocorrer para os
+    94 bairros oficiais) ficam no fim, nunca escondidos."""
+    if "incidencia_4s_100k" not in tabela_prioridade.columns:
+        return tabela_prioridade.reset_index(drop=True)
+    return tabela_prioridade.sort_values(
+        "incidencia_4s_100k", ascending=False, na_position="last"
+    ).reset_index(drop=True)
+
+
+def ranking_maior_crescimento(tabela_prioridade: pd.DataFrame) -> pd.DataFrame:
+    """Ordena por `variacao_pct` — crescimento recente vs. a janela anterior.
+    Bairros sem base de comparação (`variacao_pct` indefinida) ficam no fim."""
+    return tabela_prioridade.sort_values("variacao_pct", ascending=False, na_position="last").reset_index(
+        drop=True
+    )
+
+
+def ranking_maior_desvio_historico(tabela_prioridade: pd.DataFrame) -> pd.DataFrame:
+    """Ordena por `razao_historico` — desvio contra a própria sazonalidade
+    do bairro (não depende de população)."""
+    return tabela_prioridade.sort_values("razao_historico", ascending=False, na_position="last").reset_index(
+        drop=True
+    )
+
+
+RANKINGS_OBSERVADOS = {
+    ROTULO_RANKING_VOLUME: ranking_maior_volume,
+    ROTULO_RANKING_INCIDENCIA: ranking_maior_incidencia,
+    ROTULO_RANKING_CRESCIMENTO: ranking_maior_crescimento,
+    ROTULO_RANKING_DESVIO: ranking_maior_desvio_historico,
+}
 
 
 def semanas_disponiveis(df_gold: pd.DataFrame, limite: Optional[int] = None) -> list[tuple[int, int]]:

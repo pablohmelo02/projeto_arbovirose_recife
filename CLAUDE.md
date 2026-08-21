@@ -1321,3 +1321,194 @@ gráfico**.
    **só** com o protocolo completo de validação.
 4. CHIRPS (0,05°, ~11 células) se houver infraestrutura para ingestão raster.
 5. Reexecutar `pip-audit` periodicamente.
+
+> Nota: entre §19 e esta seção houve sessões não documentadas aqui (V2 de
+> incidência, reconstrução populacional Gold 1.2, exportação Power BI) —
+> working tree não commitado no início desta etapa. Ver
+> `reports/population/`, `reports/ml/incidence_based_v2_*` e
+> `powerbi/README.md` para o que já existia antes desta sessão.
+
+## 20. Versão final de demonstração: filtros, clima×arboviroses, projeção 2026, apoio à decisão, Figma, Power BI (sessão de 2026-08-21, continuação)
+
+Etapa de produto pedida explicitamente com regra de parada e proibições
+(não reabrir tuning V1/V2, não misturar projeção com priorização
+territorial, não afirmar causalidade climática, não aplicar ML de dengue a
+Zika/Chikungunya, não prever por bairro sem validação). **Todas
+respeitadas — nem `src/ml/` nem os artefatos/relatórios do candidato
+`dengue_onset_ranking_candidate_v1` foram tocados**, verificado por dois
+testes de isolamento dedicados (`tests/test_ml_incidence_v2_v1_intacto.py`,
+pré-existente, e `tests/test_forecast_v1_intacto.py`, novo).
+
+**Baseline inicial**: 629/629 testes (o repositório real do projeto vive em
+`projeto_arbovirose_recife/`, subpasta com git próprio — não a raiz do
+repo externo). **Suíte final: 737/737**, 0 regressões.
+
+### 20.1 Verificações ao vivo (item 10/13 do pedido)
+
+- **Casos 2026**: CKAN (`dados.recife.pe.gov.br`) reconsultado — 58
+  recursos, todos rotulados até 2025; metadado do dataset tocado em
+  2026-05-20 mas nenhum recurso 2026 existe. Existe um boletim estadual
+  (SES-PE) com números de 2026 para Pernambuco inteiro, fonte diferente
+  (estadual, sem bairro), fora de escopo. **Confirma §19.6: sem observado
+  2026.**
+- **População municipal 2026**: estimativas IBGE mais recentes têm
+  referência 01/07/2025; nenhuma estimativa oficial municipal 2026
+  encontrada. **Projeção 2026 é sempre em casos, nunca em incidência.**
+
+### 20.2 Filtro global de agravo
+
+A maior parte já existia (`src/eda/filtros.py::aplicar_filtros`,
+`dashboard/components/filtros_sidebar.py::renderizar_filtros`). Adicionado:
+`renderizar_filtros(..., permitir_todas: bool = True)` — quando `False`,
+remove a opção "Todas as arboviroses" do seletor (clima e projeção 2026,
+onde somar os 3 agravos não tem interpretação válida). `total_arboviroses`
+passou a calcular também `incidencia_100k_combinada` (uma única divisão
+sobre os agregados, nunca soma de taxas). Página 1 (Início) ganhou filtro
+de agravo real (antes fixo em DENGUE) e cartão de incidência da cidade.
+Página 8 (Priorização experimental) ganhou o aviso fixo **"Priorização
+experimental atualmente validada apenas para dengue."** — ela não tem
+seletor de agravo, então o aviso é incondicional.
+
+### 20.3 Clima × Arboviroses — defasagem real (`src/eda/associacao_climatica.py`)
+
+Módulo novo, Recife total apenas (a grade ERA5/ERA5-Land só resolve 2-3
+células para os 94 bairros — nenhuma função aceita bairro/RPA). Defasagem
+**deslocada de verdade** (`alvo[t]` × `clima[t-k]`, `.shift(k)`, k=0..12,
+Spearman + p-valor + n), diferente da janela cumulativa já publicada
+(`src/eda/correlacao.py`/`clima_grade.correlacoes_lag_grade`, preservada
+intacta). Dessazonalização (resíduo vs. média histórica da mesma semana
+epi) compara correlação bruta vs. ajustada. `resumo_textual` escolhe o lag
+de maior `|Spearman|` **entre os confiáveis (n≥30)**, nunca por p-valor, e
+nunca afirma causalidade. Casos e incidência calculados e reportados
+separadamente. Página `7_clima_dengue.py` (nav: "Clima × Arboviroses")
+reorganizada em 3 abas (janelas cumulativas / defasagem real / bruta vs.
+ajustada), filtro com `permitir_todas=False`. Relatório:
+`reports/analysis/climate_arbovirus_association.md` (gerado por
+`python -m src.generate_climate_arbovirus_report`, números reais).
+
+**Achado real (Dengue × Precipitação)**: melhor lag = 2 semanas
+(Spearman≈0,17 casos / 0,18 incidência), cai para perto de zero (até
+negativo) após dessazonalizar — sugere que a associação bruta é
+majoritariamente sazonalidade compartilhada, não um sinal que sobreviva à
+remoção da sazonalidade.
+
+### 20.4 Forecast 2026 (`src/forecast/`, isolado de `src/ml/`)
+
+Pacote novo: `dataset.py` (série semanal Recife-total por agravo, com
+guarda `garantir_sem_observado_futuro` — recusa qualquer
+`ano_epidemiologico` além de `ULTIMO_ANO_HISTORICO_VALIDADO=2025`),
+`baselines.py` (seasonal naive, média histórica da semana, tendência +
+sazonalidade), `modelos.py` (ETS/Holt-Winters via `statsmodels`, único
+método adicional — decisão do usuário, sem SARIMA/deep learning/AutoML),
+`intervalos.py` (banda 80%/95%, empírica ou simulação nativa do ETS),
+`backtest.py` (walk-forward 2022→23/2023→24/2024→25; MAE, RMSE, MASE vs.
+seasonal naive, erro de pico e de timing, cobertura de intervalo),
+`selecao_modelo.py` (mediana do MASE, desempate por timing — nunca olhando
+2026), `projecao_2026.py` (orquestrador).
+
+Entry point `python -m src.generate_forecast_artifacts` escreve
+`dashboard/data/_forecast_2026.parquet` +
+`_forecast_2026_metadata.json` — a página Streamlit (`10_projecao_2026.py`,
+nova) só lê, nunca treina em tempo real (mesma convenção da página
+experimental). `python -m src.generate_forecast_report` gera
+`reports/forecast/arbovirus_2026_projection.md`.
+
+**Resultado real**: modelo vencedor por agravo — Dengue: `média histórica
+da semana` (MASE mediano 0,613); Zika e Chikungunya: `seasonal naive`
+(MASE 1,0 — nenhum modelo mais complexo superou o baseline mais simples
+nesses dois agravos). **Achado honesto**: no backtest de 2025, o erro de
+timing do pico foi de 22 (dengue/zika) a 30 semanas (chikungunya) — anos
+com padrão sazonal atípico, documentado no relatório, não escondido.
+Nenhuma incidência 2026 é publicada (sem população 2026 oficial).
+
+**Cobertura de intervalo** (`backtest.py::cobertura_leave_one_fold_out` —
+adicionada após o primeiro rascunho do relatório, quando notei que o item
+14 do pedido explicitamente pedia essa métrica e ela só existia testada
+isoladamente, nunca calculada no pipeline real): cada dobra é avaliada com
+a banda construída a partir dos erros das OUTRAS dobras (nunca da própria,
+para não inflar a cobertura artificialmente). Resultado real 2023: Dengue
+54%/58% (80%/95%) — banda subestima a incerteza real nesse ano; Zika
+92%/100%; Chikungunya 79%/100%. Com só 3 dobras é uma leitura aproximada,
+documentada como tal no relatório e na página.
+
+### 20.5 Apoio à decisão
+
+Página nova `11_da_informacao_a_acao.py` ("Da informação à ação"):
+9 perguntas → indicador → decisão apoiada (item 21 do pedido), aviso fixo
+"apoia/prioriza/informa/contextualiza — nunca ordena/substitui/garante/
+diagnostica". Relatório equivalente:
+`reports/product/prefeitura_decision_support.md`.
+
+### 20.6 Modernização visual (item 26 — todas as 9 páginas + 2 novas)
+
+Auditoria confirmou que o sistema de design (`dashboard/components/tema.py`)
+já era consistente na maior parte do painel (sessões anteriores já tinham
+aplicado bem os primitivos de cartão/cabeçalho). Correções reais: 2 usos
+remanescentes de `st.metric` substituídos por `linha_de_cartoes`; página 9
+(`9_qualidade_limitacoes.py`) tinha uma afirmação obsoleta ("incidência não
+é calculada em nenhuma página" — falsa desde a Gold 1.2) corrigida, com
+`tipo_populacao`/MAPE explicados; tabela de afirmações permitidas da página
+9 ganhou linhas sobre associação climática e projeção 2026. Nova tag visual
+`etiqueta="projecao"` em `tema.py::cabecalho_pagina` (cor própria, roxa,
+nunca confundida com a tag "experimental" — projeção estatística sazonal e
+priorização territorial são coisas diferentes, marcadas diferente de
+propósito).
+
+### 20.7 Power BI (item 28 — extensão, não documentação-só)
+
+Duas fact tables novas em `src/export_powerbi_dataset.py`:
+`fact_associacao_climatica` (agravo×variável×lag×tipo de série×ajustada,
+recalculada de verdade a partir de `src/eda/associacao_climatica.py`,
+**sem** chave de bairro/tempo — sempre incluída, só depende da Gold) e
+`fact_projecao_2026` (agravo×semana, observado+projetado, **opcional**:
+degrada graciosamente se `_forecast_2026.parquet` não existir, diferente
+do "fail closed" das 3 fontes originais). `dim_tempo` estendida para
+cobrir as semanas de 2026 quando a projeção está presente.
+`validar_star_schema` ganhou checagens para as duas tabelas novas
+(FK, chave duplicada, `lag_semanas` em 0-12, sem coluna de
+probabilidade/risco). **Execução real**: 9 tabelas, `fact_associacao_climatica`
+780 linhas, `fact_projecao_2026` 2.193 linhas, `dim_tempo` 679→731 semanas,
+`integridade_referencial: "ok"`. `powerbi/README.md` atualizado. Nenhum
+`.pbix` gerado (explicitamente fora de escopo).
+
+### 20.8 Especificação Figma (item 23-24, 27 — documentação pura)
+
+`reports/product/figma_specification.md` (≈590 linhas): 8 telas (Home,
+Situação Epidemiológica, Mapa Territorial, Histórico, Clima ×
+Arboviroses, Projeção 2026, Priorização Experimental, Qualidade e
+Transparência), cada uma com objetivo/KPIs/gráficos/filtros/textos/estados
+vazios/avisos/interação, mapeadas explicitamente às 11 páginas Streamlit
+reais. Seção "Figma ≠ Streamlit" explícita; paleta semente = tokens reais
+de `tema.py`, não uma identidade nova; nenhuma identidade visual oficial
+da Prefeitura usada. Elementos propostos sem código real por trás
+marcados `[conceito — não implementado]` (ex.: hero dinâmico na Home,
+drill-down por clique no mapa, toggle casos/incidência na projeção).
+
+### 20.9 Testes e arquivos (visão geral desta etapa)
+
+Novos/estendidos: `src/eda/associacao_climatica.py`,
+`src/generate_climate_arbovirus_report.py`, `src/forecast/` (7 módulos),
+`src/generate_forecast_artifacts.py`, `src/generate_forecast_report.py`,
+extensões em `src/export_powerbi_dataset.py`,
+`dashboard/pages/10_projecao_2026.py`,
+`dashboard/pages/11_da_informacao_a_acao.py`, extensões em
+`dashboard/pages/1_*.py`, `2_*.py`, `7_*.py`, `8_*.py`, `9_*.py`,
+`dashboard/app.py`, `dashboard/components/{tema,filtros_sidebar,
+graficos_produto}.py`, `dashboard/utils/data_loader.py`. Relatórios novos:
+`reports/analysis/climate_arbovirus_association.md`,
+`reports/forecast/arbovirus_2026_projection.md`,
+`reports/product/prefeitura_decision_support.md`,
+`reports/product/figma_specification.md`. ~15 arquivos de teste novos
+(forecast, associação climática, Power BI, filtros, rotulagem
+observado/projetado). Suíte final: **737/737**.
+
+**Não alterado**: `src/ml/` (V1 completo), `src/ml/*_incidencia.py` (V2),
+`artifacts/models/dengue_onset_ranking_candidate_v1/`, qualquer arquivo em
+`reports/ml/`, hiperparâmetros/target/features do candidato congelado.
+
+**Próximo passo (decisão do usuário, nada iniciado)**: publicar no
+Streamlit Community Cloud; considerar levar `fact_associacao_climatica`/
+`fact_projecao_2026` para medidas DAX dedicadas (`powerbi/medidas_dax.md`
+ainda não foi estendido para as 2 tabelas novas); reavaliar o forecast
+quando houver caso observado de 2026 real (backtest atual usa só
+2023-2025).

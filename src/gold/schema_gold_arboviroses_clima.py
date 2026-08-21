@@ -53,14 +53,28 @@ semântica da fonte é diferente: ausência de leitura de sensor é falha de
 telemetria (`None`), ausência de notificação compulsória é informação real
 (`0`).
 
-## `incidencia_por_100k` NÃO existe nesta versão
+## População e incidência (Gold 1.2, aditivo — ver `src/gold/populacao.py`)
 
-Verificado nos dados reais: **nenhuma fonte do projeto (território, SINAN,
-dimensões) tem população por bairro** — `silver_bairro_geo` só tem
-`area_km2`, não `populacao`/`densidade`. Calcular incidência exigiria uma
-nova fonte de dados (ex.: IBGE/Censo), fora do escopo desta etapa e não
-implementada sem autorização. `casos` (contagem absoluta) é o único target
-epidemiológico disponível.
+A partir da versão 1.2, a Gold ganha um bloco de colunas de população e
+incidência (`populacao_bairro_ano`, `tipo_populacao`,
+`densidade_populacional_hab_km2`, `incidencia_100k`,
+`incidencia_4s_100k`/`8s`/`12s`/`anual_100k`), derivadas de uma nova Silver
+(`silver_populacao_bairro_ano`, ver `src/population/reconstruction.py` e
+`reports/population/population_incidence_integration.md`) que reconstrói a
+população dos 94 bairros para 2010-2025 a partir dos checkpoints oficiais
+realmente existentes (Censos 2010/2022 observados; estimativa
+institucional 2011-2017; reconstrução própria 2018-2021; projeção
+pós-Censo 2023-2025). **Nenhuma linha, coluna ou valor epidemiológico
+pré-existente foi alterado** — mesma disciplina do enriquecimento 1.0→1.1
+(clima em grade): verificado campo a campo antes de publicar. `casos`
+(contagem absoluta) continua existindo e nunca é substituído pela
+incidência — as duas coexistem, sempre lado a lado na UI.
+
+`tipo_populacao` é obrigatório de checar antes de tratar qualquer
+incidência como "precisa": anos fora de 2010/2022 usam população estimada
+ou projetada, com erro medido por validação cruzada (MAPE ≈ 10,8 % contra
+o checkpoint de 2017, reconstruindo sem usá-lo) — nunca apresentado como
+equivalente a um Censo.
 
 ## Limitação crítica de cobertura climática (ver relatório para detalhe)
 

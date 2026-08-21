@@ -37,6 +37,8 @@ COR_BORDA = "#dde3e8"
 COR_ATENCAO = "#b9770e"
 COR_ATENCAO_FUNDO = "#fdf6e3"
 COR_DENGUE = "#a93226"
+COR_PROJECAO = "#5b4b8a"
+COR_PROJECAO_FUNDO = "#f1eef9"
 
 _CSS = f"""
 <style>
@@ -59,6 +61,7 @@ _CSS = f"""
              vertical-align: middle; margin-left: .5rem; }}
   .ra-tag-observado {{ background: #e8eef4; color: {COR_INSTITUCIONAL}; border: 1px solid #cfdce8; }}
   .ra-tag-experimental {{ background: {COR_ATENCAO_FUNDO}; color: {COR_ATENCAO}; border: 1px solid #f0d9a8; }}
+  .ra-tag-projecao {{ background: {COR_PROJECAO_FUNDO}; color: {COR_PROJECAO}; border: 1px solid #d9d0ec; }}
 
   /* ---------- cartões ---------- */
   .ra-cartao {{ background: #fff; border: 1px solid {COR_BORDA}; border-radius: 8px;
@@ -107,10 +110,14 @@ def cabecalho_pagina(titulo: str, subtitulo: str, etiqueta: Optional[str] = None
 
     `etiqueta="observado"` = o que os dados registram.
     `etiqueta="experimental"` = saída de modelo, não previsão oficial.
+    `etiqueta="projecao"` = projeção estatística sazonal (série temporal),
+    visualmente distinta de "experimental" (modelo de priorização
+    territorial) para nunca misturar as duas coisas na cabeça de quem lê.
     """
     mapa = {
         "observado": ("Dados observados", "ra-tag-observado"),
         "experimental": ("Experimental", "ra-tag-experimental"),
+        "projecao": ("Projeção estatística", "ra-tag-projecao"),
     }
     tag_html = ""
     if etiqueta in mapa:

@@ -1,0 +1,129 @@
+{
+  "linhas_com_populacao": 191478,
+  "linhas_sem_populacao": 0,
+  "percentual_linhas_com_populacao": 100.0,
+  "anos_com_populacao_na_silver": [
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "tipos_populacao_presentes": [
+    "CENSO_OBSERVADO",
+    "ESTIMATIVA_INTERCENSITARIA",
+    "PROJECAO_POS_CENSO"
+  ],
+  "bairros_sem_populacao": [],
+  "cardinalidade_preservada": true,
+  "antes": {
+    "linhas": 191478,
+    "casos_totais": 156504,
+    "bairros": 94,
+    "agravos": 3
+  },
+  "colunas_adicionadas": [
+    "populacao_bairro_ano",
+    "tipo_populacao",
+    "densidade_populacional_hab_km2",
+    "incidencia_100k",
+    "incidencia_4s_100k",
+    "incidencia_8s_100k",
+    "incidencia_12s_100k",
+    "incidencia_anual_100k"
+  ],
+  "versao_schema_populacao": "1.0",
+  "versao_schema_gold": "1.2",
+  "cobertura_incidencia_por_ano": [
+    {
+      "ano_epidemiologico": 2013,
+      "linhas": 14664,
+      "com_populacao": 14664,
+      "pct_com_populacao": 100.0
+    },
+    {
+      "ano_epidemiologico": 2014,
+      "linhas": 14946,
+      "com_populacao": 14946,
+      "pct_com_populacao": 100.0
+    },
+    {
+      "ano_epidemiologico": 2015,
+      "linhas": 14664,
+      "com_populacao": 14664,
+      "pct_com_populacao": 100.0
+    },
+    {
+      "ano_epidemiologico": 2016,
+      "linhas": 14664,
+      "com_populacao": 14664,
+      "pct_com_populacao": 100.0
+    },
+    {
+      "ano_epidemiologico": 2017,
+      "linhas": 14664,
+      "com_populacao": 14664,
+      "pct_com_populacao": 100.0
+    },
+    {
+      "ano_epidemiologico": 2018,
+      "linhas": 14664,
+      "com_populacao": 14664,
+      "pct_com_populacao": 100.0
+    },
+    {
+      "ano_epidemiologico": 2019,
+      "linhas": 14664,
+      "com_populacao": 14664,
+      "pct_com_populacao": 100.0
+    },
+    {
+      "ano_epidemiologico": 2020,
+      "linhas": 14946,
+      "com_populacao": 14946,
+      "pct_com_populacao": 100.0
+    },
+    {
+      "ano_epidemiologico": 2021,
+      "linhas": 14664,
+      "com_populacao": 14664,
+      "pct_com_populacao": 100.0
+    },
+    {
+      "ano_epidemiologico": 2022,
+      "linhas": 14664,
+      "com_populacao": 14664,
+      "pct_com_populacao": 100.0
+    },
+    {
+      "ano_epidemiologico": 2023,
+      "linhas": 14664,
+      "com_populacao": 14664,
+      "pct_com_populacao": 100.0
+    },
+    {
+      "ano_epidemiologico": 2024,
+      "linhas": 14664,
+      "com_populacao": 14664,
+      "pct_com_populacao": 100.0
+    },
+    {
+      "ano_epidemiologico": 2025,
+      "linhas": 14946,
+      "com_populacao": 14946,
+      "pct_com_populacao": 100.0
+    }
+  ],
+  "avisos_qualidade": []
+}

@@ -28,7 +28,6 @@ from src.eda.prioridade_observada import (
     resumo_situacao,
     ultima_semana_disponivel,
 )
-from src.eda.schema_eda import INCIDENCIA_DISPONIVEL
 
 gold, freshness = iniciar_pagina(
     "Situação epidemiológica",
@@ -82,6 +81,11 @@ linha_de_cartoes(
             f"Encerradas em SE {ultima[1]} / {ultima[0]}" if ultima else "—",
         ),
         (
+            "Incidência (100 mil hab.) no período recente",
+            numero(situacao["incidencia_janela_recente_100k_cidade"], decimais=1),
+            f"Últimas {JANELA_RECENTE_SEMANAS} semanas — 'sem base' se a população do ano não estiver disponível",
+        ),
+        (
             "Variação sobre o período anterior",
             variacao_com_sinal(situacao["variacao_pct_cidade"]),
             f"Comparação com as {JANELA_RECENTE_SEMANAS} semanas imediatamente anteriores",
@@ -93,14 +97,12 @@ linha_de_cartoes(
         ),
     ]
 )
-
-if not INCIDENCIA_DISPONIVEL:
-    st.caption(
-        "**Incidência por 100 mil habitantes não está disponível**: nenhuma fonte pública usada pelo "
-        "projeto traz população por bairro. Todos os números são contagem absoluta de casos "
-        "notificados. Onde é preciso comparar bairros de tamanhos diferentes, usa-se a razão contra "
-        "o próprio histórico do bairro (ver **Bairros prioritários**)."
-    )
+st.caption(
+    "**Incidência** = casos da janela dividido pela população total da cidade no ano de referência, "
+    "vezes 100.000 — uma única divisão sobre os totais, nunca a soma das incidências por bairro. "
+    "Onde é preciso comparar bairros de tamanhos diferentes ver também a razão contra o próprio "
+    "histórico do bairro (**Bairros prioritários**)."
+)
 
 st.divider()
 

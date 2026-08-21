@@ -39,29 +39,46 @@ class Filtros(TypedDict):
     codigo_bairro: Optional[str]
 
 
+def opcoes_agravo(permitir_todas: bool = True) -> list[str]:
+    """Lista de opções do seletor de agravo, extraída para ser testável sem
+    depender do Streamlit."""
+    return [*AGRAVOS] if not permitir_todas else [OPCAO_TODOS_AGRAVOS, *AGRAVOS]
+
+
 def renderizar_filtros(
     df_gold: pd.DataFrame,
     key_prefix: str,
     permitir_escopo_geografico: bool = True,
     agravo_padrao: Optional[str] = "DENGUE",
+    permitir_todas: bool = True,
 ) -> Filtros:
     """`key_prefix` evita colisão de estado entre páginas.
 
     `agravo_padrao="DENGUE"` reflete a decisão de produto: dengue é o agravo
     principal; Zika e Chikungunya permanecem disponíveis como comparação.
+
+    `permitir_todas=False` remove a opção "Todas as arboviroses" do seletor
+    — usado por páginas onde a soma dos 3 agravos não tem interpretação
+    válida (ex.: associação climática por defasagem, projeção 2026: cada
+    agravo tem sazonalidade/processo próprio, somar os três não é uma série
+    válida para essas análises). Quando `False`, `agravo_padrao` não pode
+    ser `None` e o usuário sempre escolhe uma das três doenças.
     """
     st.sidebar.markdown("### Filtros")
 
-    opcoes_agravo = [OPCAO_TODOS_AGRAVOS, *AGRAVOS]
-    indice_padrao = opcoes_agravo.index(agravo_padrao) if agravo_padrao in opcoes_agravo else 0
+    opcoes = opcoes_agravo(permitir_todas)
+    padrao_efetivo = agravo_padrao if agravo_padrao in opcoes else opcoes[0]
+    indice_padrao = opcoes.index(padrao_efetivo)
     agravo_escolhido = st.sidebar.selectbox(
         "Agravo",
-        options=opcoes_agravo,
+        options=opcoes,
         index=indice_padrao,
         key=f"{key_prefix}_agravo",
         help=(
             "Dengue é o agravo principal do painel. 'Todas as arboviroses' soma os três "
             "agravos e nunca é tratada como uma quarta doença."
+            if permitir_todas
+            else "Esta análise depende do processo de cada agravo — não é possível somar os três."
         ),
     )
     agravo = None if agravo_escolhido == OPCAO_TODOS_AGRAVOS else agravo_escolhido

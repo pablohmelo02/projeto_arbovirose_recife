@@ -36,9 +36,13 @@ COLUNAS_CLIMA_NUMERICAS = (
 
 COLUNA_CASOS = "casos"
 
-# `incidencia_por_100k` NÃO existe na Gold (nenhuma fonte do projeto tem
-# população por bairro, ver `src/gold/schema_gold_arboviroses_clima.py`) --
-# não é recalculada nem aproximada aqui. Qualquer parte da UI que mencione
-# "incidência" deve mostrar explicitamente que está indisponível, nunca
-# substituir silenciosamente por `casos`.
-INCIDENCIA_DISPONIVEL = False
+# A partir da Gold 1.2 (ver `src/gold/populacao.py`), existe uma série de
+# população por bairro/ano reconstruída (94/94 bairros, 2010-2025 — Censos
+# 2010/2022 observados, checkpoint institucional 2011-2017, reconstrução
+# própria 2018-2021, projeção pós-censo 2023-2025 — ver
+# `reports/population/population_incidence_integration.md`), então
+# `incidencia_100k` e as janelas móveis existem de verdade na Gold. Nunca
+# tratar os anos reconstruídos/projetados (`tipo_populacao != CENSO_OBSERVADO`)
+# como equivalentes a um censo -- a UI deve expor `tipo_populacao` sempre que
+# mostrar incidência.
+INCIDENCIA_DISPONIVEL = True

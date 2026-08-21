@@ -1,0 +1,95 @@
+{
+  "fonte": "IBGE - SIDRA",
+  "series": {
+    "2010": {
+      "valor": 1537704,
+      "tabela": 202,
+      "tipo": "CENSO_OBSERVADO",
+      "descricao": "Censo Demografico 2010"
+    },
+    "2011": {
+      "valor": 1546516,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    },
+    "2012": {
+      "valor": 1555039,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    },
+    "2013": {
+      "valor": 1599513,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    },
+    "2014": {
+      "valor": 1608488,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    },
+    "2015": {
+      "valor": 1617183,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    },
+    "2016": {
+      "valor": 1625583,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    },
+    "2017": {
+      "valor": 1633697,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    },
+    "2018": {
+      "valor": 1637834,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    },
+    "2019": {
+      "valor": 1645727,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    },
+    "2020": {
+      "valor": 1653461,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    },
+    "2021": {
+      "valor": 1661017,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    },
+    "2022": {
+      "valor": 1488920,
+      "tabela": 9514,
+      "tipo": "CENSO_OBSERVADO",
+      "descricao": "Censo Demografico 2022"
+    },
+    "2023": {
+      "valor": null,
+      "tabela": null,
+      "tipo": "SEM_PUBLICACAO_OFICIAL",
+      "descricao": "IBGE nao publicou estimativa municipal anual para 2023 (ano de transicao pos-Censo 2022); tratado na reconstrucao por interpolacao explicita entre 2022 e 2024."
+    },
+    "2024": {
+      "valor": 1587707,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    },
+    "2025": {
+      "valor": 1588376,
+      "tabela": 6579,
+      "tipo": "ESTIMATIVA_OFICIAL"
+    }
+  },
+  "url_tabela_202": "https://apisidra.ibge.gov.br/values/t/202/n6/2611606/v/allxp/p/all",
+  "url_tabela_6579": "https://apisidra.ibge.gov.br/values/t/6579/n6/2611606/v/allxp/p/all",
+  "url_tabela_9514": "https://apisidra.ibge.gov.br/values/t/9514/n6/2611606/v/allxp/p/all",
+  "municipio": "Recife (PE)",
+  "codigo_municipio_ibge": "2611606",
+  "data_extracao": "2026-08-21T15:11:42.018584+00:00",
+  "nota": "Serie usada como referencia de reconciliacao municipal ano a ano na reconstrucao da populacao por bairro (secao 6-7 do pedido). Nao contem informacao por bairro."
+}

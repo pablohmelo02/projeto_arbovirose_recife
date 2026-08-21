@@ -1,0 +1,20 @@
+{
+  "fonte": "IBGE - Censo Demografico 2022",
+  "produto": "Agregados por Setores Censitarios - Agregados por Bairro (basico)",
+  "arquivo_original": "Agregados_por_bairros_basico_BR_20260520.zip",
+  "url_origem": "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Bairro_csv/Agregados_por_bairros_basico_BR_20260520.zip",
+  "filtro_aplicado": "CD_MUN == '2611606' (Recife/PE)",
+  "colunas_mantidas": {
+    "CD_BAIRRO": "codigo IBGE do bairro (10 digitos)",
+    "NM_BAIRRO": "nome do bairro conforme IBGE",
+    "NM_NU": "Nucleo Urbano - para Recife, corresponde a RPA (Regiao Politico-Administrativa)",
+    "AREA_KM2": "area do bairro em km2 (decimal com virgula, conforme fonte)",
+    "v0001": "populacao residente total",
+    "v0002": "numero de domicilios particulares ocupados",
+    "v0003": "numero de domicilios particulares ocupados - responsavel",
+    "v0004": "populacao em domicilios coletivos"
+  },
+  "data_extracao": "2026-08-21T15:11:42.017568+00:00",
+  "verificacao_integridade": "94 linhas retornadas para CD_MUN=2611606 (94/94 bairros oficiais). Soma de v0001 = 1488920, identica ao total municipal oficial do Censo 2022 (SIDRA tabela 9514, variavel 93, ano 2022, municipio 2611606) = 1488920. Diferenca = 0.",
+  "correspondencia_com_silver_bairro_geo": "94/94 bairros casados por nome normalizado apos 1 correcao documentada: 'SITIO DOS PINTOS - SAO BRAS' (grafia IBGE 2022) -> 'SITIO DOS PINTOS' (grafia oficial em silver_bairro_geo, tambem usada pelo documento CIEVS 2010-2017)."
+}

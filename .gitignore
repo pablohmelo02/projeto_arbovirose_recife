@@ -77,4 +77,7 @@ Thumbs.db
 # NÃO ignorados de propósito (necessários ao deploy do dashboard):
 #   dashboard/data/*.parquet, *.geojson, *.json  -> dataset publicado
 #   data/silver/clima_grade/*.parquet            -> Silver em grade versionada
+#   data/bronze/populacao/*                      -> fontes de população versionadas (§ CLAUDE.md)
+#   data/silver/populacao_bairro_ano/*.parquet   -> Silver de população versionada
+#   powerbi/data/*                               -> camada semântica exportada para Power BI
 #   reports/**                                   -> relatórios e evidências

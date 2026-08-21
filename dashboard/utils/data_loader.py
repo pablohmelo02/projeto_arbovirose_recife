@@ -49,6 +49,8 @@ ARQUIVO_LATEST_PRIORITY = DATA_DIR / "latest_priority.parquet"
 ARQUIVO_MANIFEST_GRADE = DATA_DIR / "_gold_clima_grade.json"
 ARQUIVO_ULTIMA_ATUALIZACAO = DATA_DIR / "_ultima_atualizacao.json"
 ARQUIVO_EVIDENCIA = DATA_DIR / "_evidence_summary.json"
+ARQUIVO_FORECAST = DATA_DIR / "_forecast_2026.parquet"
+ARQUIVO_FORECAST_METADATA = DATA_DIR / "_forecast_2026_metadata.json"
 
 COLUNAS_DATA = ("semana_epi_data_inicio", "semana_epi_data_fim")
 
@@ -137,6 +139,21 @@ def load_evidence_summary() -> Optional[dict[str, Any]]:
     return None if assinatura is None else _ler_json(assinatura)
 
 
+def load_forecast_2026() -> Optional[pd.DataFrame]:
+    """Série observada (2013-2025) + projeção 2026 por agravo, gerada por
+    `python -m src.generate_forecast_artifacts`. `None` = a página de
+    Projeção 2026 mostra apenas a indisponibilidade — nunca calcula nada
+    em tempo real (mesma convenção do módulo experimental de priorização)."""
+    assinatura = _assinatura(ARQUIVO_FORECAST)
+    return None if assinatura is None else _ler_parquet(assinatura)
+
+
+def load_forecast_2026_metadata() -> Optional[dict[str, Any]]:
+    """Modelo escolhido, backtest e pico projetado por agravo."""
+    assinatura = _assinatura(ARQUIVO_FORECAST_METADATA)
+    return None if assinatura is None else _ler_json(assinatura)
+
+
 def load_manifest_clima_grade() -> Optional[dict[str, Any]]:
     assinatura = _assinatura(ARQUIVO_MANIFEST_GRADE)
     return None if assinatura is None else _ler_json(assinatura)
@@ -157,6 +174,8 @@ def inventario_artefatos() -> list[dict[str, Any]]:
         (ARQUIVO_STATUS_PRIORIZACAO, "Estado do módulo experimental", False),
         (ARQUIVO_BACKTEST, "Backtest histórico de priorização", False),
         (ARQUIVO_EVIDENCIA, "Resumo da validação estatística do modelo", False),
+        (ARQUIVO_FORECAST, "Série observada + projeção 2026 por agravo", False),
+        (ARQUIVO_FORECAST_METADATA, "Modelo escolhido e backtest da projeção 2026", False),
         (ARQUIVO_LATEST_PRIORITY, "Priorização do período mais recente", False),
         (ARQUIVO_MANIFEST_GRADE, "Manifest do bloco climático em grade", False),
         (ARQUIVO_PROFILING, "Proveniência da exportação", False),

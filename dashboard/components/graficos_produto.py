@@ -97,6 +97,20 @@ def grafico_casos_por_ano(por_ano: pd.DataFrame, titulo: str) -> go.Figure:
     return fig
 
 
+def grafico_metrica_por_ano(por_ano: pd.DataFrame, coluna: str, rotulo_eixo_y: str, titulo: str) -> go.Figure:
+    """Total/taxa anual para qualquer métrica pré-calculada (casos,
+    incidência ou população) — generaliza `grafico_casos_por_ano` para não
+    duplicar o gráfico a cada nova métrica anual."""
+    fig = px.bar(
+        por_ano, x="ano_epidemiologico", y=coluna, text=coluna,
+        color_discrete_sequence=[COR_INSTITUCIONAL_CLARA], title=titulo,
+    )
+    fig.update_traces(texttemplate="%{text:,.1f}", textposition="outside", cliponaxis=False)
+    fig.update_layout(**LAYOUT_PADRAO, xaxis_title="Ano epidemiológico", yaxis_title=rotulo_eixo_y)
+    fig.update_xaxes(type="category")
+    return fig
+
+
 def grafico_prioridade_observada(tabela: pd.DataFrame, top_n: int, titulo: str) -> go.Figure:
     """Barras horizontais dos bairros com mais casos recentes, anotadas com
     a razão contra o próprio histórico. Duas informações, um gráfico — sem
@@ -309,4 +323,127 @@ def grafico_cobertura_dupla(tabela: pd.DataFrame, titulo: str) -> go.Figure:
         xaxis_title="Ano epidemiológico", yaxis_title="% de bairro × semana com dado",
     )
     fig.update_yaxes(range=[0, 105])
+    return fig
+
+
+def grafico_associacao_climatica_lag(tabela: pd.DataFrame, titulo: str) -> go.Figure:
+    """Correlação de Spearman por defasagem deslocada (`lag_semanas`,
+    `correlacao_spearman`) -- barras marcadas por confiabilidade de amostra
+    via **padrão de preenchimento e rótulo textual**, nunca só por cor (a
+    mesma regra de `grafico_delta_por_k`): lags com `n_observacoes` abaixo
+    do mínimo aparecem com opacidade reduzida e hachurado, não escondidos."""
+    cores = [COR_INSTITUCIONAL if confiavel else COR_NEUTRA for confiavel in tabela["confiavel"]]
+    padroes = ["" if confiavel else "/" for confiavel in tabela["confiavel"]]
+    fig = go.Figure(
+        go.Bar(
+            x=tabela["lag_semanas"],
+            y=tabela["correlacao_spearman"],
+            marker=dict(color=cores, pattern=dict(shape=padroes)),
+            customdata=tabela[["n_observacoes", "p_value", "confiavel"]].to_numpy(),
+            hovertemplate=(
+                "Defasagem: %{x} semana(s)<br>Spearman: %{y:.3f}<br>n=%{customdata[0]}<br>"
+                "p-valor=%{customdata[1]}<br>Amostra confiável: %{customdata[2]}<extra></extra>"
+            ),
+        )
+    )
+    fig.update_layout(
+        **LAYOUT_PADRAO, title_text=titulo,
+        xaxis_title="Defasagem (semanas) — clima antes dos casos",
+        yaxis_title="Correlação de Spearman",
+    )
+    fig.update_xaxes(type="category")
+    fig.add_annotation(
+        text="Hachurado = amostra abaixo do mínimo confiável (n < 30)",
+        xref="paper", yref="paper", x=0, y=1.12, showarrow=False,
+        font=dict(size=11, color="#5b6b7b"),
+    )
+    return fig
+
+
+def grafico_serie_clima_e_epidemiologica(
+    serie_clima: pd.DataFrame,
+    serie_epi: pd.DataFrame,
+    rotulo_clima: str,
+    rotulo_epi: str,
+    titulo: str,
+    cor_epi: str = CORES_AGRAVOS["DENGUE"],
+) -> go.Figure:
+    """Série climática (barras, eixo esquerdo) sobreposta à série de
+    casos/incidência (linha, eixo direito) -- mesma convenção de eixo duplo
+    já usada nas páginas de clima."""
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    fig.add_trace(
+        go.Bar(
+            x=serie_clima["semana_epi_data_inicio"], y=serie_clima["valor"],
+            name=rotulo_clima, marker_color=COR_INSTITUCIONAL_CLARA, opacity=0.55,
+        ),
+        secondary_y=False,
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=serie_epi["semana_epi_data_inicio"], y=serie_epi["valor"],
+            name=rotulo_epi, line=dict(color=cor_epi, width=2),
+        ),
+        secondary_y=True,
+    )
+    fig.update_layout(**LAYOUT_PADRAO, title_text=titulo)
+    fig.update_yaxes(title_text=rotulo_clima, secondary_y=False)
+    fig.update_yaxes(title_text=rotulo_epi, secondary_y=True)
+    return fig
+
+
+def grafico_projecao_com_banda(
+    observado: pd.DataFrame, projetado: pd.DataFrame, titulo: str, cor: str = CORES_AGRAVOS["DENGUE"]
+) -> go.Figure:
+    """Observado (linha sólida) x projetado 2026 (linha tracejada + bandas
+    80%/95%) -- item 20 do pedido de produto: a diferença nunca depende só
+    de cor. `line=dict(dash="dash")` no traço projetado e os nomes das
+    séries ("Observado (2013-2025)" / "Projetado 2026") carregam a
+    informação em texto, não só visualmente.
+
+    `observado` precisa de `semana_epi_data_inicio`/`casos`. `projetado`
+    precisa de `semana_epi_data_inicio`/`casos`/`banda_80_inferior`/
+    `banda_80_superior`/`banda_95_inferior`/`banda_95_superior`."""
+    fig = go.Figure()
+
+    x_proj = projetado["semana_epi_data_inicio"]
+    fig.add_trace(
+        go.Scatter(
+            x=x_proj, y=projetado["banda_95_superior"], mode="lines",
+            line=dict(width=0), showlegend=False, hoverinfo="skip",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=x_proj, y=projetado["banda_95_inferior"], mode="lines", line=dict(width=0),
+            fill="tonexty", fillcolor="rgba(31,78,121,0.10)", name="Intervalo 95%",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=x_proj, y=projetado["banda_80_superior"], mode="lines",
+            line=dict(width=0), showlegend=False, hoverinfo="skip",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=x_proj, y=projetado["banda_80_inferior"], mode="lines", line=dict(width=0),
+            fill="tonexty", fillcolor="rgba(31,78,121,0.22)", name="Intervalo 80%",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=observado["semana_epi_data_inicio"], y=observado["casos"], mode="lines",
+            name="Observado (2013-2025)", line=dict(color=cor, width=2),
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=x_proj, y=projetado["casos"], mode="lines", name="Projetado 2026",
+            line=dict(color=COR_INSTITUCIONAL, width=2.4, dash="dash"),
+        )
+    )
+    fig.update_layout(
+        **LAYOUT_PADRAO, title_text=titulo, xaxis_title="Semana epidemiológica", yaxis_title="Casos",
+    )
     return fig

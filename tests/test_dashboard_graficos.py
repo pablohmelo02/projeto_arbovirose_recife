@@ -304,3 +304,32 @@ def test_paleta_nao_usa_semaforo_de_risco():
     valores = {v.lower() for v in G.CORES_AGRAVOS.values()}
     verdes_proibidos = {"#27ae60", "#2ecc71", "#00b050", "green"}
     assert not (valores & verdes_proibidos)
+
+
+def test_grafico_associacao_climatica_lag_marca_confiabilidade_por_padrao_e_texto():
+    tabela = pd.DataFrame(
+        {
+            "lag_semanas": [0, 1, 2],
+            "correlacao_spearman": [0.1, 0.5, -0.2],
+            "p_value": [0.4, 0.01, 0.3],
+            "n_observacoes": [10, 200, 200],
+            "confiavel": [False, True, True],
+        }
+    )
+    fig = GP.grafico_associacao_climatica_lag(tabela, "t")
+    assert fig.data
+    padroes = list(fig.data[0].marker.pattern.shape)
+    assert padroes[0] == "/" and padroes[1] == "" and padroes[2] == "", (
+        "amostra nao confiavel precisa de padrao visual proprio, nao so cor"
+    )
+
+
+def test_grafico_serie_clima_e_epidemiologica_tem_dois_eixos():
+    datas = pd.date_range("2024-01-07", periods=6, freq="7D")
+    serie_clima = pd.DataFrame({"semana_epi_data_inicio": datas, "valor": [10, 20, 5, 0, 15, 30]})
+    serie_epi = pd.DataFrame({"semana_epi_data_inicio": datas, "valor": [1, 2, 3, 4, 5, 6]})
+    fig = GP.grafico_serie_clima_e_epidemiologica(
+        serie_clima, serie_epi, "Precipitação (mm)", "Casos", "t"
+    )
+    assert len(fig.data) == 2
+    assert fig.layout.yaxis2 is not None

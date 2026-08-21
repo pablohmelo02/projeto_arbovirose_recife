@@ -1,0 +1,313 @@
+{
+  "gerado_em": "2026-08-21T20:31:39.376634+00:00",
+  "ano_projecao": 2026,
+  "ultimo_ano_historico_validado": 2025,
+  "por_agravo": {
+    "DENGUE": {
+      "disponivel": true,
+      "ultimo_ano_historico": 2025,
+      "modelo_escolhido": "media_historica_semana",
+      "metodo_banda": "empirica",
+      "backtest_por_dobra_do_modelo_escolhido": [
+        {
+          "ano_alvo": 2023,
+          "n_semanas": 52,
+          "mae": 98.71923076923078,
+          "rmse": 112.84453226248255,
+          "mase": 3.4314171122994654,
+          "semana_pico_observada": 13,
+          "semana_pico_prevista": 11,
+          "erro_timing_semanas": -2,
+          "valor_pico_observado": 169.0,
+          "valor_pico_previsto": 263.3,
+          "erro_magnitude_pico": 94.30000000000001
+        },
+        {
+          "ano_alvo": 2024,
+          "n_semanas": 52,
+          "mae": 82.9440559440559,
+          "rmse": 139.84088337714383,
+          "mase": 0.6130032559822209,
+          "semana_pico_observada": 11,
+          "semana_pico_prevista": 11,
+          "erro_timing_semanas": 0,
+          "valor_pico_observado": 726.0,
+          "valor_pico_previsto": 250.1818181818182,
+          "erro_magnitude_pico": -475.8181818181818
+        },
+        {
+          "ano_alvo": 2025,
+          "n_semanas": 53,
+          "mae": 85.83962264150942,
+          "rmse": 103.42872068267357,
+          "mase": 0.5991899537603337,
+          "semana_pico_observada": 33,
+          "semana_pico_prevista": 11,
+          "erro_timing_semanas": -22,
+          "valor_pico_observado": 354.0,
+          "valor_pico_previsto": 289.8333333333333,
+          "erro_magnitude_pico": -64.16666666666669
+        }
+      ],
+      "resumo_backtest_por_modelo": [
+        {
+          "modelo": "seasonal_naive",
+          "n_dobras_validas": 3,
+          "mase_mediano": 1.0,
+          "erro_timing_absoluto_mediano": 19.0
+        },
+        {
+          "modelo": "media_historica_semana",
+          "n_dobras_validas": 3,
+          "mase_mediano": 0.6130032559822209,
+          "erro_timing_absoluto_mediano": 2.0
+        },
+        {
+          "modelo": "tendencia_sazonal",
+          "n_dobras_validas": 3,
+          "mase_mediano": 1.0367526810580419,
+          "erro_timing_absoluto_mediano": 2.0
+        },
+        {
+          "modelo": "ets_holt_winters",
+          "n_dobras_validas": 3,
+          "mase_mediano": 1.1244073324541122,
+          "erro_timing_absoluto_mediano": 3.0
+        }
+      ],
+      "cobertura_intervalo_por_dobra": [
+        {
+          "ano_alvo": 2023,
+          "cobertura_80": 0.5384615384615384,
+          "cobertura_95": 0.5769230769230769
+        },
+        {
+          "ano_alvo": 2024,
+          "cobertura_80": 0.8076923076923077,
+          "cobertura_95": 0.8461538461538461
+        },
+        {
+          "ano_alvo": 2025,
+          "cobertura_80": 0.6981132075471698,
+          "cobertura_95": 0.9811320754716981
+        }
+      ],
+      "cobertura_intervalo_media": {
+        "cobertura_80_media": 0.681422351233672,
+        "cobertura_95_media": 0.8014029995162071
+      },
+      "pico_projetado": {
+        "semana_epidemiologica": 11,
+        "casos_esperados": 280,
+        "data_inicio": "2026-03-15 00:00:00"
+      },
+      "media_semanal_historica_comparavel": 162.3239644970414,
+      "incidencia_2026_disponivel": false,
+      "motivo_incidencia_2026_indisponivel": "não há estimativa municipal oficial do IBGE para a população de 2026 (verificado ao vivo — ver reports/forecast/arbovirus_2026_projection.md); a projeção é sempre em número de casos"
+    },
+    "ZIKA": {
+      "disponivel": true,
+      "ultimo_ano_historico": 2025,
+      "modelo_escolhido": "seasonal_naive",
+      "metodo_banda": "empirica",
+      "backtest_por_dobra_do_modelo_escolhido": [
+        {
+          "ano_alvo": 2023,
+          "n_semanas": 52,
+          "mae": 3.4423076923076925,
+          "rmse": 4.517061672575011,
+          "mase": 1.0,
+          "semana_pico_observada": 12,
+          "semana_pico_prevista": 29,
+          "erro_timing_semanas": 17,
+          "valor_pico_observado": 23.0,
+          "valor_pico_previsto": 13.0,
+          "erro_magnitude_pico": -10.0
+        },
+        {
+          "ano_alvo": 2024,
+          "n_semanas": 52,
+          "mae": 6.211538461538462,
+          "rmse": 8.37923256996358,
+          "mase": 1.0,
+          "semana_pico_observada": 11,
+          "semana_pico_prevista": 12,
+          "erro_timing_semanas": 1,
+          "valor_pico_observado": 27.0,
+          "valor_pico_previsto": 23.0,
+          "erro_magnitude_pico": -4.0
+        },
+        {
+          "ano_alvo": 2025,
+          "n_semanas": 53,
+          "mae": 12.228856471155586,
+          "rmse": 15.316674995189807,
+          "mase": 1.0,
+          "semana_pico_observada": 33,
+          "semana_pico_prevista": 11,
+          "erro_timing_semanas": -22,
+          "valor_pico_observado": 40.0,
+          "valor_pico_previsto": 27.0,
+          "erro_magnitude_pico": -13.0
+        }
+      ],
+      "resumo_backtest_por_modelo": [
+        {
+          "modelo": "seasonal_naive",
+          "n_dobras_validas": 3,
+          "mase_mediano": 1.0,
+          "erro_timing_absoluto_mediano": 17.0
+        },
+        {
+          "modelo": "media_historica_semana",
+          "n_dobras_validas": 3,
+          "mase_mediano": 1.2046205718595417,
+          "erro_timing_absoluto_mediano": 4.0
+        },
+        {
+          "modelo": "tendencia_sazonal",
+          "n_dobras_validas": 3,
+          "mase_mediano": 1.303237711214464,
+          "erro_timing_absoluto_mediano": 4.0
+        },
+        {
+          "modelo": "ets_holt_winters",
+          "n_dobras_validas": 3,
+          "mase_mediano": 1.349321622071513,
+          "erro_timing_absoluto_mediano": 5.0
+        }
+      ],
+      "cobertura_intervalo_por_dobra": [
+        {
+          "ano_alvo": 2023,
+          "cobertura_80": 0.9230769230769231,
+          "cobertura_95": 1.0
+        },
+        {
+          "ano_alvo": 2024,
+          "cobertura_80": 0.9423076923076923,
+          "cobertura_95": 1.0
+        },
+        {
+          "ano_alvo": 2025,
+          "cobertura_80": 0.37735849056603776,
+          "cobertura_95": 0.6415094339622641
+        }
+      ],
+      "cobertura_intervalo_media": {
+        "cobertura_80_media": 0.7475810353168844,
+        "cobertura_95_media": 0.880503144654088
+      },
+      "pico_projetado": {
+        "semana_epidemiologica": 33,
+        "casos_esperados": 40,
+        "data_inicio": "2026-08-16 00:00:00"
+      },
+      "media_semanal_historica_comparavel": 10.587278106508876,
+      "incidencia_2026_disponivel": false,
+      "motivo_incidencia_2026_indisponivel": "não há estimativa municipal oficial do IBGE para a população de 2026 (verificado ao vivo — ver reports/forecast/arbovirus_2026_projection.md); a projeção é sempre em número de casos"
+    },
+    "CHIKUNGUNYA": {
+      "disponivel": true,
+      "ultimo_ano_historico": 2025,
+      "modelo_escolhido": "seasonal_naive",
+      "metodo_banda": "empirica",
+      "backtest_por_dobra_do_modelo_escolhido": [
+        {
+          "ano_alvo": 2023,
+          "n_semanas": 52,
+          "mae": 19.596153846153847,
+          "rmse": 26.946885077585783,
+          "mase": 1.0,
+          "semana_pico_observada": 13,
+          "semana_pico_prevista": 32,
+          "erro_timing_semanas": 19,
+          "valor_pico_observado": 82.0,
+          "valor_pico_previsto": 111.0,
+          "erro_magnitude_pico": 29.0
+        },
+        {
+          "ano_alvo": 2024,
+          "n_semanas": 52,
+          "mae": 24.096153846153847,
+          "rmse": 40.2045251949808,
+          "mase": 1.0,
+          "semana_pico_observada": 9,
+          "semana_pico_prevista": 13,
+          "erro_timing_semanas": 4,
+          "valor_pico_observado": 171.0,
+          "valor_pico_previsto": 82.0,
+          "erro_magnitude_pico": -89.0
+        },
+        {
+          "ano_alvo": 2025,
+          "n_semanas": 53,
+          "mae": 30.26559768521309,
+          "rmse": 44.820845401955545,
+          "mase": 1.0,
+          "semana_pico_observada": 39,
+          "semana_pico_prevista": 9,
+          "erro_timing_semanas": -30,
+          "valor_pico_observado": 69.0,
+          "valor_pico_previsto": 171.0,
+          "erro_magnitude_pico": 102.0
+        }
+      ],
+      "resumo_backtest_por_modelo": [
+        {
+          "modelo": "seasonal_naive",
+          "n_dobras_validas": 3,
+          "mase_mediano": 1.0,
+          "erro_timing_absoluto_mediano": 19.0
+        },
+        {
+          "modelo": "media_historica_semana",
+          "n_dobras_validas": 3,
+          "mase_mediano": 1.9033592106217803,
+          "erro_timing_absoluto_mediano": 13.0
+        },
+        {
+          "modelo": "tendencia_sazonal",
+          "n_dobras_validas": 3,
+          "mase_mediano": 3.508094408681458,
+          "erro_timing_absoluto_mediano": 13.0
+        },
+        {
+          "modelo": "ets_holt_winters",
+          "n_dobras_validas": 3,
+          "mase_mediano": 1.0078094370243023,
+          "erro_timing_absoluto_mediano": 12.0
+        }
+      ],
+      "cobertura_intervalo_por_dobra": [
+        {
+          "ano_alvo": 2023,
+          "cobertura_80": 0.7884615384615384,
+          "cobertura_95": 1.0
+        },
+        {
+          "ano_alvo": 2024,
+          "cobertura_80": 0.7692307692307693,
+          "cobertura_95": 0.8461538461538461
+        },
+        {
+          "ano_alvo": 2025,
+          "cobertura_80": 0.7169811320754716,
+          "cobertura_95": 0.8301886792452831
+        }
+      ],
+      "cobertura_intervalo_media": {
+        "cobertura_80_media": 0.7582244799225931,
+        "cobertura_95_media": 0.8921141751330431
+      },
+      "pico_projetado": {
+        "semana_epidemiologica": 39,
+        "casos_esperados": 69,
+        "data_inicio": "2026-09-27 00:00:00"
+      },
+      "media_semanal_historica_comparavel": 58.47485207100591,
+      "incidencia_2026_disponivel": false,
+      "motivo_incidencia_2026_indisponivel": "não há estimativa municipal oficial do IBGE para a população de 2026 (verificado ao vivo — ver reports/forecast/arbovirus_2026_projection.md); a projeção é sempre em número de casos"
+    }
+  }
+}

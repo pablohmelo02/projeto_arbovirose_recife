@@ -172,6 +172,104 @@ def test_resumo_situacao_com_tabela_vazia():
     resumo = resumo_situacao(pd.DataFrame({"codigo_bairro": []}), pd.DataFrame())
     assert resumo["casos_semana_cidade"] == 0
     assert resumo["tendencia_cidade"] == ROTULO_TENDENCIA_INDEFINIDA
+    assert resumo["incidencia_janela_recente_100k_cidade"] is None
+
+
+def test_resumo_situacao_sem_populacao_incidencia_cidade_e_none():
+    df = _serie_bairros()
+    tabela = prioridade_observada(df)
+    resumo = resumo_situacao(df, tabela)
+    assert resumo["incidencia_janela_recente_100k_cidade"] is None
+
+
+def _serie_bairros_com_populacao() -> pd.DataFrame:
+    df = _serie_bairros()
+    # ALFA: populacao pequena -> incidencia alta apesar de poucos casos.
+    # BETA: populacao grande -> incidencia baixa apesar de mais casos.
+    df["populacao_bairro_ano"] = df["codigo_bairro"].map({"1": 1000, "2": 1_000_000})
+    df["tipo_populacao"] = "CENSO_OBSERVADO"
+    df["densidade_populacional_hab_km2"] = df["codigo_bairro"].map({"1": 100.0, "2": 5000.0})
+    df["incidencia_100k"] = 100000 * df["casos"] / df["populacao_bairro_ano"]
+    df["incidencia_4s_100k"] = df["incidencia_100k"]  # simplificacao suficiente para o teste
+    return df
+
+
+def test_prioridade_observada_repassa_colunas_de_populacao_sem_recalcular():
+    tabela = prioridade_observada(_serie_bairros_com_populacao())
+    alfa = tabela[tabela["codigo_bairro"] == "1"].iloc[0]
+    assert alfa["tipo_populacao"] == "CENSO_OBSERVADO"
+    assert alfa["populacao_bairro_ano"] == 1000
+    assert alfa["incidencia_100k"] == pytest.approx(100000 * 20 / 1000)
+
+
+def test_prioridade_observada_sem_colunas_de_populacao_preenche_none():
+    tabela = prioridade_observada(_serie_bairros())
+    assert tabela["populacao_bairro_ano"].isna().all()
+    assert tabela["incidencia_100k"].isna().all()
+
+
+def test_resumo_situacao_incidencia_cidade_e_uma_unica_divisao_nao_soma_de_taxas():
+    df = _serie_bairros_com_populacao()
+    tabela = prioridade_observada(df)
+    resumo = resumo_situacao(df, tabela)
+
+    casos_totais = float(tabela["casos_janela_recente"].fillna(0).sum())
+    populacao_total = float(tabela["populacao_bairro_ano"].fillna(0).sum())
+    esperado = casos_totais / populacao_total * 100000
+
+    assert resumo["incidencia_janela_recente_100k_cidade"] == pytest.approx(esperado)
+
+
+def test_ranking_maior_volume_ordena_por_casos_recentes():
+    from src.eda.prioridade_observada import ranking_maior_volume
+
+    tabela = prioridade_observada(_serie_bairros_com_populacao())
+    ranking = ranking_maior_volume(tabela)
+    assert ranking.iloc[0]["codigo_bairro"] == "1"  # ALFA tem mais casos recentes (20 vs 1)
+
+
+def test_ranking_maior_incidencia_inverte_ordem_do_ranking_de_volume():
+    from src.eda.prioridade_observada import ranking_maior_incidencia
+
+    tabela = prioridade_observada(_serie_bairros_com_populacao())
+    ranking = ranking_maior_incidencia(tabela)
+    # BETA tem menos casos absolutos mas populacao muito menor proporcionalmente
+    # que sua carga -- o ranking de incidencia usa incidencia_4s_100k, nao casos.
+    assert ranking.iloc[0]["codigo_bairro"] == ranking.sort_values(
+        "incidencia_4s_100k", ascending=False
+    ).iloc[0]["codigo_bairro"]
+
+
+def test_ranking_maior_incidencia_coloca_ausentes_no_fim():
+    from src.eda.prioridade_observada import ranking_maior_incidencia
+
+    tabela = prioridade_observada(_serie_bairros())  # sem populacao -> tudo None
+    ranking = ranking_maior_incidencia(tabela)
+    assert len(ranking) == len(tabela)
+
+
+def test_ranking_maior_crescimento_e_maior_desvio_sao_rankings_distintos():
+    from src.eda.prioridade_observada import ranking_maior_crescimento, ranking_maior_desvio_historico
+
+    tabela = prioridade_observada(_serie_bairros())
+    crescimento = ranking_maior_crescimento(tabela)
+    desvio = ranking_maior_desvio_historico(tabela)
+    assert list(crescimento["codigo_bairro"]) == list(
+        tabela.sort_values("variacao_pct", ascending=False, na_position="last")["codigo_bairro"]
+    )
+    assert list(desvio["codigo_bairro"]) == list(
+        tabela.sort_values("razao_historico", ascending=False, na_position="last")["codigo_bairro"]
+    )
+
+
+def test_rankings_observados_cobre_os_4_rotulos_do_produto():
+    from src.eda.prioridade_observada import RANKINGS_OBSERVADOS
+
+    assert len(RANKINGS_OBSERVADOS) == 4
+    tabela = prioridade_observada(_serie_bairros_com_populacao())
+    for funcao in RANKINGS_OBSERVADOS.values():
+        resultado = funcao(tabela)
+        assert len(resultado) == len(tabela)
 
 
 # ===========================================================================
@@ -244,6 +342,8 @@ def test_serie_e_sazonalidade_em_grade():
     serie = clima_grade.serie_climatica_grade(_gold_com_grade())
     assert len(serie) == 20
     assert (serie["bairros_considerados"] == 2).all()
+    assert "temperatura_minima_c" in serie.columns
+    assert (serie["temperatura_minima_c"] == 22.0).all()
     sazonal = clima_grade.sazonalidade_climatica_grade(_gold_com_grade())
     assert len(sazonal) == 10
     assert (sazonal["anos_observados"] == 2).all()

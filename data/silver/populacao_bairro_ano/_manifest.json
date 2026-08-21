@@ -1,0 +1,828 @@
+{
+  "dominio": "territorio",
+  "subdominio": "populacao_bairro_ano",
+  "camada": "silver",
+  "destino": "local",
+  "arquivo": "data\\silver\\populacao_bairro_ano\\populacao_bairro_ano.parquet",
+  "metricas": {
+    "n_bairros": 94,
+    "anos_cobertos": [
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "discrepancias_join_cievs": [],
+    "discrepancias_join_censo2022": [],
+    "validacao_cruzada_2017_sem_checkpoint": {
+      "mae": 885.6826210415466,
+      "mape_pct": 10.823735114844716,
+      "bias_medio": 112.2765957446865,
+      "erro_percentual_maximo": 210.6458749475791,
+      "bairro_maior_erro_percentual": "515",
+      "n_bairros": 94
+    },
+    "reconciliacao_segmento_2018_2021": {
+      "fatores_reconciliacao": {
+        "2018": 1.028446586554148,
+        "2019": 1.052446870222693,
+        "2020": 1.0759418443904223,
+        "2021": 1.0987252761133666
+      },
+      "taxa_cagr_minima": -0.11303025187662386,
+      "taxa_cagr_maxima": 0.4451138445183991,
+      "taxa_cagr_mediana": -0.023494302620790497
+    },
+    "comparacao_metodos_pos_censo": {
+      "metodo_a_participacao_fixa_2022": {
+        "descricao": "Mantem a participacao de cada bairro no Censo 2022, escalada pelo total municipal oficial do ano (identico algebricamente a distribuir o crescimento municipal proporcionalmente a participacao 2022).",
+        "dispersao_crescimento_entre_bairros": 9.64374557647265e-17
+      },
+      "metodo_b_tendencia_longa_2010_2022": {
+        "descricao": "Extrapola o CAGR de 12 anos (2010-2022) de cada bairro, reconciliado ao total municipal oficial.",
+        "dispersao_crescimento_entre_bairros": 0.025307463181512068
+      },
+      "metodo_c_tendencia_recente_2017_2022": {
+        "descricao": "Extrapola o CAGR do ultimo segmento (2017-2022) de cada bairro, reconciliado ao total municipal oficial.",
+        "dispersao_crescimento_entre_bairros": 0.06497509429354603
+      }
+    },
+    "metodo_pos_censo_escolhido": "metodo_a_participacao_fixa_2022",
+    "areas_atipicas": [
+      {
+        "codigo_bairro": "299",
+        "populacao_2010": 4998,
+        "populacao_2022": 2915,
+        "variacao_pct_2010_2022": -41.676670668267306,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "507",
+        "populacao_2010": 3342,
+        "populacao_2022": 2523,
+        "variacao_pct_2010_2022": -24.506283662477557,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "353",
+        "populacao_2010": 6584,
+        "populacao_2022": 5062,
+        "variacao_pct_2010_2022": -23.116646415552854,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "60",
+        "populacao_2010": 7633,
+        "populacao_2022": 5923,
+        "variacao_pct_2010_2022": -22.402725009825758,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "302",
+        "populacao_2010": 2658,
+        "populacao_2022": 2091,
+        "variacao_pct_2010_2022": -21.331828442437924,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "671",
+        "populacao_2010": 6033,
+        "populacao_2022": 4763,
+        "variacao_pct_2010_2022": -21.05088678932538,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "370",
+        "populacao_2010": 8856,
+        "populacao_2022": 7089,
+        "variacao_pct_2010_2022": -19.95257452574526,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "833",
+        "populacao_2010": 9240,
+        "populacao_2022": 7408,
+        "variacao_pct_2010_2022": -19.826839826839826,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "531",
+        "populacao_2010": 10182,
+        "populacao_2022": 8217,
+        "variacao_pct_2010_2022": -19.29876252209782,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "213",
+        "populacao_2010": 25029,
+        "populacao_2022": 20610,
+        "variacao_pct_2010_2022": -17.65551959726717,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "540",
+        "populacao_2010": 12462,
+        "populacao_2022": 10365,
+        "variacao_pct_2010_2022": -16.827154549831487,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "116",
+        "populacao_2010": 2495,
+        "populacao_2022": 2081,
+        "variacao_pct_2010_2022": -16.593186372745492,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "841",
+        "populacao_2010": 10470,
+        "populacao_2022": 8738,
+        "variacao_pct_2010_2022": -16.542502387774594,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "566",
+        "populacao_2010": 34212,
+        "populacao_2022": 28697,
+        "variacao_pct_2010_2022": -16.120074827545892,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "361",
+        "populacao_2010": 7713,
+        "populacao_2022": 6495,
+        "variacao_pct_2010_2022": -15.791520809023726,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "450",
+        "populacao_2010": 3054,
+        "populacao_2022": 2574,
+        "variacao_pct_2010_2022": -15.717092337917485,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "159",
+        "populacao_2010": 1591,
+        "populacao_2022": 1342,
+        "variacao_pct_2010_2022": -15.650534255185418,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "787",
+        "populacao_2010": 12429,
+        "populacao_2022": 10642,
+        "variacao_pct_2010_2022": -14.377665137983747,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "914",
+        "populacao_2010": 2420,
+        "populacao_2022": 2074,
+        "variacao_pct_2010_2022": -14.297520661157025,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "558",
+        "populacao_2010": 31025,
+        "populacao_2022": 26631,
+        "variacao_pct_2010_2022": -14.162771958098308,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "949",
+        "populacao_2010": 7703,
+        "populacao_2022": 6620,
+        "variacao_pct_2010_2022": -14.059457354277555,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "132",
+        "populacao_2010": 5773,
+        "populacao_2022": 4990,
+        "variacao_pct_2010_2022": -13.563138749350424,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "779",
+        "populacao_2010": 36265,
+        "populacao_2022": 31457,
+        "variacao_pct_2010_2022": -13.257962222528608,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "809",
+        "populacao_2010": 8097,
+        "populacao_2022": 7060,
+        "variacao_pct_2010_2022": -12.807212547857231,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "922",
+        "populacao_2010": 10794,
+        "populacao_2022": 9427,
+        "variacao_pct_2010_2022": -12.66444320919029,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "620",
+        "populacao_2010": 9246,
+        "populacao_2022": 8086,
+        "variacao_pct_2010_2022": -12.54596582305862,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "329",
+        "populacao_2010": 14530,
+        "populacao_2022": 12797,
+        "variacao_pct_2010_2022": -11.927047487955953,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "850",
+        "populacao_2010": 29894,
+        "populacao_2022": 26740,
+        "variacao_pct_2010_2022": -10.550612162975847,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "337",
+        "populacao_2010": 43529,
+        "populacao_2022": 39012,
+        "variacao_pct_2010_2022": -10.376990052608607,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "86",
+        "populacao_2010": 14656,
+        "populacao_2022": 13147,
+        "variacao_pct_2010_2022": -10.296124454148472,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "230",
+        "populacao_2010": 50617,
+        "populacao_2022": 45448,
+        "variacao_pct_2010_2022": -10.211984116008455,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "140",
+        "populacao_2010": 2071,
+        "populacao_2022": 1867,
+        "variacao_pct_2010_2022": -9.850313858039595,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "795",
+        "populacao_2010": 8480,
+        "populacao_2022": 7664,
+        "variacao_pct_2010_2022": -9.622641509433961,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "612",
+        "populacao_2010": 11732,
+        "populacao_2022": 10620,
+        "variacao_pct_2010_2022": -9.47834981247869,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "493",
+        "populacao_2010": 4655,
+        "populacao_2022": 4221,
+        "variacao_pct_2010_2022": -9.323308270676693,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "817",
+        "populacao_2010": 25414,
+        "populacao_2022": 23074,
+        "variacao_pct_2010_2022": -9.207523412292437,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "256",
+        "populacao_2010": 18334,
+        "populacao_2022": 16685,
+        "variacao_pct_2010_2022": -8.994218392058471,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "469",
+        "populacao_2010": 7636,
+        "populacao_2022": 6954,
+        "variacao_pct_2010_2022": -8.93137768465165,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "426",
+        "populacao_2010": 8472,
+        "populacao_2022": 7728,
+        "variacao_pct_2010_2022": -8.78186968838527,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "19",
+        "populacao_2010": 592,
+        "populacao_2022": 541,
+        "variacao_pct_2010_2022": -8.614864864864865,
+        "muito_pequeno_2022": true,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "523",
+        "populacao_2010": 12334,
+        "populacao_2022": 11313,
+        "variacao_pct_2010_2022": -8.27793092265283,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "680",
+        "populacao_2010": 40976,
+        "populacao_2022": 37660,
+        "variacao_pct_2010_2022": -8.092541975790708,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "310",
+        "populacao_2010": 9484,
+        "populacao_2022": 8757,
+        "variacao_pct_2010_2022": -7.665541965415437,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "884",
+        "populacao_2010": 67283,
+        "populacao_2022": 62632,
+        "variacao_pct_2010_2022": -6.912593077003106,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "574",
+        "populacao_2010": 8292,
+        "populacao_2022": 7738,
+        "variacao_pct_2010_2022": -6.68113844669561,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "442",
+        "populacao_2010": 6750,
+        "populacao_2022": 6307,
+        "variacao_pct_2010_2022": -6.562962962962963,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "191",
+        "populacao_2010": 14097,
+        "populacao_2022": 13236,
+        "variacao_pct_2010_2022": -6.107682485635242,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "868",
+        "populacao_2010": 31648,
+        "populacao_2022": 29996,
+        "variacao_pct_2010_2022": -5.219919110212336,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "388",
+        "populacao_2010": 14867,
+        "populacao_2022": 14202,
+        "variacao_pct_2010_2022": -4.472993879061008,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "396",
+        "populacao_2010": 32905,
+        "populacao_2022": 31437,
+        "variacao_pct_2010_2022": -4.461328065643519,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "698",
+        "populacao_2010": 52186,
+        "populacao_2022": 49944,
+        "variacao_pct_2010_2022": -4.296171386962021,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "345",
+        "populacao_2010": 8132,
+        "populacao_2022": 7793,
+        "variacao_pct_2010_2022": -4.168716182980816,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "167",
+        "populacao_2010": 20538,
+        "populacao_2022": 19694,
+        "variacao_pct_2010_2022": -4.1094556431979745,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "876",
+        "populacao_2010": 31847,
+        "populacao_2022": 30565,
+        "variacao_pct_2010_2022": -4.0254969070870095,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "710",
+        "populacao_2010": 10211,
+        "populacao_2022": 9849,
+        "variacao_pct_2010_2022": -3.545196356870042,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "108",
+        "populacao_2010": 27939,
+        "populacao_2022": 27103,
+        "variacao_pct_2010_2022": -2.992233079208275,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "43",
+        "populacao_2010": 12629,
+        "populacao_2022": 12257,
+        "variacao_pct_2010_2022": -2.9456013936178636,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "701",
+        "populacao_2010": 32015,
+        "populacao_2022": 31130,
+        "variacao_pct_2010_2022": -2.764329220677807,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "663",
+        "populacao_2010": 11694,
+        "populacao_2022": 11412,
+        "variacao_pct_2010_2022": -2.4114930733709596,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "78",
+        "populacao_2010": 1007,
+        "populacao_2022": 990,
+        "variacao_pct_2010_2022": -1.6881827209533267,
+        "muito_pequeno_2022": true,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "221",
+        "populacao_2010": 20777,
+        "populacao_2022": 20449,
+        "variacao_pct_2010_2022": -1.5786687202194734,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "280",
+        "populacao_2010": 32149,
+        "populacao_2022": 31783,
+        "variacao_pct_2010_2022": -1.1384490963949112,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "582",
+        "populacao_2010": 20313,
+        "populacao_2022": 20126,
+        "variacao_pct_2010_2022": -0.9205927238714124,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": true
+      },
+      {
+        "codigo_bairro": "94",
+        "populacao_2010": 507,
+        "populacao_2022": 568,
+        "variacao_pct_2010_2022": 12.03155818540434,
+        "muito_pequeno_2022": true,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": false
+      },
+      {
+        "codigo_bairro": "639",
+        "populacao_2010": 72,
+        "populacao_2022": 89,
+        "variacao_pct_2010_2022": 23.61111111111111,
+        "muito_pequeno_2022": true,
+        "crescimento_muito_alto": false,
+        "reducao_populacional": false
+      },
+      {
+        "codigo_bairro": "930",
+        "populacao_2010": 1554,
+        "populacao_2022": 2382,
+        "variacao_pct_2010_2022": 53.28185328185328,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": true,
+        "reducao_populacional": false
+      },
+      {
+        "codigo_bairro": "27",
+        "populacao_2010": 285,
+        "populacao_2022": 447,
+        "variacao_pct_2010_2022": 56.8421052631579,
+        "muito_pequeno_2022": true,
+        "crescimento_muito_alto": true,
+        "reducao_populacional": false
+      },
+      {
+        "codigo_bairro": "906",
+        "populacao_2010": 7687,
+        "populacao_2022": 12768,
+        "variacao_pct_2010_2022": 66.09860803954729,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": true,
+        "reducao_populacional": false
+      },
+      {
+        "codigo_bairro": "418",
+        "populacao_2010": 6330,
+        "populacao_2022": 11095,
+        "variacao_pct_2010_2022": 75.27646129541864,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": true,
+        "reducao_populacional": false
+      },
+      {
+        "codigo_bairro": "183",
+        "populacao_2010": 4077,
+        "populacao_2022": 7271,
+        "variacao_pct_2010_2022": 78.34191807701741,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": true,
+        "reducao_populacional": false
+      },
+      {
+        "codigo_bairro": "728",
+        "populacao_2010": 818,
+        "populacao_2022": 1819,
+        "variacao_pct_2010_2022": 122.37163814180929,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": true,
+        "reducao_populacional": false
+      },
+      {
+        "codigo_bairro": "515",
+        "populacao_2010": 955,
+        "populacao_2022": 6397,
+        "variacao_pct_2010_2022": 569.8429319371728,
+        "muito_pequeno_2022": false,
+        "crescimento_muito_alto": true,
+        "reducao_populacional": false
+      }
+    ],
+    "reconciliacao_por_ano": [
+      {
+        "ano": 2010,
+        "soma_bairros": 1527769,
+        "populacao_municipal_referencia": 1537704.0,
+        "diferenca_absoluta": -9935.0,
+        "diferenca_percentual": -0.6461
+      },
+      {
+        "ano": 2011,
+        "soma_bairros": 1540774,
+        "populacao_municipal_referencia": 1546516.0,
+        "diferenca_absoluta": -5742.0,
+        "diferenca_percentual": -0.3713
+      },
+      {
+        "ano": 2012,
+        "soma_bairros": 1554052,
+        "populacao_municipal_referencia": 1555039.0,
+        "diferenca_absoluta": -987.0,
+        "diferenca_percentual": -0.0635
+      },
+      {
+        "ano": 2013,
+        "soma_bairros": 1589180,
+        "populacao_municipal_referencia": 1599513.0,
+        "diferenca_absoluta": -10333.0,
+        "diferenca_percentual": -0.646
+      },
+      {
+        "ano": 2014,
+        "soma_bairros": 1598096,
+        "populacao_municipal_referencia": 1608488.0,
+        "diferenca_absoluta": -10392.0,
+        "diferenca_percentual": -0.6461
+      },
+      {
+        "ano": 2015,
+        "soma_bairros": 1606738,
+        "populacao_municipal_referencia": 1617183.0,
+        "diferenca_absoluta": -10445.0,
+        "diferenca_percentual": -0.6459
+      },
+      {
+        "ano": 2016,
+        "soma_bairros": 1615084,
+        "populacao_municipal_referencia": 1625583.0,
+        "diferenca_absoluta": -10499.0,
+        "diferenca_percentual": -0.6459
+      },
+      {
+        "ano": 2017,
+        "soma_bairros": 1623143,
+        "populacao_municipal_referencia": 1633697.0,
+        "diferenca_absoluta": -10554.0,
+        "diferenca_percentual": -0.646
+      },
+      {
+        "ano": 2018,
+        "soma_bairros": 1637834,
+        "populacao_municipal_referencia": 1637834.0,
+        "diferenca_absoluta": 0.0,
+        "diferenca_percentual": 0.0
+      },
+      {
+        "ano": 2019,
+        "soma_bairros": 1645725,
+        "populacao_municipal_referencia": 1645727.0,
+        "diferenca_absoluta": -2.0,
+        "diferenca_percentual": -0.0001
+      },
+      {
+        "ano": 2020,
+        "soma_bairros": 1653460,
+        "populacao_municipal_referencia": 1653461.0,
+        "diferenca_absoluta": -1.0,
+        "diferenca_percentual": -0.0001
+      },
+      {
+        "ano": 2021,
+        "soma_bairros": 1661020,
+        "populacao_municipal_referencia": 1661017.0,
+        "diferenca_absoluta": 3.0,
+        "diferenca_percentual": 0.0002
+      },
+      {
+        "ano": 2022,
+        "soma_bairros": 1488920,
+        "populacao_municipal_referencia": 1488920.0,
+        "diferenca_absoluta": 0.0,
+        "diferenca_percentual": 0.0
+      },
+      {
+        "ano": 2023,
+        "soma_bairros": 1537519,
+        "populacao_municipal_referencia": 1537520.3109032414,
+        "diferenca_absoluta": -1.310903241392225,
+        "diferenca_percentual": -0.0001
+      },
+      {
+        "ano": 2024,
+        "soma_bairros": 1587707,
+        "populacao_municipal_referencia": 1587707.0,
+        "diferenca_absoluta": 0.0,
+        "diferenca_percentual": 0.0
+      },
+      {
+        "ano": 2025,
+        "soma_bairros": 1588383,
+        "populacao_municipal_referencia": 1588376.0,
+        "diferenca_absoluta": 7.0,
+        "diferenca_percentual": 0.0004
+      }
+    ]
+  }
+}

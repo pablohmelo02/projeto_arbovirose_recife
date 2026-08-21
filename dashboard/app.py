@@ -38,13 +38,15 @@ PAGINAS_SITUACAO = [
 ]
 
 PAGINAS_DECISAO = [
+    st.Page("pages/11_da_informacao_a_acao.py", title="Da informação à ação", icon=":material/checklist:"),
     st.Page("pages/4_bairros_prioritarios.py", title="Bairros prioritários", icon=":material/flag:"),
+    st.Page("pages/10_projecao_2026.py", title="Projeção 2026", icon=":material/trending_up:"),
     st.Page("pages/8_priorizacao_experimental.py", title="Priorização experimental", icon=":material/science:"),
 ]
 
 PAGINAS_CLIMA = [
     st.Page("pages/6_clima.py", title="Clima", icon=":material/rainy:"),
-    st.Page("pages/7_clima_dengue.py", title="Clima × Dengue", icon=":material/link:"),
+    st.Page("pages/7_clima_dengue.py", title="Clima × Arboviroses", icon=":material/link:"),
 ]
 
 PAGINAS_TRANSPARENCIA = [
